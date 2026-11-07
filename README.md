@@ -41,7 +41,7 @@ completion, next-word prediction, on-device learning and caching.
 | Type | Get | Type | Get | Type | Get |
 |---|---|---|---|---|---|
 | `le` | ለ | `lu` | ሉ | `li` | ሊ |
-| `la` | ላ | `lE` / `lie` | ሌ | `l` | ል |
+| `la` | ላ | `lie` / `lE` | ሌ | `l` | ል |
 | `lo` | ሎ | `lua` | ሏ | `kua` | ኳ |
 | `sh` / `x` | ሽ | `ch` / `c` | ች | `ny` / `N` | ኝ |
 | `ts` / `S` | ጽ | `tz` / `` `S `` | ፅ | `zh` / `Z` | ዥ |
@@ -53,7 +53,7 @@ completion, next-word prediction, on-device learning and caching.
 
 Use an apostrophe to split syllables: `l'e` → ልእ, `t's` → ትስ.
 
-Examples: `selam` ሰላም · `ityoPya` ኢትዮጵያ · `amesegnalehu` አመሰግናለሁ · `TEna ysTlN` ጤና ይስጥልኝ · `endEt neh` እንዴት ነህ
+Examples: `selam` ሰላም · `ityoPya` ኢትዮጵያ · `amesegnalehu` አመሰግናለሁ · `Tiena ysTlN` ጤና ይስጥልኝ · `endEt neh` እንዴት ነህ
 
 ## Project layout
 

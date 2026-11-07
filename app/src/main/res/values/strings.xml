@@ -11,7 +11,7 @@
     <string name="setup_enabled">✓ Enabled</string>
     <string name="setup_selected">✓ Active keyboard</string>
     <string name="try_hint">Try it here… selam → ሰላም</string>
-    <string name="phonetic_help">Phonetic typing: le ለ · lu ሉ · li ሊ · la ላ · lE ሌ · l ል · lo ሎ · lua ሏ\nsh ሽ · ch ች · ny ኝ · ts ጽ · T ጥ · C ጭ · P ጵ · H ሕ · A ዓ · `s ሥ · `h ኅ\nUse an apostrophe to split syllables: l\'e → ልእ</string>
+    <string name="phonetic_help">Phonetic typing: le ለ · lu ሉ · li ሊ · la ላ · lie ሌ · l ል · lo ሎ · lua ሏ\nsh ሽ · ch ች · ny ኝ · ts ጽ · T ጥ · C ጭ · P ጵ · H ሕ · A ዓ · `s ሥ · `h ኅ\nUse an apostrophe to split syllables: l\'e → ልእ</string>
 
     <string name="cat_layout">Layout</string>
     <string name="cat_typing">Typing</string>
