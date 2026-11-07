@@ -33,7 +33,10 @@ class SuggestionStripView(context: Context) : FrameLayout(context) {
 
     var listener: Listener? = null
     var theme: KeyboardTheme = KeyboardTheme.LIGHT
-        set(v) { field = v; setBackgroundColor(v.strip); render() }
+        set(v) { field = v; setBackgroundColor(if (transparentBackground) 0 else v.strip); render() }
+    /** Let a keyboard background picture show through. */
+    var transparentBackground = false
+        set(v) { field = v; setBackgroundColor(if (v) 0 else theme.strip) }
 
     private val density = resources.displayMetrics.density
     private val scroll = HorizontalScrollView(context).apply {

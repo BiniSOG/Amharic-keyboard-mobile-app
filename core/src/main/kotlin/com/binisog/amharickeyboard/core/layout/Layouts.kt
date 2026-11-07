@@ -71,6 +71,10 @@ object Layouts {
     const val NUMBER_PAD = "number_pad"
     const val PHONE_PAD = "phone_pad"
 
+    /** Language-key labels: current language of the layout. */
+    const val LANG_AMHARIC = "አም"
+    const val LANG_ENGLISH = "En"
+
     private val qwerty = listOf("qwertyuiop", "asdfghjkl", "zxcvbnm")
     private val digits = "1234567890"
 
@@ -130,7 +134,7 @@ object Layouts {
             }
             rows.add(keys)
         }
-        rows.add(bottomRow(amharic = true, opt.fieldKind, symbolsLabel = "?123", langLabel = "🌐"))
+        rows.add(bottomRow(amharic = true, opt.fieldKind, symbolsLabel = "?123", langLabel = LANG_AMHARIC))
         return KeyboardLayout(PHONETIC, rows, shiftable = true, spaceLabel = "አማርኛ")
     }
 
@@ -161,7 +165,7 @@ object Layouts {
             }
             rows.add(keys)
         }
-        rows.add(bottomRow(amharic = false, opt.fieldKind, symbolsLabel = "?123", langLabel = "🌐"))
+        rows.add(bottomRow(amharic = false, opt.fieldKind, symbolsLabel = "?123", langLabel = LANG_ENGLISH))
         return KeyboardLayout(ENGLISH, rows, shiftable = true, spaceLabel = "English")
     }
 
@@ -189,7 +193,7 @@ object Layouts {
         rows.add(keys.subList(9, 18))
         rows.add(keys.subList(18, 27))
         rows.add(keys.subList(27, keys.size) + Key("⌫", code = Code.DELETE, width = 9f - (keys.size - 27)))
-        rows.add(bottomRow(amharic = true, opt.fieldKind, symbolsLabel = "?123", langLabel = "🌐", widthScale = 0.9f))
+        rows.add(bottomRow(amharic = true, opt.fieldKind, symbolsLabel = "?123", langLabel = LANG_AMHARIC, widthScale = 0.9f))
         return KeyboardLayout(FIDEL, rows, shiftable = false, spaceLabel = "ፊደል")
     }
 
@@ -213,7 +217,8 @@ object Layouts {
         val s = widthScale
         return listOf(
             Key(symbolsLabel, code = Code.SYMBOLS, width = 1.5f * s),
-            Key(langLabel, code = Code.LANGUAGE, width = 1f * s),
+            // Shows the current language; the small globe marks it as the switch key.
+            Key(langLabel, code = Code.LANGUAGE, hint = "🌐", width = 1f * s),
             comma.copy(width = 1f * s),
             Key(" ", code = Code.SPACE, width = 4f * s),
             period.copy(width = 1f * s),

@@ -206,17 +206,47 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     private fun applySettings() {
-        val theme = KeyboardTheme.resolve(this, settings.theme)
+        val theme = KeyboardTheme.resolve(this, settings.theme, settings.customColors)
         keyboardView?.apply {
             this.theme = theme
             keyHeightDp = settings.keyHeightDp
             showPreview = settings.preview
             spaceSwipeEnabled = settings.spaceCursor
+            keyAlpha = settings.keyOpacity * 255 / 100
         }
         strip?.theme = theme
         overlay?.theme = theme
         inputRoot?.setKeyboardBackground(theme.background)
+        applyBackgroundImage()
     }
+
+    private var bgBitmap: android.graphics.Bitmap? = null
+    private var bgLoadedStamp = -1L
+
+    /** Shows the user's background picture, decoding it off the main thread when it changed. */
+    private fun applyBackgroundImage() {
+        val stamp = settings.bgStamp
+        if (stamp != bgLoadedStamp) {
+            bgLoadedStamp = stamp
+            val app = applicationContext
+            Thread {
+                val bmp = runCatching { BackgroundImage.load(app) }.getOrNull()
+                mainHandler.post {
+                    if (bgLoadedStamp == stamp) { bgBitmap = bmp; showBackgroundImage() }
+                }
+            }.apply { name = "amkb-bg"; priority = Thread.MIN_PRIORITY }.start()
+        }
+        showBackgroundImage()
+    }
+
+    private fun showBackgroundImage() {
+        val bmp = bgBitmap
+        inputRoot?.setBackgroundImage(bmp, settings.bgDim)
+        keyboardView?.transparentBackground = bmp != null
+        strip?.transparentBackground = bmp != null
+    }
+
+    private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
     private fun analyseEditor(info: EditorInfo) {
         val type = info.inputType

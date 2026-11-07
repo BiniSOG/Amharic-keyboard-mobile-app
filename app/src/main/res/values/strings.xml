@@ -48,6 +48,27 @@
     <string name="clipboard_empty">Clipboard history is empty</string>
     <string name="loading">Loading dictionary…</string>
 
+    <string name="cat_custom_theme">Custom theme colours</string>
+    <string name="pref_custom_bg">Background</string>
+    <string name="pref_custom_key">Keys</string>
+    <string name="pref_custom_text">Letters</string>
+    <string name="pref_custom_accent">Accent (enter key, highlights)</string>
+
+    <string name="cat_background">Background picture</string>
+    <string name="pref_bg_gallery">Choose from gallery</string>
+    <string name="pref_bg_gallery_summary">Use one of your photos behind the keys</string>
+    <string name="pref_bg_url">Use a web link</string>
+    <string name="pref_bg_url_summary">Download a picture from an https:// address</string>
+    <string name="pref_bg_url_hint">https://example.com/picture.jpg</string>
+    <string name="pref_bg_dim">Darken picture (%)</string>
+    <string name="pref_key_opacity">Key opacity on picture (%)</string>
+    <string name="pref_bg_remove">Remove background picture</string>
+    <string name="bg_loading">Setting background picture…</string>
+    <string name="bg_done">Background picture set</string>
+    <string name="bg_removed">Background picture removed</string>
+    <string name="bg_failed">Could not use that picture: %1$s</string>
+    <string name="bg_none">No background picture set</string>
+
     <string-array name="layout_entries">
         <item>አማርኛ phonetic (QWERTY → ፊደል)</item>
         <item>ፊደል grid (tap letter, pick vowel)</item>
@@ -63,12 +84,24 @@
         <item>Light</item>
         <item>Dark</item>
         <item>Ethiopian (green · gold · red)</item>
+        <item>Midnight blue</item>
+        <item>Ocean</item>
+        <item>Rose</item>
+        <item>Purple</item>
+        <item>High contrast</item>
+        <item>Custom colours…</item>
     </string-array>
     <string-array name="theme_values">
         <item>system</item>
         <item>light</item>
         <item>dark</item>
         <item>ethiopia</item>
+        <item>midnight</item>
+        <item>ocean</item>
+        <item>rose</item>
+        <item>purple</item>
+        <item>high_contrast</item>
+        <item>custom</item>
     </string-array>
     <string-array name="key_height_entries">
         <item>Short</item>

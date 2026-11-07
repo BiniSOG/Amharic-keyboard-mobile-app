@@ -42,6 +42,14 @@ class LayoutsTest {
         assertEquals("b", b.output)
     }
 
+    @Test fun languageKeyShowsCurrentLanguage() {
+        fun lang(id: String) = Layouts.build(id).rows.flatten().single { it.code == Code.LANGUAGE }
+        assertEquals("አም", lang(Layouts.PHONETIC).label)
+        assertEquals("አም", lang(Layouts.FIDEL).label)
+        assertEquals("En", lang(Layouts.ENGLISH).label)
+        assertEquals("🌐", lang(Layouts.ENGLISH).hint)
+    }
+
     @Test fun emailFieldsGetAtKey() {
         val l = Layouts.build(Layouts.ENGLISH, LayoutOptions(fieldKind = FieldKind.EMAIL))
         assertTrue(l.rows.last().any { it.label == "@" })

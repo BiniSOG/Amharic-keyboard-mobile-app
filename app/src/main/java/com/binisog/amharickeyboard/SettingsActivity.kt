@@ -17,12 +17,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import android.text.InputType
 import androidx.activity.SystemBarStyle
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.preference.ListPreference
 import androidx.preference.Preference
+import java.util.concurrent.Executors
 import androidx.preference.PreferenceFragmentCompat
 import com.binisog.amharickeyboard.engine.LanguageModels
 
@@ -124,11 +129,45 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
+
+        private val io = Executors.newSingleThreadExecutor()
+
+        /** System photo picker: no storage permission needed. */
+        private val pickImage = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) importBackground { ctx -> BackgroundImage.importFromUri(ctx, uri) }
+        }
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             // Same device-protected store the keyboard reads (see Settings.prefs).
             Settings.prefs(requireContext())
             preferenceManager.setStorageDeviceProtected()
             setPreferencesFromResource(R.xml.preferences, rootKey)
+
+            // Custom colours only matter for the custom theme.
+            val customColors = findPreference<Preference>("custom_colors")
+            findPreference<ListPreference>("theme")?.let { theme ->
+                customColors?.isVisible = theme.value == "custom"
+                theme.setOnPreferenceChangeListener { _, v -> customColors?.isVisible = v == "custom"; true }
+            }
+
+            findPreference<Preference>("bg_gallery")?.setOnPreferenceClickListener {
+                pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                true
+            }
+            findPreference<Preference>("bg_url")?.setOnPreferenceClickListener { askForImageLink(); true }
+            findPreference<Preference>("bg_remove")?.setOnPreferenceClickListener {
+                val app = requireContext().applicationContext
+                io.execute {
+                    BackgroundImage.remove(app)
+                    activity?.runOnUiThread {
+                        bumpBackgroundStamp()
+                        updateBackgroundState()
+                        toast(getString(R.string.bg_removed))
+                    }
+                }
+                true
+            }
+            updateBackgroundState()
             findPreference<Preference>("clear_learned")?.apply {
                 updateLearnedSummary(this)
                 setOnPreferenceClickListener {
@@ -146,6 +185,66 @@ class SettingsActivity : AppCompatActivity() {
                     true
                 }
             }
+        }
+
+        private fun askForImageLink() {
+            val ctx = requireContext()
+            val pad = (20 * ctx.resources.displayMetrics.density).toInt()
+            val field = EditText(ctx).apply {
+                hint = getString(R.string.pref_bg_url_hint)
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+                isSingleLine = true
+            }
+            val box = FrameLayout(ctx).apply { setPadding(pad, pad / 2, pad, 0); addView(field) }
+            AlertDialog.Builder(ctx)
+                .setTitle(R.string.pref_bg_url)
+                .setView(box)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    val link = field.text.toString().trim()
+                    if (link.isNotEmpty()) importBackground { c -> BackgroundImage.importFromUrl(c, link) }
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+
+        /** Runs an import off the main thread, then tells the keyboard to reload the picture. */
+        private fun importBackground(block: (android.content.Context) -> Unit) {
+            val app = requireContext().applicationContext
+            toast(getString(R.string.bg_loading))
+            io.execute {
+                val error = runCatching { block(app) }.exceptionOrNull()
+                activity?.runOnUiThread {
+                    if (!isAdded) return@runOnUiThread
+                    if (error == null) {
+                        bumpBackgroundStamp()
+                        updateBackgroundState()
+                        toast(getString(R.string.bg_done))
+                    } else {
+                        toast(getString(R.string.bg_failed, error.message ?: error.javaClass.simpleName))
+                    }
+                }
+            }
+        }
+
+        private fun bumpBackgroundStamp() {
+            Settings.prefs(requireContext()).edit().putLong(Settings.KEY_BG_STAMP, System.currentTimeMillis()).apply()
+        }
+
+        private fun updateBackgroundState() {
+            val has = BackgroundImage.exists(requireContext())
+            findPreference<Preference>("bg_remove")?.apply {
+                isEnabled = has
+                summary = if (has) null else getString(R.string.bg_none)
+            }
+            findPreference<Preference>("bg_dim")?.isEnabled = has
+            findPreference<Preference>("key_opacity")?.isEnabled = has
+        }
+
+        private fun toast(msg: String) = Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+
+        override fun onDestroy() {
+            io.shutdown()
+            super.onDestroy()
         }
 
         private fun updateLearnedSummary(p: Preference) {

@@ -3,6 +3,7 @@ package com.binisog.amharickeyboard.keyboard
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
+import kotlin.math.roundToInt
 
 /** Colour palette for the keyboard, strip and popups. */
 data class KeyboardTheme(
@@ -51,11 +52,64 @@ data class KeyboardTheme(
             strip = Color.parseColor("#0B3D20"), stripText = Color.WHITE,
             stripHighlight = Color.parseColor("#FCDD09"), divider = Color.parseColor("#14572F"),
         )
+        val MIDNIGHT = fromColors(bg = "#0D1B2A", key = "#1B263B", text = "#E0E1DD", accent = "#4CC9F0")
+        val OCEAN = fromColors(bg = "#E0F2F1", key = "#FFFFFF", text = "#004D40", accent = "#00897B")
+        val ROSE = fromColors(bg = "#FCE4EC", key = "#FFFFFF", text = "#4A1426", accent = "#D81B60")
+        val PURPLE = fromColors(bg = "#1E1530", key = "#2E2248", text = "#EDE7F6", accent = "#9C6ADE")
+        val HIGH_CONTRAST = fromColors(bg = "#000000", key = "#000000", text = "#FFFFFF", accent = "#FFD600")
+            .copy(keyShadow = Color.WHITE, divider = Color.WHITE)
 
-        fun resolve(ctx: Context, name: String): KeyboardTheme = when (name) {
+        /** Default colours offered for the custom theme. */
+        const val DEFAULT_CUSTOM_BG = 0xFF263238.toInt()
+        const val DEFAULT_CUSTOM_KEY = 0xFF37474F.toInt()
+        const val DEFAULT_CUSTOM_TEXT = 0xFFFFFFFF.toInt()
+        const val DEFAULT_CUSTOM_ACCENT = 0xFFFF9800.toInt()
+
+        private fun fromColors(bg: String, key: String, text: String, accent: String) =
+            custom(Color.parseColor(bg), Color.parseColor(key), Color.parseColor(text), Color.parseColor(accent))
+
+        /** Derives a complete palette from four user-chosen colours. */
+        fun custom(bg: Int, key: Int, text: Int, accent: Int): KeyboardTheme {
+            val dark = luminance(bg) < 0.5
+            return KeyboardTheme(
+                background = bg,
+                key = key,
+                keyFunction = blend(key, bg, 0.5f),
+                keyPressed = blend(key, text, 0.25f),
+                keyShadow = blend(bg, Color.BLACK, if (dark) 0.5f else 0.25f),
+                text = text,
+                hint = blend(text, key, 0.4f),
+                accent = accent,
+                onAccent = if (luminance(accent) > 0.6) Color.BLACK else Color.WHITE,
+                popup = key,
+                popupSelected = accent,
+                strip = bg,
+                stripText = text,
+                stripHighlight = accent,
+                divider = blend(bg, text, 0.18f),
+            )
+        }
+
+        fun blend(a: Int, b: Int, t: Float): Int {
+            fun ch(x: Int, y: Int) = (x + (y - x) * t).roundToInt().coerceIn(0, 255)
+            return Color.argb(255, ch(Color.red(a), Color.red(b)), ch(Color.green(a), Color.green(b)), ch(Color.blue(a), Color.blue(b)))
+        }
+
+        fun luminance(c: Int): Double = (0.299 * Color.red(c) + 0.587 * Color.green(c) + 0.114 * Color.blue(c)) / 255.0
+
+        fun resolve(ctx: Context, name: String, customColors: IntArray? = null): KeyboardTheme = when (name) {
             "light" -> LIGHT
             "dark" -> DARK
             "ethiopia" -> ETHIOPIA
+            "midnight" -> MIDNIGHT
+            "ocean" -> OCEAN
+            "rose" -> ROSE
+            "purple" -> PURPLE
+            "high_contrast" -> HIGH_CONTRAST
+            "custom" -> {
+                val c = customColors ?: intArrayOf(DEFAULT_CUSTOM_BG, DEFAULT_CUSTOM_KEY, DEFAULT_CUSTOM_TEXT, DEFAULT_CUSTOM_ACCENT)
+                custom(c[0], c[1], c[2], c[3])
+            }
             else -> {
                 val night = ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
                 if (night == Configuration.UI_MODE_NIGHT_YES) DARK else LIGHT

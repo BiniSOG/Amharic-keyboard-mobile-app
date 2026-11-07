@@ -10,7 +10,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Undo-aware backspace.** Backspace after `la` (ላ) goes back to `l` (ል), so you can fix a vowel without retyping the consonant.
 - **Fidel grid layout.** Every consonant has its own key in ሀ ለ ሐ መ order. Tap a letter, then choose its vowel form (ለ ሉ ሊ ላ ሌ ል ሎ ሏ) from the strip. You can also long-press a letter to get its forms.
 - **Long-press alternatives.** Long-press `s` for ስ ሥ ሽ ጽ ፅ, a vowel key for አ/ዐ forms, or `.` and `,` for Ethiopic punctuation.
-- **English layout** with accent popups, auto-capitalisation and English suggestions.
+- **English layout** with accent popups, auto-capitalisation, and suggestions from a 20,000-word frequency dictionary.
 - **Ethiopic punctuation and numerals:** ። ፣ ፤ ፥ ፦ ፧ ፡ ፨. There's a Ge'ez numeral page (፩–፱, ፲–፺, ፻, ፼), and typing digits suggests the Ge'ez form (`2026` → **፳፻፳፮**).
 - **Double space** inserts `። ` (or `. ` in English).
 - **Field-aware.** Number and phone fields get number pads. Email and URL fields get `@`, `/` and `.com` keys. Password fields get no suggestions, no learning and no composing. The keyboard also respects "no personalised learning" (incognito) fields.
@@ -34,7 +34,11 @@ completion, next-word prediction, on-device learning and caching.
 - **Fast lookups.** The frequency trie uses sorted child arrays and tracks the highest rank in each subtree. Top-K completion is a best-first search that skips branches that can't win.
 - **Background work.** Dictionaries load off the UI thread, and the personal dictionary is written in the background with atomic file replacement.
 
-**Themes:** light, dark, follow-system, and an Ethiopian green/gold/red theme. Key height is adjustable.
+**Look and feel**
+- **Themes:** light, dark, follow-system, Ethiopian (green/gold/red), Midnight blue, Ocean, Rose, Purple, High contrast, and **Custom**, where you pick the background, key, letter and accent colours.
+- **Background picture:** choose one from your gallery or download it from a web link. You can darken the picture and set how see-through the keys are.
+- The 🌐 key shows the current language: **አም** for Amharic, **En** for English.
+- Key height is adjustable.
 
 ## Phonetic scheme (SERA-style)
 
@@ -92,6 +96,10 @@ and tests on its own. CI (`.github/workflows/build.yml`) runs the tests and uplo
 debug APK.
 
 After installing, open **Amharic Keyboard**, tap **Enable**, then **Switch to Amharic Keyboard**.
+
+### Dictionary data
+
+The English word list comes from [wordfreq](https://github.com/rspeer/wordfreq) by Robyn Speer, licensed **CC BY-SA 4.0**, and is regenerated with `tools/export_english_wordfreq.py`. The Amharic list is curated by hand in `tools/`.
 
 ### Extending the dictionary
 

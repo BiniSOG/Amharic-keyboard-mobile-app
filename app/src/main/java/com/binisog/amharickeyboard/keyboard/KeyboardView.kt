@@ -51,6 +51,12 @@ class KeyboardView(context: Context) : View(context) {
         set(v) { field = v; invalidate() }
     var spaceLabel = ""
         set(v) { field = v; invalidate() }
+    /** When a background picture shows through: no background fill, translucent keys. */
+    var transparentBackground = false
+        set(v) { field = v; invalidate() }
+    /** Key opacity 0–255, used when [transparentBackground] is on. */
+    var keyAlpha = 255
+        set(v) { field = v.coerceIn(0, 255); invalidate() }
 
     private var layout: KeyboardLayout? = null
     private data class Placed(val key: Key, val rect: RectF)
@@ -121,7 +127,8 @@ class KeyboardView(context: Context) : View(context) {
     // ------------------------------------------------------------------ drawing
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawColor(theme.background)
+        if (!transparentBackground) canvas.drawColor(theme.background)
+        val alpha = if (transparentBackground) keyAlpha else 255
         val pressed = downKey
         for (p in placed) {
             val k = p.key
@@ -135,8 +142,11 @@ class KeyboardView(context: Context) : View(context) {
                 else -> theme.key
             }
             keyPaint.color = theme.keyShadow
+            keyPaint.alpha = alpha / 2
             canvas.drawRoundRect(p.rect.left, p.rect.top + density, p.rect.right, p.rect.bottom + density, corner, corner, keyPaint)
             keyPaint.color = bg
+            // pressed/accent keys stay solid so they remain easy to see on a picture
+            keyPaint.alpha = if (isPressed || bg == theme.accent) 255 else alpha
             canvas.drawRoundRect(p.rect, corner, corner, keyPaint)
 
             val onAccent = !isPressed && (k.code == Code.ENTER || (k.code == Code.SHIFT && shiftState != ShiftState.OFF))

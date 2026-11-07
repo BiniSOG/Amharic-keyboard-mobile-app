@@ -1,7 +1,11 @@
 package com.binisog.amharickeyboard.keyboard
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.Paint
 import android.os.Build
 import android.view.WindowInsets
@@ -85,8 +89,41 @@ class InputRootView(context: Context) : FrameLayout(context) {
     /** Background for the keyboard area and the navigation-bar strip below it (not above). */
     fun setKeyboardBackground(color: Int) { bgPaint.color = color; invalidate() }
 
+    private var image: Bitmap? = null
+    private val imagePaint = Paint(Paint.FILTER_BITMAP_FLAG)
+    private val dimPaint = Paint()
+    private val src = Rect()
+    private val dst = RectF()
+
+    /** Picture drawn behind the keys (centre-cropped), darkened by [dimPercent] (0–100). */
+    fun setBackgroundImage(bitmap: Bitmap?, dimPercent: Int) {
+        image = bitmap
+        dimPaint.color = Color.argb((dimPercent.coerceIn(0, 100) * 255) / 100, 0, 0, 0)
+        invalidate()
+    }
+
+    val hasBackgroundImage: Boolean get() = image != null
+
     override fun onDraw(canvas: Canvas) {
-        if (bgPaint.color != 0) canvas.drawRect(0f, column.top.toFloat(), width.toFloat(), height.toFloat(), bgPaint)
+        val top = column.top.toFloat()
+        if (bgPaint.color != 0) canvas.drawRect(0f, top, width.toFloat(), height.toFloat(), bgPaint)
+        val img = image ?: return
+        dst.set(0f, top, width.toFloat(), height.toFloat())
+        if (dst.width() <= 0 || dst.height() <= 0) return
+        // centre-crop: take the largest part of the picture with the keyboard's aspect ratio
+        val targetRatio = dst.width() / dst.height()
+        val imgRatio = img.width.toFloat() / img.height
+        if (imgRatio > targetRatio) {
+            val w = (img.height * targetRatio).toInt()
+            val x = (img.width - w) / 2
+            src.set(x, 0, x + w, img.height)
+        } else {
+            val h = (img.width / targetRatio).toInt()
+            val y = (img.height - h) / 2
+            src.set(0, y, img.width, y + h)
+        }
+        canvas.drawBitmap(img, src, dst, imagePaint)
+        canvas.drawRect(dst, dimPaint)
     }
 
     /** For tests and debugging: the views in drawing order. */

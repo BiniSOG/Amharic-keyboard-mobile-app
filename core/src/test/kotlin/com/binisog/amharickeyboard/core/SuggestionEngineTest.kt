@@ -116,6 +116,11 @@ class SuggestionEngineTest {
         assertTrue("Thanks" in words(e.suggest(null, "Tha")), words(e.suggest(null, "Tha")).toString())
         assertEquals("you", words(e.suggest("thank", "")).first())
         assertTrue("because" in words(e.suggest(null, "becuase")))
+        // large wordfreq-based vocabulary
+        assertTrue(e.dictionary.wordCount > 15_000)
+        assertTrue("keyboard" in words(e.suggest(null, "keyb")), words(e.suggest(null, "keyb")).toString())
+        assertEquals("the", words(e.suggest(null, "th")).first())
+        assertTrue("Wonderful" in words(e.suggest(null, "Wonderf")))
     }
 
     @Test fun userDataRoundTrip() {

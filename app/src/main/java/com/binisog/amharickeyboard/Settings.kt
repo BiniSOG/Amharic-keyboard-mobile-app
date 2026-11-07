@@ -3,6 +3,7 @@ package com.binisog.amharickeyboard
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.binisog.amharickeyboard.keyboard.KeyboardTheme
 
 /** Snapshot of the user's keyboard preferences (see res/xml/preferences.xml). */
 class Settings private constructor(p: SharedPreferences) {
@@ -24,6 +25,18 @@ class Settings private constructor(p: SharedPreferences) {
     val haptic = p.getBoolean("haptic", true)
     val sound = p.getBoolean("sound", false)
     val preview = p.getBoolean("preview", true)
+    val customColors: IntArray = intArrayOf(
+        p.getInt("custom_bg", KeyboardTheme.DEFAULT_CUSTOM_BG),
+        p.getInt("custom_key", KeyboardTheme.DEFAULT_CUSTOM_KEY),
+        p.getInt("custom_text", KeyboardTheme.DEFAULT_CUSTOM_TEXT),
+        p.getInt("custom_accent", KeyboardTheme.DEFAULT_CUSTOM_ACCENT),
+    )
+    /** Changes whenever the background image is replaced or removed. */
+    val bgStamp: Long = p.getLong(KEY_BG_STAMP, 0L)
+    /** Dark overlay over the background image, 0–80 %. */
+    val bgDim: Int = p.getInt("bg_dim", 30)
+    /** Key opacity on top of a background image, 20–100 %. */
+    val keyOpacity: Int = p.getInt("key_opacity", 75)
 
     companion object {
         const val LAYOUT_PHONETIC = "am_phonetic"
@@ -32,6 +45,7 @@ class Settings private constructor(p: SharedPreferences) {
         val ALL_LAYOUTS = listOf(LAYOUT_PHONETIC, LAYOUT_FIDEL, LAYOUT_ENGLISH)
 
         private const val KEY_LAST_LAYOUT = "last_layout"
+        const val KEY_BG_STAMP = "bg_stamp"
 
         @Volatile private var migrated = false
 

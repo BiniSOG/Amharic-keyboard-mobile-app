@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/cat_layout" app:iconSpaceReserved="false">
         <MultiSelectListPreference
@@ -51,6 +52,29 @@
             app:defaultValue="false" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="preview" app:title="@string/pref_preview"
             app:defaultValue="true" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:key="custom_colors" app:title="@string/cat_custom_theme" app:iconSpaceReserved="false">
+        <com.binisog.amharickeyboard.ColorPreference app:key="custom_bg" app:title="@string/pref_custom_bg"
+            app:defaultValue="#263238" app:iconSpaceReserved="false" />
+        <com.binisog.amharickeyboard.ColorPreference app:key="custom_key" app:title="@string/pref_custom_key"
+            app:defaultValue="#37474F" app:iconSpaceReserved="false" />
+        <com.binisog.amharickeyboard.ColorPreference app:key="custom_text" app:title="@string/pref_custom_text"
+            app:defaultValue="#FFFFFF" app:iconSpaceReserved="false" />
+        <com.binisog.amharickeyboard.ColorPreference app:key="custom_accent" app:title="@string/pref_custom_accent"
+            app:defaultValue="#FF9800" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/cat_background" app:iconSpaceReserved="false">
+        <Preference app:key="bg_gallery" app:title="@string/pref_bg_gallery"
+            app:summary="@string/pref_bg_gallery_summary" app:iconSpaceReserved="false" />
+        <Preference app:key="bg_url" app:title="@string/pref_bg_url"
+            app:summary="@string/pref_bg_url_summary" app:iconSpaceReserved="false" />
+        <SeekBarPreference app:key="bg_dim" app:title="@string/pref_bg_dim"
+            app:min="0" android:max="80" app:defaultValue="30" app:showSeekBarValue="true" app:iconSpaceReserved="false" />
+        <SeekBarPreference app:key="key_opacity" app:title="@string/pref_key_opacity"
+            app:min="20" android:max="100" app:defaultValue="75" app:showSeekBarValue="true" app:iconSpaceReserved="false" />
+        <Preference app:key="bg_remove" app:title="@string/pref_bg_remove" app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/cat_dictionary" app:iconSpaceReserved="false">
