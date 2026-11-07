@@ -73,6 +73,17 @@
     <string name="qs_background">Background picture</string>
     <string name="qs_all_settings">All settings</string>
 
+    <string name="qs_history">Typing history</string>
+    <string name="qs_history_title">Recent sentences: tap to insert</string>
+    <string name="qs_history_empty">No typing history yet</string>
+    <string name="qs_history_clear">Clear history</string>
+    <string name="history_cleared">Typing history cleared</string>
+    <string name="translate_nothing">Type or select some text to translate</string>
+    <string name="translation_copied">Translation copied</string>
+    <string name="pref_history">Typing history</string>
+    <string name="pref_history_summary">Remember sentences you type (on this device only) and suggest how to finish them. Never in password or incognito fields.</string>
+    <string name="pref_history_clear">Clear typing history</string>
+
     <string name="cat_custom_theme">Custom theme colours</string>
     <string name="pref_custom_bg">Background</string>
     <string name="pref_custom_key">Keys</string>

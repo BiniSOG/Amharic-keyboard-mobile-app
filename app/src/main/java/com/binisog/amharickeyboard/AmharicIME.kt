@@ -20,6 +20,7 @@ import android.widget.Toast
 import com.binisog.amharickeyboard.core.Ethiopic
 import com.binisog.amharickeyboard.core.PhoneticComposer
 import com.binisog.amharickeyboard.core.SuggestionEngine
+import com.binisog.amharickeyboard.core.TypingHistory
 import com.binisog.amharickeyboard.core.layout.Code
 import com.binisog.amharickeyboard.core.layout.FieldKind
 import com.binisog.amharickeyboard.core.layout.Key
@@ -161,6 +162,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         LanguageModels.ensureUserData(this)
         analyseEditor(info)
         if (!restarting) {
+            textTranslation = null
             closeQuickSettings()
             composer.reset()
             vowelRowBase = -1
@@ -182,6 +184,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
 
     override fun onFinishInputView(finishingInput: Boolean) {
         commitComposing(learn = true)
+        recordSentence()
         keyboardView?.cancelTouch()
         LanguageModels.save(this)
         super.onFinishInputView(finishingInput)
@@ -358,6 +361,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onKey(key: Key) {
+        textTranslation = null // typing goes on: drop a pending translation offer
         when (key.code) {
             Code.CHAR -> {
                 handleText(key.output)
@@ -469,6 +473,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
                 }
                 commitComposing(learn = true)
                 if (inputKind == InputKind.RAW) sendKeyChar(c) else ic.commitText(c.toString(), 1)
+                if (Ethiopic.isSentenceEnd(c)) recordSentence()
                 justAutoSpaced = false
                 spaceFollowsWord = false
                 afterCommit()
@@ -528,6 +533,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         ) {
             ic.deleteSurroundingText(1, 0)
             ic.commitText(if (isAmharic) "${Ethiopic.FULL_STOP} " else ". ", 1)
+            recordSentence()
             spaceFollowsWord = false
             lastSpaceTime = 0
         } else {
@@ -543,6 +549,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     private fun handleEnter() {
         val ic = currentInputConnection ?: return
         commitComposing(learn = true)
+        recordSentence() // before "send" clears the field
         justAutoSpaced = false
         val info = editorInfo
         val action = (info?.imeOptions ?: 0) and EditorInfo.IME_MASK_ACTION
@@ -641,6 +648,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     /** Re-reads the context after text was committed or deleted. */
     private fun afterCommit(updateContext: Boolean = true) {
         lastEditTime = SystemClock.uptimeMillis()
+        rememberPendingSentence()
         if (updateContext && composer.isEmpty) prevWord = readPrevWord()
         updateAutoShift()
         updateSuggestions()
@@ -675,6 +683,14 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int,
     ) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
+        if (composer.isEmpty) onSelectionChanged(newSelStart, newSelEnd)
+        // The app emptied the field by itself (e.g. its own send button): keep what was sent.
+        if (newSelStart == 0 && newSelEnd == 0 && oldSelStart > 0 && candidatesEnd == -1 &&
+            SystemClock.uptimeMillis() - lastEditTime > OWN_EDIT_WINDOW_MS
+        ) {
+            pendingSentence?.let { LanguageModels.recordHistory(this, it) }
+            pendingSentence = null
+        }
         // Updates arriving right after our own edits are usually stale (they describe the
         // editor before our latest change, e.g. the delete that preceded re-composing a word).
         // Acting on them used to cancel the word being edited, so suggestions stopped after
@@ -724,6 +740,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     private fun updateSuggestions() {
         val s = strip ?: return
         if (showingClipboard) { s.show(clipItems()); return }
+        textTranslation?.let { s.show(textTranslationItems(it)); return }
         if (alphaLayout == Layouts.FIDEL && vowelRowBase >= 0 && !composer.isEmpty) {
             val row = Ethiopic.rows.firstOrNull { it.base == vowelRowBase }
             if (row != null) { s.show(row.allForms.map { Item(it.toString(), ItemKind.VOWEL) }); return }
@@ -735,21 +752,116 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             return
         }
         val typed = composer.text
+        val fromHistory = historyItem(typed)
         if (typed.isEmpty()) {
             val predictions = if (settings.nextWord && prevWord != null) e.suggest(prevWord, "").suggestions else emptyList()
-            s.show(if (predictions.isEmpty()) toolbar() else predictions.take(MAX_STRIP).mapIndexed { i, sg -> toItem(sg, i == 0) })
+            val items = listOfNotNull(fromHistory) + predictions.take(MAX_STRIP).mapIndexed { i, sg -> toItem(sg, i == 0) }
+            s.show(if (items.isEmpty()) toolbar() else items)
             return
         }
         val r = e.suggest(prevWord, typed, composer.hasOpenSyllable, MAX_STRIP)
         val items = ArrayList<Item>()
         if (!typed.all { it.isDigit() }) items.add(Item(typed, if (r.typedIsWord) ItemKind.SUGGESTION else ItemKind.TYPED, tag = TAG_TYPED))
         r.suggestions.forEachIndexed { i, sg -> items.add(toItem(sg, i == 0)) }
+        // A sentence typed before that starts like this one: offered right after the typed word.
+        fromHistory?.let { items.add(minOf(1, items.size), it) }
         // Translation of the word being typed (or of the best completion), shown third so it
         // is visible without scrolling: "selam" → ⇄ hello, "water" → ⇄ ውሃ.
         translationItems(typed, r).takeIf { it.isNotEmpty() }?.let { tr ->
             items.addAll(minOf(2, items.size), tr)
         }
         s.show(items)
+    }
+
+    /** "📜 …" continuation of a sentence from the typing history. */
+    private fun historyItem(typed: String): Item? {
+        if (!settings.history || !learningAllowed || LanguageModels.history.size == 0) return null
+        if (typed.all { it.isDigit() } && typed.isNotEmpty()) return null
+        val before = currentInputConnection?.getTextBeforeCursor(300, 0)?.toString() ?: return null
+        val context = TypingHistory.currentSentenceWords(if (typed.isEmpty()) before else before.dropLast(typed.length))
+        val cont = LanguageModels.history.continuation(context, typed) ?: return null
+        val label = if (cont.length > 32) cont.take(31) + "…" else cont
+        return Item("📜 $label", ItemKind.SUGGESTION, value = cont, tag = TAG_HISTORY)
+    }
+
+    /** The sentence being typed, recorded if the app clears the field (its own "send" button). */
+    private var pendingSentence: String? = null
+
+    private fun rememberPendingSentence() {
+        if (!settings.history || !learningAllowed || inputKind != InputKind.TEXT) return
+        val before = currentInputConnection?.getTextBeforeCursor(500, 0)?.toString() ?: return
+        pendingSentence = TypingHistory.lastSentence(before).takeIf { it.isNotEmpty() }
+    }
+
+    /** Records the sentence just finished (or the text so far) into the typing history. */
+    private fun recordSentence() {
+        pendingSentence = null
+        if (!settings.history || !learningAllowed || inputKind != InputKind.TEXT) return
+        val before = currentInputConnection?.getTextBeforeCursor(500, 0)?.toString() ?: return
+        val sentence = TypingHistory.lastSentence(before)
+        if (sentence.isNotEmpty()) LanguageModels.recordHistory(this, sentence)
+    }
+
+    // ---------------------------------------------------------------- text translation
+
+    /** Pending translation of selected text or of the current sentence. */
+    private data class TextTranslation(val source: String, val result: String, val replaceSelection: Boolean)
+    private var textTranslation: TextTranslation? = null
+
+    private fun textTranslationItems(t: TextTranslation): List<Item> {
+        val label = if (t.result.length > 40) t.result.take(39) + "…" else t.result
+        return listOf(
+            Item("✕", ItemKind.ACTION, ACTION_CLOSE_TRANSLATION),
+            Item("⇄ $label", ItemKind.BEST, value = t.result, tag = if (t.replaceSelection) TAG_SELECTION else TAG_SENTENCE),
+            Item("📋", ItemKind.ACTION, ACTION_COPY_TRANSLATION),
+        )
+    }
+
+    /** Selected several words? Offer their translation (tap to replace the selection). */
+    private fun onSelectionChanged(start: Int, end: Int) {
+        val wasShowing = textTranslation?.replaceSelection == true
+        if (start == end || !settings.translate) {
+            if (wasShowing) { textTranslation = null; updateSuggestions() }
+            return
+        }
+        val tr = LanguageModels.translator ?: return
+        val selected = currentInputConnection?.getSelectedText(0)?.toString()?.trim()
+        if (selected.isNullOrEmpty() || selected.length > 1000 || selected.none { it.isLetter() }) return
+        textTranslation = TextTranslation(selected, tr.translateText(selected), replaceSelection = true)
+        updateSuggestions()
+    }
+
+    /** Toolbar ⇄: translate the sentence before the cursor. */
+    private fun translateCurrentSentence() {
+        val tr = LanguageModels.translator ?: return
+        commitComposing(learn = true)
+        val before = currentInputConnection?.getTextBeforeCursor(500, 0)?.toString() ?: return
+        // the last sentence before the cursor, including its own full stop if it has one
+        val trimmed = before.trimEnd()
+        val body = trimmed.trimEnd { it in SENTENCE_ENDS }
+        val source = trimmed.substring(body.indexOfLast { it in SENTENCE_ENDS } + 1).trim()
+        if (source.none { it.isLetter() }) {
+            Toast.makeText(this, R.string.translate_nothing, Toast.LENGTH_SHORT).show()
+            return
+        }
+        textTranslation = TextTranslation(source, tr.translateText(source), replaceSelection = false)
+        updateSuggestions()
+    }
+
+    private fun applyTextTranslation(item: Item, ic: InputConnection) {
+        val t = textTranslation ?: return
+        ic.beginBatchEdit()
+        if (item.tag == TAG_SENTENCE) {
+            val before = ic.getTextBeforeCursor(500, 0)?.toString().orEmpty()
+            val trailing = before.length - before.trimEnd().length
+            if (before.trimEnd().endsWith(t.source)) ic.deleteSurroundingText(t.source.length + trailing, 0)
+            ic.commitText(item.value + if (trailing > 0) " " else "", 1)
+        } else {
+            ic.commitText(item.value, 1) // replaces the selection
+        }
+        ic.endBatchEdit()
+        textTranslation = null
+        afterCommit()
     }
 
     private fun translationItems(typed: String, r: SuggestionEngine.Result): List<Item> {
@@ -783,6 +895,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     private fun toolbar(): List<Item> = listOf(
         Item("😊", ItemKind.ACTION, ACTION_EMOJI),
         Item("📋", ItemKind.ACTION, ACTION_CLIPBOARD),
+        Item("📜", ItemKind.ACTION, ACTION_HISTORY),
+        Item("⇄", ItemKind.ACTION, ACTION_TRANSLATE),
         Item(if (isAmharic) "ሀ ⇄ A" else "A ⇄ ሀ", ItemKind.ACTION, ACTION_LANGUAGE),
         Item("⚙", ItemKind.ACTION, ACTION_SETTINGS),
         Item("⌄", ItemKind.ACTION, ACTION_HIDE),
@@ -819,7 +933,14 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
 
     private fun pickSuggestion(item: Item, ic: InputConnection) {
         val autoSpace = settings.autoSpace && fieldKind == FieldKind.TEXT
+        if (item.tag == TAG_SELECTION || item.tag == TAG_SENTENCE) { applyTextTranslation(item, ic); return }
         when (item.tag) {
+            TAG_HISTORY -> {
+                // the continuation replaces the partly typed word and adds the following words
+                composer.reset()
+                vowelRowBase = -1
+                ic.commitText(item.value + if (autoSpace) " " else "", 1)
+            }
             TAG_EMOJI -> {
                 val hadWord = !composer.isEmpty
                 commitComposing(learn = true)
@@ -867,9 +988,16 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         when (action) {
             ACTION_EMOJI -> setPage(Layouts.EMOJI)
             ACTION_CLIPBOARD -> { showingClipboard = true; updateSuggestions() }
+            ACTION_HISTORY -> openQuickSettings(QUICK_HISTORY)
+            ACTION_TRANSLATE -> translateCurrentSentence()
             ACTION_CLOSE_CLIPS -> { showingClipboard = false; updateSuggestions() }
             ACTION_LANGUAGE -> cycleLayout()
             ACTION_HIDE -> requestHideSelf(0)
+            ACTION_CLOSE_TRANSLATION -> { textTranslation = null; updateSuggestions() }
+            ACTION_COPY_TRANSLATION -> textTranslation?.let { t ->
+                clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("translation", t.result))
+                Toast.makeText(this, R.string.translation_copied, Toast.LENGTH_SHORT).show()
+            }
             ACTION_SETTINGS -> openQuickSettings(QUICK_MAIN)
         }
     }
@@ -884,6 +1012,18 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         commitComposing(learn = true)
         quickPage = page
         root.quickSettings.theme = KeyboardTheme.resolve(this, settings.theme, settings.customColors)
+        if (page == QUICK_HISTORY) {
+            val entries = LanguageModels.history.all().take(40)
+            val tiles = listOf(
+                QuickSettingsView.Tile(QUICK_BACK, "←", getString(R.string.qs_back)),
+                QuickSettingsView.Tile("history_toggle", "📜", getString(R.string.qs_history), if (settings.history) getString(R.string.qs_on) else getString(R.string.qs_off), settings.history),
+                QuickSettingsView.Tile("history_clear", "🗑", getString(R.string.qs_history_clear)),
+            ) + entries.mapIndexed { i, e -> QuickSettingsView.Tile("hist:$i", "", if (e.length > 60) e.take(59) + "…" else e) }
+            val title = if (entries.isEmpty()) getString(R.string.qs_history_empty) else getString(R.string.qs_history_title)
+            root.quickSettings.show(title, tiles, columns = if (entries.isEmpty()) 3 else 1)
+            root.setQuickSettingsShown(true)
+            return
+        }
         if (page == QUICK_THEMES) {
             val names = resources.getStringArray(R.array.theme_entries)
             val values = resources.getStringArray(R.array.theme_values)
@@ -935,6 +1075,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             QuickSettingsView.Tile("auto_space", "␣", getString(R.string.qs_auto_space), state(settings.autoSpace), settings.autoSpace),
             QuickSettingsView.Tile("double_space", "።", getString(R.string.qs_double_space), state(settings.doubleSpacePeriod), settings.doubleSpacePeriod),
             QuickSettingsView.Tile("learn", "🧠", getString(R.string.qs_learn), state(settings.learn), settings.learn),
+            QuickSettingsView.Tile(QUICK_HISTORY, "📜", getString(R.string.qs_history), state(settings.history), settings.history),
             QuickSettingsView.Tile("background", "🖼", getString(R.string.qs_background)),
             QuickSettingsView.Tile("all_settings", "⚙", getString(R.string.qs_all_settings)),
         )
@@ -946,6 +1087,20 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         when {
             id == QUICK_BACK -> { openQuickSettings(QUICK_MAIN); return }
             id == QUICK_THEMES -> { openQuickSettings(QUICK_THEMES); return }
+            id == QUICK_HISTORY -> { openQuickSettings(QUICK_HISTORY); return }
+            id == "history_toggle" -> toggle("history", settings.history)
+            id == "history_clear" -> {
+                LanguageModels.clearHistory(this)
+                Toast.makeText(this, R.string.history_cleared, Toast.LENGTH_SHORT).show()
+            }
+            id.startsWith("hist:") -> {
+                val text = LanguageModels.history.all().getOrNull(id.removePrefix("hist:").toInt()) ?: return
+                closeQuickSettings()
+                commitComposing(learn = false)
+                currentInputConnection?.commitText(text, 1)
+                afterCommit()
+                return
+            }
             id.startsWith("theme:") -> prefs.edit().putString("theme", id.removePrefix("theme:")).apply()
             id == "key_height" -> {
                 val values = resources.getStringArray(R.array.key_height_values)
@@ -1015,5 +1170,14 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         private const val QUICK_MAIN = "main"
         private const val QUICK_THEMES = "themes"
         private const val QUICK_BACK = "back"
+        private const val QUICK_HISTORY = "history"
+        private const val SENTENCE_ENDS = "።.!?፧\n"
+        private const val ACTION_HISTORY = "history"
+        private const val ACTION_TRANSLATE = "translate"
+        private const val ACTION_CLOSE_TRANSLATION = "close_translation"
+        private const val ACTION_COPY_TRANSLATION = "copy_translation"
+        private const val TAG_HISTORY = "history"
+        private const val TAG_SELECTION = "selection_translation"
+        private const val TAG_SENTENCE = "sentence_translation"
     }
 }

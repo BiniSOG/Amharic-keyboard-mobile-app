@@ -9,6 +9,7 @@ import com.binisog.amharickeyboard.core.Dictionary
 import com.binisog.amharickeyboard.core.Ethiopic
 import com.binisog.amharickeyboard.core.SuggestionEngine
 import com.binisog.amharickeyboard.core.Translator
+import com.binisog.amharickeyboard.core.TypingHistory
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -34,6 +35,9 @@ object LanguageModels {
         private set
     var english: SuggestionEngine? = null
         private set
+    /** Sentences the user typed (private, on-device), for sentence completion. */
+    val history = TypingHistory(maxEntries = 500)
+
     /** Offline English ↔ Amharic word translations for the suggestion strip. */
     var translator: Translator? = null
         private set
@@ -58,11 +62,13 @@ object LanguageModels {
             val t0 = System.nanoTime()
             val am = runCatching { build(app, "amharic", amharicFilter) }.onFailure { Log.e(TAG, "amharic load failed", it) }.getOrNull()
             val en = runCatching { build(app, "english", englishFilter) }.onFailure { Log.e(TAG, "english load failed", it) }.getOrNull()
+            val hist = if (unlocked) readHistory(app) else null
             val tr = runCatching { Translator().apply { app.assets.open("translations.tsv").use(::load) } }
                 .onFailure { Log.e(TAG, "translations load failed", it) }.getOrNull()
             Log.i(TAG, "dictionaries ready in ${(System.nanoTime() - t0) / 1_000_000} ms")
             main.post {
                 amharic = am; english = en; translator = tr
+                hist?.let(history::load)
                 userDataLoaded = unlocked
                 loading = false
                 val w = waiters.toList(); waiters.clear()
@@ -95,6 +101,21 @@ object LanguageModels {
     }
 
     private fun userFile(ctx: Context, name: String) = File(ctx.filesDir, "user_$name.tsv")
+    private fun historyFile(ctx: Context) = File(ctx.filesDir, "typing_history.txt")
+
+    private fun readHistory(ctx: Context): String? =
+        historyFile(ctx).takeIf { it.isFile }?.let { runCatching { it.readText(Charsets.UTF_8) }.getOrNull() }
+
+    /** Records a typed sentence and saves the history soon after. */
+    fun recordHistory(context: Context, sentence: String) {
+        if (!userDataLoaded) return
+        if (history.record(sentence)) noteLearned(context)
+    }
+
+    fun clearHistory(context: Context) {
+        history.clear()
+        save(context)
+    }
 
     /**
      * If the engines were loaded on the lock screen (before the first unlock), load the
@@ -108,7 +129,9 @@ object LanguageModels {
             val texts = listOf("amharic", "english").associateWith { name ->
                 userFile(app, name).takeIf { it.isFile }?.let { f -> runCatching { f.readText(Charsets.UTF_8) }.getOrNull() }
             }
+            val hist = readHistory(app)
             main.post {
+                hist?.let(history::load)
                 texts["amharic"]?.let { amharic?.dictionary?.readUserData(it); amharic?.cache?.clear() }
                 texts["english"]?.let { english?.dictionary?.readUserData(it); english?.cache?.clear() }
             }
@@ -130,7 +153,14 @@ object LanguageModels {
             amharic?.let { "amharic" to it.dictionary.userDataToString() },
             english?.let { "english" to it.dictionary.userDataToString() },
         )
+        val historyText = history.serialize()
         io.execute {
+            runCatching {
+                val f = historyFile(app)
+                val tmp = File(f.parentFile, f.name + ".tmp")
+                tmp.writeText(historyText, Charsets.UTF_8)
+                if (!tmp.renameTo(f)) { f.delete(); tmp.renameTo(f) }
+            }.onFailure { Log.w(TAG, "saving history failed", it) }
             for ((name, text) in snapshots) {
                 runCatching {
                     val f = userFile(app, name)

@@ -239,6 +239,13 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
             updateBackgroundState()
+            findPreference<Preference>("history_clear")?.setOnPreferenceClickListener {
+                LanguageModels.load(requireContext()) {
+                    LanguageModels.clearHistory(requireContext())
+                    toast(getString(R.string.history_cleared))
+                }
+                true
+            }
             findPreference<Preference>("clear_learned")?.apply {
                 updateLearnedSummary(this)
                 setOnPreferenceClickListener {
