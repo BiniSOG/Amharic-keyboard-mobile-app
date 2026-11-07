@@ -44,6 +44,22 @@ class InputViewTest {
     }
 
     @Test
+    fun keyboardSitsAtBottomWhenGivenATallWindow() {
+        val ime = Robolectric.buildService(AmharicIME::class.java).create().get()
+        val root = ime.onCreateInputView() as InputRootView
+        ime.onStartInputView(EditorInfo().apply { inputType = InputType.TYPE_CLASS_TEXT }, false)
+        root.measure(
+            View.MeasureSpec.makeMeasureSpec(screenW, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(screenH, View.MeasureSpec.EXACTLY),
+        )
+        root.layout(0, 0, root.measuredWidth, root.measuredHeight)
+        val keysHeight = root.strip.measuredHeight + root.keyboard.measuredHeight
+        assertEquals(screenH, root.measuredHeight)
+        // the keyboard is pinned to the bottom edge, the space above stays empty
+        assertEquals(screenH - keysHeight, root.keyboardTop)
+    }
+
+    @Test
     fun numberFieldShowsNumberPad() {
         val ime = Robolectric.buildService(AmharicIME::class.java).create().get()
         val root = ime.onCreateInputView() as InputRootView

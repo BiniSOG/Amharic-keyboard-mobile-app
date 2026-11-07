@@ -1,6 +1,8 @@
 package com.binisog.amharickeyboard.keyboard
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.Build
 import android.view.WindowInsets
 import android.view.View
@@ -39,7 +41,9 @@ class InputRootView(context: Context) : FrameLayout(context) {
         } else {
             @Suppress("DEPRECATION") insets.systemWindowInsetBottom
         }
-        if (bottom != bottomInset) { bottomInset = bottom; requestLayout() }
+        // A navigation bar is never taller than ~100dp; ignore nonsense values.
+        val clamped = bottom.coerceIn(0, (100 * resources.displayMetrics.density).toInt())
+        if (clamped != bottomInset) { bottomInset = clamped; requestLayout() }
         return insets
     }
 
@@ -54,16 +58,36 @@ class InputRootView(context: Context) : FrameLayout(context) {
         val w = column.measuredWidth
         val h = column.measuredHeight
         overlay.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY))
-        setMeasuredDimension(w, h + bottomInset)
+        // Normally we are exactly strip + keys (+ nav bar). If the window forces a taller,
+        // exact height on us, accept it: onLayout then pins the keyboard to the bottom.
+        val total = if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
+            maxOf(MeasureSpec.getSize(heightMeasureSpec), h + bottomInset)
+        } else {
+            h + bottomInset
+        }
+        setMeasuredDimension(w, total)
     }
+
+    /** Top of the visible keyboard (suggestion strip) inside this view. */
+    val keyboardTop: Int get() = column.top
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        column.layout(0, 0, column.measuredWidth, column.measuredHeight)
-        overlay.layout(0, 0, overlay.measuredWidth, overlay.measuredHeight)
+        // Always sit at the bottom, above the navigation bar; anything above stays transparent.
+        val colTop = (bottom - top - bottomInset - column.measuredHeight).coerceAtLeast(0)
+        column.layout(0, colTop, column.measuredWidth, colTop + column.measuredHeight)
+        overlay.layout(0, colTop, overlay.measuredWidth, colTop + overlay.measuredHeight)
     }
 
-    /** Colours the navigation-bar strip below the keys to match the keyboard. */
-    fun setKeyboardBackground(color: Int) = setBackgroundColor(color)
+    private val bgPaint = Paint()
+
+    init { setWillNotDraw(false) }
+
+    /** Background for the keyboard area and the navigation-bar strip below it (not above). */
+    fun setKeyboardBackground(color: Int) { bgPaint.color = color; invalidate() }
+
+    override fun onDraw(canvas: Canvas) {
+        if (bgPaint.color != 0) canvas.drawRect(0f, column.top.toFloat(), width.toFloat(), height.toFloat(), bgPaint)
+    }
 
     /** For tests and debugging: the views in drawing order. */
     internal val layers: List<View> get() = listOf(column, overlay)

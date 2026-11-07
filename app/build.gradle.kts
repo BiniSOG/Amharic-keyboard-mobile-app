@@ -13,8 +13,10 @@ android {
         applicationId = "com.binisog.amharickeyboard"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        // CI stamps each APK with its run number so installed builds are identifiable.
+        val build = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
+        versionCode = build
+        versionName = "1.0.$build"
     }
 
     buildTypes {

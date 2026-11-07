@@ -54,6 +54,9 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(pad, pad, pad, pad)
         }
         root.addView(appBar)
+        @Suppress("DEPRECATION")
+        val version = runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull()
+        appBar.text = getString(R.string.app_name) + (version?.let { "  ·  v$it" } ?: "")
         val header = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(pad, pad, pad, pad / 2)

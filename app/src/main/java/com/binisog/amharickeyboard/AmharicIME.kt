@@ -49,6 +49,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     private enum class InputKind { TEXT, NUMBER, PHONE, RAW }
 
     private lateinit var settings: Settings
+    private var inputRoot: InputRootView? = null
     private var keyboardView: KeyboardView? = null
     private var strip: SuggestionStripView? = null
     private var overlay: PopupOverlay? = null
@@ -113,6 +114,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val root = InputRootView(this)
         root.strip.listener = this
         root.keyboard.listener = this
+        inputRoot = root
         strip = root.strip; keyboardView = root.keyboard; overlay = root.overlay
         applySettings()
         // A recreated view (e.g. after rotation) must show the current page right away.
@@ -121,6 +123,24 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onEvaluateFullscreenMode(): Boolean = false
+
+    /**
+     * Tell the system exactly where the keyboard starts. The app above is resized to end
+     * there and keeps receiving touches, even if the keyboard window is taller than the keys.
+     */
+    override fun onComputeInsets(outInsets: Insets) {
+        super.onComputeInsets(outInsets)
+        val root = inputRoot ?: return
+        val decor = window?.window?.decorView ?: return
+        if (isFullscreenMode || !root.isShown) return
+        val loc = IntArray(2)
+        root.getLocationInWindow(loc)
+        val top = loc[1] + root.keyboardTop
+        outInsets.contentTopInsets = top
+        outInsets.visibleTopInsets = top
+        outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+        outInsets.touchableRegion.set(0, top, decor.width, decor.height)
+    }
 
     override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
         super.onStartInputView(info, restarting)
@@ -195,7 +215,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         }
         strip?.theme = theme
         overlay?.theme = theme
-        (keyboardView?.parent?.parent as? InputRootView)?.setKeyboardBackground(theme.background)
+        inputRoot?.setKeyboardBackground(theme.background)
     }
 
     private fun analyseEditor(info: EditorInfo) {
