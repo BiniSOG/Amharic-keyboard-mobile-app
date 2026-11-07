@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":core"))
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.activity:activity-ktx:1.9.3") // enableEdgeToEdge()
     implementation("androidx.preference:preference-ktx:1.2.1")
 
     testImplementation("junit:junit:4.13.2")
