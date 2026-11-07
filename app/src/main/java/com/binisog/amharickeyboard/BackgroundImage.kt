@@ -9,8 +9,6 @@ import android.net.Uri
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
 
 /**
  * The keyboard's optional background picture. It is decoded, rotated upright, scaled to at
@@ -28,37 +26,13 @@ object BackgroundImage {
 
     /** Imports an image picked from the gallery. */
     fun importFromUri(ctx: Context, uri: Uri) {
-        val bytes = ctx.contentResolver.openInputStream(uri)?.use { readLimited(it) } ?: throw IOException("Cannot open image")
+        val bytes = ctx.contentResolver.openInputStream(uri)?.use { Downloads.readLimited(it, MAX_BYTES) } ?: throw IOException("Cannot open image")
         save(ctx, bytes)
     }
 
     /** Downloads an image from an http(s) link. */
     fun importFromUrl(ctx: Context, link: String) {
-        val url = java.net.URI(link.trim()).toURL()
-        if (url.protocol != "https" && url.protocol != "http") throw IOException("Only http(s) links are supported")
-        var conn = url.openConnection() as HttpURLConnection
-        var redirects = 0
-        while (true) {
-            conn.connectTimeout = 15_000
-            conn.readTimeout = 20_000
-            conn.instanceFollowRedirects = true
-            conn.setRequestProperty("Accept", "image/*")
-            val code = conn.responseCode
-            if (code in 300..399 && redirects < 5) { // e.g. http → https redirects are not followed automatically
-                val next = conn.getHeaderField("Location") ?: break
-                val target = conn.url.toURI().resolve(next).toURL()
-                conn.disconnect()
-                if (target.protocol != "https" && target.protocol != "http") throw IOException("Unsupported redirect")
-                conn = target.openConnection() as HttpURLConnection
-                redirects++
-                continue
-            }
-            if (code !in 200..299) throw IOException("Server answered $code")
-            break
-        }
-        val bytes = conn.inputStream.use { readLimited(it) }
-        conn.disconnect()
-        save(ctx, bytes)
+        save(ctx, Downloads.fetch(link, MAX_BYTES, accept = "image/*").bytes)
     }
 
     fun remove(ctx: Context) { file(ctx).delete() }
@@ -68,18 +42,6 @@ object BackgroundImage {
         val f = file(ctx)
         if (!f.isFile) return null
         return runCatching { BitmapFactory.decodeFile(f.path) }.getOrNull()
-    }
-
-    private fun readLimited(input: InputStream): ByteArray {
-        val out = java.io.ByteArrayOutputStream()
-        val buf = ByteArray(64 * 1024)
-        while (true) {
-            val n = input.read(buf)
-            if (n < 0) break
-            out.write(buf, 0, n)
-            if (out.size() > MAX_BYTES) throw IOException("Image is larger than 25 MB")
-        }
-        return out.toByteArray()
     }
 
     private fun save(ctx: Context, bytes: ByteArray) {

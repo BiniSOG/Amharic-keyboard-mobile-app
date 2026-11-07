@@ -84,6 +84,32 @@
     <string name="pref_history_summary">Remember sentences you type (on this device only) and suggest how to finish them. Never in password or incognito fields.</string>
     <string name="pref_history_clear">Clear typing history</string>
 
+    <string name="cat_emoticons">Emoji &amp; emoticons</string>
+    <string name="pref_emoticons_add">Add emoticons from a link</string>
+    <string name="pref_emoticons_add_summary">A picture (PNG, JPEG, GIF, WebP) becomes a sticker; a text file adds one emoticon per line. They appear under ⭐ in the emoji panel.</string>
+    <string name="pref_emoticons_url_hint">https://example.com/sticker.png</string>
+    <string name="pref_emoticons_clear">Remove downloaded emoticons</string>
+    <string name="emoticons_loading">Downloading…</string>
+    <string name="emoticons_added_sticker">Sticker added. Find it under ⭐ in the emoji panel</string>
+    <string name="emoticons_added_text">%1$d emoticons added under ⭐ in the emoji panel</string>
+    <string name="emoticons_failed">Could not add that link: %1$s</string>
+    <string name="emoticons_cleared">Downloaded emoticons removed</string>
+    <string name="sticker_not_supported">This app doesn’t accept stickers</string>
+    <string name="sticker_removed">Sticker removed</string>
+
+    <string name="cat_about">About</string>
+    <string name="about_title">About Amharic Keyboard</string>
+    <string name="about_developer">Developed by Binyam Bayu</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_tagline">A fast, private Amharic and English keyboard with Ge’ez typing, word suggestions, translation and more.</string>
+    <string name="about_features_title">Features</string>
+    <string name="about_features">• Phonetic typing (selam → ሰላም) and a Fidel grid layout\n• Word suggestions, next-word prediction and typo correction\n• Offline English ↔ Amharic translation with grammar rules\n• Typing history and sentence completion\n• Emoji, text emoticons and stickers\n• Themes, background pictures and quick settings\n• Ge’ez numerals and Ethiopic punctuation</string>
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_privacy">Everything you type stays on your phone. The keyboard has no accounts, no analytics and no ads. Learned words and typing history are stored only on this device and are never recorded in password or incognito fields. You can clear them at any time in Settings. The internet is used only when you choose to download a background picture or emoticons from a link.</string>
+    <string name="about_credits_title">Credits &amp; licences</string>
+    <string name="about_credits">English word frequencies: wordfreq by Robyn Speer (CC BY-SA 4.0).\nAndroid Jetpack (AndroidX) libraries: Apache License 2.0.\nKotlin: Apache License 2.0.</string>
+    <string name="about_copyright">© 2026 Binyam Bayu. All rights reserved.</string>
+
     <string name="cat_custom_theme">Custom theme colours</string>
     <string name="pref_custom_bg">Background</string>
     <string name="pref_custom_key">Keys</string>

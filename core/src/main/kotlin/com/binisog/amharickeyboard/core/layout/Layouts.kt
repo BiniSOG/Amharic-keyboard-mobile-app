@@ -32,11 +32,9 @@ object Code {
     const val ENTER = -4
     const val DELETE = -5
     const val LANGUAGE = -6
-    const val EMOJI = -7
     const val SYMBOLS_2 = -8
     const val GEEZ_NUMBERS = -9
     const val SPACE = -10
-    const val SPACER = -11
 }
 
 /** One keyboard page. [columns] is the width (in key units) all rows are laid out against. */
@@ -67,7 +65,6 @@ object Layouts {
     const val SYMBOLS = "symbols"
     const val SYMBOLS_2 = "symbols2"
     const val GEEZ_NUMBERS = "geez_numbers"
-    const val EMOJI = "emoji"
     const val NUMBER_PAD = "number_pad"
     const val PHONE_PAD = "phone_pad"
 
@@ -87,7 +84,6 @@ object Layouts {
         SYMBOLS -> symbols(amharic = true)
         SYMBOLS_2 -> symbols2()
         GEEZ_NUMBERS -> geezNumbers()
-        EMOJI -> emoji()
         NUMBER_PAD -> numberPad()
         PHONE_PAD -> phonePad()
         else -> phonetic(opt)
@@ -271,18 +267,6 @@ object Layouts {
         )
     }
 
-    val EMOJI_LIST: List<String> = (
-        "😀 😂 🤣 😊 😍 🥰 😘 😎 🤔 😢 😭 😡 😴 🥳 😇 🙄 " +
-            "👍 👎 👏 🙏 💪 👋 🤝 ✌️ 👌 🤲 ❤️ 💚 💛 🧡 💔 💯 " +
-            "🔥 ✨ 🎉 🎂 🎁 🌹 🌼 ☀️ 🌧️ ⭐ ☕ 🫓 🍞 🍽️ ⚽ 🎵 " +
-            "📱 💻 📚 ✏️ 🏠 🚗 ✈️ ⏰ 💰 🇪🇹 ✅ ❌ ❗ ❓ 👶 🐕"
-        ).split(' ')
-
-    private fun emoji(): KeyboardLayout {
-        val rows = EMOJI_LIST.chunked(8).map { chunk -> chunk.map { Key(it) } }.toMutableList()
-        rows.add(listOf(Key("ABC", code = Code.ALPHA, width = 2f), Key(" ", code = Code.SPACE, width = 4f), Key("⌫", code = Code.DELETE, width = 2f)))
-        return KeyboardLayout(EMOJI, rows)
-    }
 
     private fun numberPad(): KeyboardLayout = KeyboardLayout(
         NUMBER_PAD,

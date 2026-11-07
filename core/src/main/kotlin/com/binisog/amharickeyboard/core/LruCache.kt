@@ -58,8 +58,6 @@ class LruCache<K : Any, V : Any>(val maxSize: Int) {
 
     val size: Int @Synchronized get() = map.size
 
-    val hitRate: Double
-        @Synchronized get() = if (hits + misses == 0L) 0.0 else hits.toDouble() / (hits + misses)
 
     override fun toString(): String = "LruCache(size=$size/$maxSize, hits=$hits, misses=$misses, evictions=$evictions)"
 }

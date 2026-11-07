@@ -29,9 +29,7 @@ class SuggestionEngine(
         val typedIsWord: Boolean,
         /** Best suggestions, never containing [typed] itself. */
         val suggestions: List<Suggestion>,
-    ) {
-        companion object { val EMPTY = Result("", false, emptyList()) }
-    }
+    )
 
     data class CacheKey(val prev: String?, val typed: String, val open: Boolean, val limit: Int)
 
@@ -150,7 +148,7 @@ class SuggestionEngine(
         if (!learnFilter(w)) return false
         val p = prev?.takeIf { learnFilter(it) }
         dictionary.learn(p, w)
-        invalidateFor(p, w)
+        cache.clear()
         return true
     }
 
@@ -164,9 +162,6 @@ class SuggestionEngine(
         dictionary.clearUserData()
         cache.clear()
     }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun invalidateFor(prev: String?, word: String) = cache.clear()
 
     companion object {
         const val MAX_WORD = 48

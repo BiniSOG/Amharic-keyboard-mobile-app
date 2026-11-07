@@ -29,12 +29,15 @@ class InputRootView(context: Context) : FrameLayout(context) {
     val keyboard = KeyboardView(context).also { it.overlay = overlay }
     /** In-keyboard quick settings, shown in place of the keys. */
     val quickSettings = QuickSettingsView(context).apply { visibility = GONE }
+    /** Emoji, emoticons and stickers, shown in place of the keys. */
+    val emojiPanel = EmojiPanelView(context).apply { visibility = GONE }
     private val column = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
 
     init {
         column.addView(strip, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         column.addView(keyboard, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         column.addView(quickSettings, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
+        column.addView(emojiPanel, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
         addView(column, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(overlay, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
@@ -75,18 +78,25 @@ class InputRootView(context: Context) : FrameLayout(context) {
         setMeasuredDimension(w, total)
     }
 
-    val isQuickSettingsShown: Boolean get() = quickSettings.visibility == VISIBLE
+    /** What fills the space under the suggestion strip. */
+    enum class Panel { KEYS, QUICK_SETTINGS, EMOJI }
 
-    /** Swaps the keys for the quick-settings panel (same height, so nothing jumps). */
-    fun setQuickSettingsShown(show: Boolean) {
-        if (show) {
-            quickSettings.layoutParams = (quickSettings.layoutParams as LinearLayout.LayoutParams).apply {
-                height = keyboard.preferredHeight()
-            }
+    var panel: Panel = Panel.KEYS
+        private set
+
+    val isQuickSettingsShown: Boolean get() = panel == Panel.QUICK_SETTINGS
+
+    /** Swaps the keys for another panel of the same height, so nothing jumps. */
+    fun showPanel(p: Panel) {
+        val h = keyboard.preferredHeight()
+        for (v in listOf(quickSettings, emojiPanel)) {
+            v.layoutParams = (v.layoutParams as LinearLayout.LayoutParams).apply { height = h }
         }
-        quickSettings.visibility = if (show) VISIBLE else GONE
-        keyboard.visibility = if (show) GONE else VISIBLE
-        if (show) keyboard.cancelTouch()
+        quickSettings.visibility = if (p == Panel.QUICK_SETTINGS) VISIBLE else GONE
+        emojiPanel.visibility = if (p == Panel.EMOJI) VISIBLE else GONE
+        keyboard.visibility = if (p == Panel.KEYS) VISIBLE else GONE
+        if (p != Panel.KEYS) keyboard.cancelTouch()
+        panel = p
     }
 
     /** Top of the visible keyboard (suggestion strip) inside this view. */
@@ -119,8 +129,6 @@ class InputRootView(context: Context) : FrameLayout(context) {
         invalidate()
     }
 
-    val hasBackgroundImage: Boolean get() = image != null
-
     override fun onDraw(canvas: Canvas) {
         val top = column.top.toFloat()
         if (bgPaint.color != 0) canvas.drawRect(0f, top, width.toFloat(), height.toFloat(), bgPaint)
@@ -142,7 +150,4 @@ class InputRootView(context: Context) : FrameLayout(context) {
         canvas.drawBitmap(img, src, dst, imagePaint)
         canvas.drawRect(dst, dimPaint)
     }
-
-    /** For tests and debugging: the views in drawing order. */
-    internal val layers: List<View> get() = listOf(column, overlay)
 }

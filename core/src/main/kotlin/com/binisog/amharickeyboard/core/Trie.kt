@@ -121,9 +121,7 @@ class Trie {
         internal fun rank(): Long = if (!isActive()) 0 else rankOf(freq, userFreq)
     }
 
-    data class Entry(val word: String, val freq: Int, val userFreq: Int, val weight: Float) {
-        val rank: Long get() = rankOf(freq, userFreq)
-    }
+    data class Entry(val word: String, val freq: Int, val userFreq: Int, val weight: Float)
 
     private val root = Node()
     var wordCount: Int = 0
@@ -174,8 +172,6 @@ class Trie {
         if (!n.isActive()) return null
         return Entry(word, n.freq, n.userFreq, 1f)
     }
-
-    fun isBlocked(word: String): Boolean = find(word)?.blocked == true
 
     operator fun contains(word: String): Boolean {
         return find(word)?.isActive() == true

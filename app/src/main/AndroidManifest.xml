@@ -27,6 +27,22 @@
         </service>
 
         <activity
+            android:name=".AboutActivity"
+            android:exported="false"
+            android:label="@string/about_title" />
+
+        <!-- Shares downloaded stickers with the app being typed into (read-only, per sticker). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.stickers"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/sticker_paths" />
+        </provider>
+
+        <activity
             android:name=".SettingsActivity"
             android:exported="true"
             android:label="@string/app_name"

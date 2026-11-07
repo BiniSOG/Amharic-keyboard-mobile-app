@@ -16,9 +16,8 @@ package com.binisog.amharickeyboard.core
 object Ethiopic {
 
     /** Vowel orders in the order they are shown in the vowel strip / popups. */
-    enum class Order(val offset: Int, val latin: String) {
-        FIRST(0, "e"), SECOND(1, "u"), THIRD(2, "i"), FOURTH(3, "a"),
-        FIFTH(4, "E"), SIXTH(5, ""), SEVENTH(6, "o")
+    enum class Order(val offset: Int) {
+        FIRST(0), SECOND(1), THIRD(2), FOURTH(3), FIFTH(4), SIXTH(5), SEVENTH(6)
     }
 
     /**
@@ -79,9 +78,6 @@ object Ethiopic {
         Row("f", emptyList(), 0x1348, 0x134F, "ፈ"),
         Row("p", emptyList(), 0x1350, 0x1357, "ፐ"),
     )
-
-    /** The vowel-carrier row (አ ኡ ኢ ኣ ኤ እ ኦ). */
-    val vowelRow: Row = rows.first { it.base == 0x12A0 }
 
     private val rowByCodePoint: Map<Int, Row> = buildMap {
         for (row in rows) {

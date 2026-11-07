@@ -11,7 +11,7 @@ import kotlin.test.assertTrue
 class LayoutsTest {
     private val all = listOf(
         Layouts.PHONETIC, Layouts.FIDEL, Layouts.ENGLISH, Layouts.SYMBOLS, Layouts.SYMBOLS_2,
-        Layouts.GEEZ_NUMBERS, Layouts.EMOJI, Layouts.NUMBER_PAD, Layouts.PHONE_PAD,
+        Layouts.GEEZ_NUMBERS, Layouts.NUMBER_PAD, Layouts.PHONE_PAD,
     )
 
     @Test fun everyPageHasDeleteAndNoEmptyRows() {

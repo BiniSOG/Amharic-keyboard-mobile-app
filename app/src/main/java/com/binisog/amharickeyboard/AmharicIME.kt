@@ -17,6 +17,11 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import androidx.core.view.inputmethod.EditorInfoCompat
+import androidx.core.view.inputmethod.InputConnectionCompat
+import androidx.core.view.inputmethod.InputContentInfoCompat
+import com.binisog.amharickeyboard.core.EmojiData
 import com.binisog.amharickeyboard.core.Ethiopic
 import com.binisog.amharickeyboard.core.PhoneticComposer
 import com.binisog.amharickeyboard.core.SuggestionEngine
@@ -28,6 +33,7 @@ import com.binisog.amharickeyboard.core.layout.KeyboardLayout
 import com.binisog.amharickeyboard.core.layout.LayoutOptions
 import com.binisog.amharickeyboard.core.layout.Layouts
 import com.binisog.amharickeyboard.engine.LanguageModels
+import com.binisog.amharickeyboard.keyboard.EmojiPanelView
 import com.binisog.amharickeyboard.keyboard.InputRootView
 import com.binisog.amharickeyboard.keyboard.KeyboardTheme
 import com.binisog.amharickeyboard.keyboard.KeyboardView
@@ -46,7 +52,7 @@ import java.text.BreakIterator
  * in [composer]; it is committed on space/punctuation/suggestion pick, at which point the
  * engines learn it. Suggestions come from [LanguageModels] and are LRU-cached per query.
  */
-class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripView.Listener {
+class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripView.Listener, EmojiPanelView.Listener {
 
     private enum class InputKind { TEXT, NUMBER, PHONE, RAW }
 
@@ -118,6 +124,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         root.keyboard.listener = this
         root.quickSettings.onTile = ::onQuickTile
         root.quickSettings.onClose = { closeQuickSettings() }
+        root.emojiPanel.listener = this
         inputRoot = root
         strip = root.strip; keyboardView = root.keyboard; overlay = root.overlay
         applySettings()
@@ -375,7 +382,6 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             Code.SYMBOLS_2 -> setPage(Layouts.SYMBOLS_2)
             Code.GEEZ_NUMBERS -> setPage(Layouts.GEEZ_NUMBERS)
             Code.ALPHA -> setPage(if (isPassword) Layouts.ENGLISH else alphaLayout)
-            Code.EMOJI -> setPage(Layouts.EMOJI)
             Code.LANGUAGE -> cycleLayout()
         }
     }
@@ -529,7 +535,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             lastSpaceTime = now
             spaceFollowsWord = true
         } else if (settings.doubleSpacePeriod && spaceFollowsWord && now - lastSpaceTime < 600 &&
-            ic.getTextBeforeCursor(1, 0)?.toString() == " " && page != Layouts.EMOJI
+            ic.getTextBeforeCursor(1, 0)?.toString() == " "
         ) {
             ic.deleteSurroundingText(1, 0)
             ic.commitText(if (isAmharic) "${Ethiopic.FULL_STOP} " else ". ", 1)
@@ -986,7 +992,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
 
     private fun onToolbar(action: String) {
         when (action) {
-            ACTION_EMOJI -> setPage(Layouts.EMOJI)
+            ACTION_EMOJI -> openEmojiPanel()
             ACTION_CLIPBOARD -> { showingClipboard = true; updateSuggestions() }
             ACTION_HISTORY -> openQuickSettings(QUICK_HISTORY)
             ACTION_TRANSLATE -> translateCurrentSentence()
@@ -1000,6 +1006,71 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             }
             ACTION_SETTINGS -> openQuickSettings(QUICK_MAIN)
         }
+    }
+
+    // ================================================================ emoji panel
+
+    private fun openEmojiPanel(select: String? = null) {
+        val root = inputRoot ?: return
+        commitComposing(learn = true)
+        root.emojiPanel.theme = KeyboardTheme.resolve(this, settings.theme, settings.customColors)
+        val recent = recentEmoji()
+        val customTexts = CustomEmoticons.texts(this)
+        val stickers = CustomEmoticons.stickers(this)
+        val tabs = buildList {
+            add(EmojiPanelView.Tab(EmojiPanelView.RECENT, "🕘", recent))
+            EmojiData.CATEGORIES.forEach { add(EmojiPanelView.Tab(it.id, it.icon, it.items)) }
+            if (customTexts.isNotEmpty() || stickers.isNotEmpty()) add(EmojiPanelView.Tab(EmojiPanelView.MY_PACKS, "⭐", customTexts, stickers))
+        }
+        root.emojiPanel.show(tabs, select ?: if (recent.isEmpty()) EmojiData.SMILEYS.id else EmojiPanelView.RECENT)
+        root.showPanel(InputRootView.Panel.EMOJI)
+    }
+
+    private fun recentEmoji(): List<String> =
+        Settings.prefs(this).getString(KEY_RECENT_EMOJI, null)?.split(RECENT_SEPARATOR)?.filter { it.isNotEmpty() } ?: emptyList()
+
+    override fun onEmoji(text: String) {
+        val ic = currentInputConnection ?: return
+        ic.commitText(text, 1)
+        val recent = EmojiData.pushRecent(recentEmoji(), text)
+        Settings.prefs(this).edit().putString(KEY_RECENT_EMOJI, recent.joinToString(RECENT_SEPARATOR)).apply()
+        afterCommit()
+    }
+
+    override fun onSticker(file: java.io.File) {
+        val info = editorInfo ?: return
+        val ic = currentInputConnection ?: return
+        val mime = CustomEmoticons.mimeType(file)
+        val accepted = EditorInfoCompat.getContentMimeTypes(info)
+        if (accepted.none { ClipDescription.compareMimeTypes(mime, it) }) {
+            Toast.makeText(this, R.string.sticker_not_supported, Toast.LENGTH_SHORT).show()
+            return
+        }
+        val uri = FileProvider.getUriForFile(this, "$packageName.stickers", file)
+        val content = InputContentInfoCompat(uri, ClipDescription(file.name, arrayOf(mime)), null)
+        val flags = if (Build.VERSION.SDK_INT >= 25) {
+            InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION
+        } else {
+            grantUriPermission(info.packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            0
+        }
+        InputConnectionCompat.commitContent(ic, info, content, flags, null)
+    }
+
+    override fun onStickerLongPress(file: java.io.File) {
+        CustomEmoticons.removeSticker(file)
+        Toast.makeText(this, R.string.sticker_removed, Toast.LENGTH_SHORT).show()
+        openEmojiPanel(EmojiPanelView.MY_PACKS)
+    }
+
+    override fun onEmojiDelete() = handleDelete(repeat = 0)
+
+    override fun onEmojiSpace() = handleSpace()
+
+    override fun onEmojiClose() {
+        inputRoot?.showPanel(InputRootView.Panel.KEYS)
+        renderKeyboard()
+        updateSuggestions()
     }
 
     // ================================================================ quick settings
@@ -1021,7 +1092,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             ) + entries.mapIndexed { i, e -> QuickSettingsView.Tile("hist:$i", "", if (e.length > 60) e.take(59) + "…" else e) }
             val title = if (entries.isEmpty()) getString(R.string.qs_history_empty) else getString(R.string.qs_history_title)
             root.quickSettings.show(title, tiles, columns = if (entries.isEmpty()) 3 else 1)
-            root.setQuickSettingsShown(true)
+            root.showPanel(InputRootView.Panel.QUICK_SETTINGS)
             return
         }
         if (page == QUICK_THEMES) {
@@ -1038,12 +1109,12 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         } else {
             root.quickSettings.show(getString(R.string.qs_title), mainQuickTiles())
         }
-        root.setQuickSettingsShown(true)
+        root.showPanel(InputRootView.Panel.QUICK_SETTINGS)
     }
 
     private fun closeQuickSettings() {
         quickPage = null
-        inputRoot?.setQuickSettingsShown(false)
+        inputRoot?.showPanel(InputRootView.Panel.KEYS)
         renderKeyboard()
         updateSuggestions()
     }
@@ -1078,6 +1149,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             QuickSettingsView.Tile(QUICK_HISTORY, "📜", getString(R.string.qs_history), state(settings.history), settings.history),
             QuickSettingsView.Tile("background", "🖼", getString(R.string.qs_background)),
             QuickSettingsView.Tile("all_settings", "⚙", getString(R.string.qs_all_settings)),
+            QuickSettingsView.Tile("about", "ℹ", getString(R.string.cat_about)),
         )
     }
 
@@ -1118,9 +1190,10 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             id == "auto_space" -> toggle("auto_space", settings.autoSpace)
             id == "double_space" -> toggle("double_space", settings.doubleSpacePeriod)
             id == "learn" -> toggle("learn", settings.learn)
-            id == "background" || id == "all_settings" -> {
+            id == "background" || id == "all_settings" || id == "about" -> {
                 closeQuickSettings()
-                startActivity(Intent(this, SettingsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                val target = if (id == "about") AboutActivity::class.java else SettingsActivity::class.java
+                startActivity(Intent(this, target).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 return
             }
         }
@@ -1171,6 +1244,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         private const val QUICK_THEMES = "themes"
         private const val QUICK_BACK = "back"
         private const val QUICK_HISTORY = "history"
+        private const val KEY_RECENT_EMOJI = "recent_emoji"
+        private const val RECENT_SEPARATOR = "\u001F"
         private const val SENTENCE_ENDS = "።.!?፧\n"
         private const val ACTION_HISTORY = "history"
         private const val ACTION_TRANSLATE = "translate"

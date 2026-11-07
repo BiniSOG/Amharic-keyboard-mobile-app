@@ -52,7 +52,6 @@ class Dictionary {
         for (m in bigrams.values) m[word]?.let { it.user = 0 }
     }
 
-    fun unforget(word: String) = trie.block(word, false)
 
     /** Drops everything the user has taught (shipped data stays). */
     fun clearUserData() {

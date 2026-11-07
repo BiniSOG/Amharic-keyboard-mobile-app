@@ -115,19 +115,16 @@ class TransliterationTable private constructor(private val map: Map<String, Stri
  */
 class PhoneticComposer(private val table: TransliterationTable = TransliterationTable.DEFAULT) {
 
-    private data class Snapshot(val text: String, val syllable: String, val syllableOut: Int, val latin: String)
+    private data class Snapshot(val text: String, val syllable: String, val syllableOut: Int)
 
     private val history = ArrayDeque<Snapshot>()
     private val sb = StringBuilder()
     private var syllable = ""
     private var syllableOut = 0
-    private val latinSb = StringBuilder()
 
     /** Current composed word in Fidel. */
     val text: String get() = sb.toString()
 
-    /** Raw latin keystrokes that produced [text] (best effort; used as an "original" fallback). */
-    val latin: String get() = latinSb.toString()
 
     val isEmpty: Boolean get() = sb.isEmpty()
 
@@ -135,9 +132,8 @@ class PhoneticComposer(private val table: TransliterationTable = Transliteration
     val hasOpenSyllable: Boolean get() = syllable.isNotEmpty()
 
     fun type(c: Char) {
-        history.addLast(Snapshot(sb.toString(), syllable, syllableOut, latinSb.toString()))
+        history.addLast(Snapshot(sb.toString(), syllable, syllableOut))
         if (history.size > MAX_HISTORY) history.removeFirst()
-        latinSb.append(c)
 
         if (c == '\'') {
             if (syllable.isNotEmpty()) {
@@ -177,19 +173,17 @@ class PhoneticComposer(private val table: TransliterationTable = Transliteration
             val s = history.removeLast()
             sb.setLength(0); sb.append(s.text)
             syllable = s.syllable; syllableOut = s.syllableOut
-            latinSb.setLength(0); latinSb.append(s.latin)
             return true
         }
         if (sb.isEmpty()) return false
         sb.setLength(sb.length - 1)
         syllable = ""; syllableOut = 0
-        if (latinSb.isNotEmpty()) latinSb.setLength(latinSb.length - 1)
         return true
     }
 
     /** Replaces the last character (used by the Fidel layout's vowel strip). */
     fun replaceLast(c: Char) {
-        history.addLast(Snapshot(sb.toString(), syllable, syllableOut, latinSb.toString()))
+        history.addLast(Snapshot(sb.toString(), syllable, syllableOut))
         if (sb.isNotEmpty()) sb.setLength(sb.length - 1)
         sb.append(c)
         syllable = ""; syllableOut = 0
@@ -197,9 +191,8 @@ class PhoneticComposer(private val table: TransliterationTable = Transliteration
 
     /** Appends a literal character (Fidel layout keys, numbers...). */
     fun appendLiteral(s: String) {
-        history.addLast(Snapshot(sb.toString(), syllable, syllableOut, latinSb.toString()))
+        history.addLast(Snapshot(sb.toString(), syllable, syllableOut))
         sb.append(s)
-        latinSb.append(s)
         syllable = ""; syllableOut = 0
     }
 
@@ -210,7 +203,6 @@ class PhoneticComposer(private val table: TransliterationTable = Transliteration
     fun setWord(word: String) {
         reset()
         sb.append(word)
-        latinSb.append(word)
         val last = word.lastOrNull() ?: return
         val latin = table.reverse[last] ?: return
         if (latin.isNotEmpty() && latin.all { it.isLetter() || it == '`' }) {
@@ -222,7 +214,6 @@ class PhoneticComposer(private val table: TransliterationTable = Transliteration
     fun reset() {
         history.clear()
         sb.setLength(0)
-        latinSb.setLength(0)
         syllable = ""; syllableOut = 0
     }
 

@@ -1,5 +1,7 @@
 # Amharic Keyboard · አማርኛ ኪቦርድ
 
+**Developed by Binyam Bayu.**
+
 An Android keyboard (IME) for Amharic with phonetic typing, a Fidel grid layout, word
 completion, next-word prediction, on-device learning and caching.
 
@@ -45,6 +47,13 @@ completion, next-word prediction, on-device learning and caching.
 - **Binary dictionary cache.** The shipped TSV word lists are parsed once per app version and stored in a compact binary file, so later starts skip text parsing.
 - **Fast lookups.** The frequency trie uses sorted child arrays and tracks the highest rank in each subtree. Top-K completion is a best-first search that skips branches that can't win.
 - **Background work.** Dictionaries load off the UI thread, and the personal dictionary is written in the background with atomic file replacement.
+
+**Emoji, emoticons and stickers**
+- An emoji panel with tabs: 🕘 Recent, Smileys, People, Hearts, Animals & nature, Food & drink, Activities, Travel, Objects, Symbols, Flags (Ethiopia and Africa first), and text emoticons such as ¯\\_(ツ)_/¯.
+- **Emoticons from the internet.** In Settings, choose *Add emoticons from a link*:
+  - a picture (PNG, JPEG, GIF, WebP) becomes a **sticker**, sent as an image to apps that accept them (WhatsApp, Telegram, Messages and others);
+  - a text file adds one emoticon per line.
+  - They appear under ⭐ in the panel. Long-press a sticker to remove it.
 
 **Look and feel**
 - **Themes:** light, dark, follow-system, Ethiopian (green/gold/red), Midnight blue, Ocean, Rose, Purple, High contrast, and **Custom**, where you pick the background, key, letter and accent colours.
@@ -94,13 +103,28 @@ app/    Android IME
 tools/  curated word lists + build_dictionaries.py → app/src/main/assets/*.tsv
 ```
 
+## Privacy
+
+Everything stays on the device: there are no accounts, analytics or ads. Learned words and typing history are never recorded in password or incognito fields, and you can clear them in Settings. The internet is used only when you download a background picture or emoticons from a link. The About screen in the app explains this. For a Play Store listing, publish the same text at a public privacy-policy URL.
+
+## Release builds
+
+- CI builds a **shrunk, optimised, signed release APK** and a Play Store **bundle (.aab)**, and runs Android lint. To keep the APK small:
+  - R8 code and resource shrinking;
+  - only English and Amharic resources (about 80 unused library languages removed);
+  - no Kotlin or dependency metadata;
+  - logging stripped;
+  - vector-only icons.
+- Signing: see [`app/signing/README.md`](app/signing/README.md). Test builds use a committed test key, so every build installs over the previous one. For production, add your own upload key as GitHub secrets.
+
 ## Building
 
 Requirements: JDK 17+ and the Android SDK (compileSdk 35). The minimum Android version is 7.0 (API 24).
 
 ```bash
 ./gradlew :core:test          # engine unit tests (no Android SDK needed)
-./gradlew :app:assembleDebug  # APK in app/build/outputs/apk/debug/
+./gradlew :app:assembleRelease  # signed, shrunk APK in app/build/outputs/apk/release/
+./gradlew :app:bundleRelease    # Play Store bundle in app/build/outputs/bundle/release/
 ```
 
 The `:app` module is only included when an Android SDK is configured (`local.properties`

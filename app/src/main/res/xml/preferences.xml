@@ -83,7 +83,18 @@
         <Preference app:key="bg_remove" app:title="@string/pref_bg_remove" app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/cat_emoticons" app:iconSpaceReserved="false">
+        <Preference app:key="emoticons_add" app:title="@string/pref_emoticons_add"
+            app:summary="@string/pref_emoticons_add_summary" app:iconSpaceReserved="false" />
+        <Preference app:key="emoticons_clear" app:title="@string/pref_emoticons_clear" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/cat_dictionary" app:iconSpaceReserved="false">
         <Preference app:key="clear_learned" app:title="@string/pref_clear" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/cat_about" app:iconSpaceReserved="false">
+        <Preference app:key="about" app:title="@string/about_title"
+            app:summary="@string/about_developer" app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>

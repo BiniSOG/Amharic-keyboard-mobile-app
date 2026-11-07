@@ -134,7 +134,6 @@ class KeyboardView(context: Context) : View(context) {
         val pressed = downKey
         for (p in placed) {
             val k = p.key
-            if (k.code == Code.SPACER) continue
             val isPressed = pressed === p
             val bg = when {
                 isPressed -> theme.keyPressed
@@ -190,7 +189,6 @@ class KeyboardView(context: Context) : View(context) {
         var best: Placed? = null
         var bestDist = Float.MAX_VALUE
         for (p in placed) {
-            if (p.key.code == Code.SPACER) continue
             // expand hit area to cover gaps
             if (x >= p.rect.left - gap && x <= p.rect.right + gap && y >= p.rect.top - gap && y <= p.rect.bottom + gap) {
                 val d = abs(p.rect.centerX() - x) + abs(p.rect.centerY() - y)

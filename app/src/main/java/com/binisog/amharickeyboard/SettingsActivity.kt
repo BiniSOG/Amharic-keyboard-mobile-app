@@ -96,7 +96,8 @@ class SettingsActivity : AppCompatActivity() {
         root.addView(appBar)
         @Suppress("DEPRECATION")
         val version = runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull()
-        appBar.text = getString(R.string.app_name) + (version?.let { "  ·  v$it" } ?: "")
+        appBar.text = getString(R.string.app_name) + (version?.let { "  ·  v$it" } ?: "") + "   ⓘ"
+        appBar.setOnClickListener { startActivity(Intent(this, AboutActivity::class.java)) }
         val header = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(pad, pad, pad, pad / 2)
@@ -225,7 +226,12 @@ class SettingsActivity : AppCompatActivity() {
                 pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 true
             }
-            findPreference<Preference>("bg_url")?.setOnPreferenceClickListener { askForImageLink(); true }
+            findPreference<Preference>("bg_url")?.setOnPreferenceClickListener {
+                askForLink(R.string.pref_bg_url, R.string.pref_bg_url_hint) { link ->
+                    importBackground { c -> BackgroundImage.importFromUrl(c, link) }
+                }
+                true
+            }
             findPreference<Preference>("bg_remove")?.setOnPreferenceClickListener {
                 val app = requireContext().applicationContext
                 io.execute {
@@ -233,12 +239,46 @@ class SettingsActivity : AppCompatActivity() {
                     activity?.runOnUiThread {
                         bumpBackgroundStamp()
                         updateBackgroundState()
+
+            findPreference<Preference>("emoticons_add")?.setOnPreferenceClickListener {
+                askForLink(R.string.pref_emoticons_add, R.string.pref_emoticons_url_hint) { link -> importEmoticons(link) }
+                true
+            }
+            findPreference<Preference>("emoticons_clear")?.setOnPreferenceClickListener {
+                val app = requireContext().applicationContext
+                io.execute {
+                    CustomEmoticons.clear(app)
+                    activity?.runOnUiThread { if (isAdded) toast(getString(R.string.emoticons_cleared)) }
+                }
+                true
+            }
+            findPreference<Preference>("about")?.setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), AboutActivity::class.java))
+                true
+            }
                         toast(getString(R.string.bg_removed))
                     }
                 }
                 true
             }
             updateBackgroundState()
+
+            findPreference<Preference>("emoticons_add")?.setOnPreferenceClickListener {
+                askForLink(R.string.pref_emoticons_add, R.string.pref_emoticons_url_hint) { link -> importEmoticons(link) }
+                true
+            }
+            findPreference<Preference>("emoticons_clear")?.setOnPreferenceClickListener {
+                val app = requireContext().applicationContext
+                io.execute {
+                    CustomEmoticons.clear(app)
+                    activity?.runOnUiThread { if (isAdded) toast(getString(R.string.emoticons_cleared)) }
+                }
+                true
+            }
+            findPreference<Preference>("about")?.setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), AboutActivity::class.java))
+                true
+            }
             findPreference<Preference>("history_clear")?.setOnPreferenceClickListener {
                 LanguageModels.load(requireContext()) {
                     LanguageModels.clearHistory(requireContext())
@@ -265,21 +305,36 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun askForImageLink() {
+        private fun importEmoticons(link: String) {
+            val app = requireContext().applicationContext
+            toast(getString(R.string.emoticons_loading))
+            io.execute {
+                val result = runCatching { CustomEmoticons.importFromUrl(app, link) }
+                activity?.runOnUiThread {
+                    if (!isAdded) return@runOnUiThread
+                    result.onSuccess { (kind, n) ->
+                        toast(if (kind == CustomEmoticons.Added.STICKER) getString(R.string.emoticons_added_sticker) else getString(R.string.emoticons_added_text, n))
+                    }.onFailure { e -> toast(getString(R.string.emoticons_failed, e.message ?: e.javaClass.simpleName)) }
+                }
+            }
+        }
+
+        /** Asks for a web link in a dialog. */
+        private fun askForLink(title: Int, hint: Int, onLink: (String) -> Unit) {
             val ctx = requireContext()
             val pad = (20 * ctx.resources.displayMetrics.density).toInt()
             val field = EditText(ctx).apply {
-                hint = getString(R.string.pref_bg_url_hint)
+                setHint(hint)
                 inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
                 isSingleLine = true
             }
             val box = FrameLayout(ctx).apply { setPadding(pad, pad / 2, pad, 0); addView(field) }
             AlertDialog.Builder(ctx)
-                .setTitle(R.string.pref_bg_url)
+                .setTitle(title)
                 .setView(box)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     val link = field.text.toString().trim()
-                    if (link.isNotEmpty()) importBackground { c -> BackgroundImage.importFromUrl(c, link) }
+                    if (link.isNotEmpty()) onLink(link)
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
@@ -296,6 +351,23 @@ class SettingsActivity : AppCompatActivity() {
                     if (error == null) {
                         bumpBackgroundStamp()
                         updateBackgroundState()
+
+            findPreference<Preference>("emoticons_add")?.setOnPreferenceClickListener {
+                askForLink(R.string.pref_emoticons_add, R.string.pref_emoticons_url_hint) { link -> importEmoticons(link) }
+                true
+            }
+            findPreference<Preference>("emoticons_clear")?.setOnPreferenceClickListener {
+                val app = requireContext().applicationContext
+                io.execute {
+                    CustomEmoticons.clear(app)
+                    activity?.runOnUiThread { if (isAdded) toast(getString(R.string.emoticons_cleared)) }
+                }
+                true
+            }
+            findPreference<Preference>("about")?.setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), AboutActivity::class.java))
+                true
+            }
                         toast(getString(R.string.bg_done))
                     } else {
                         toast(getString(R.string.bg_failed, error.message ?: error.javaClass.simpleName))
