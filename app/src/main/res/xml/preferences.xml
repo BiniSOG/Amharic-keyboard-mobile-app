@@ -35,6 +35,9 @@
             app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="emoji_suggestions" app:title="@string/pref_emoji"
             app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="translate" app:title="@string/pref_translate"
+            app:summary="@string/pref_translate_summary"
+            app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="learn" app:title="@string/pref_learn"
             app:summary="@string/pref_learn_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
     </PreferenceCategory>

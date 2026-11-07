@@ -24,6 +24,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Homophone-tolerant matching.** ሀ/ሐ/ኀ, ሰ/ሠ, ጸ/ፀ and አ/ዐ are interchangeable, so `ሠላ` still finds ሰላም.
 - **Context.** Next-word predictions and ranking use bigrams: after **እንዴት** you get ነህ, ነሽ, ናችሁ, and after **አዲስ** you get አበባ.
 - **Typo corrections** (one deleted or swapped letter), plus emoji suggestions (ቡና → ☕).
+- **Translation suggestions (offline).** The strip shows the translation of the word you are typing, marked ⇄: `selam` → ⇄ hello, `water` → ⇄ ውሃ. Tap it to insert the translation. It handles common Amharic prefixes and suffixes (በኢትዮጵያ → in Ethiopia, መኪናዎች → cars) and simple English endings (cars → መኪና). It translates single words only, and the word list is in `tools/translations.tsv`.
 - **Learns as you type.** Words you commit and the word pairs they form get boosted. Long-press a suggestion to remove it. Learned data stays on the device and can be cleared in settings.
 - **Re-correction.** If you backspace into a word, it becomes editable again with suggestions.
 - **Clipboard history** in the toolbar. Clips marked sensitive, such as copied passwords, are never stored.

@@ -8,6 +8,7 @@ import com.binisog.amharickeyboard.DirectBoot
 import com.binisog.amharickeyboard.core.Dictionary
 import com.binisog.amharickeyboard.core.Ethiopic
 import com.binisog.amharickeyboard.core.SuggestionEngine
+import com.binisog.amharickeyboard.core.Translator
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -33,6 +34,9 @@ object LanguageModels {
         private set
     var english: SuggestionEngine? = null
         private set
+    /** Offline English ↔ Amharic word translations for the suggestion strip. */
+    var translator: Translator? = null
+        private set
 
     private var loading = false
     private val waiters = ArrayList<() -> Unit>()
@@ -54,9 +58,11 @@ object LanguageModels {
             val t0 = System.nanoTime()
             val am = runCatching { build(app, "amharic", amharicFilter) }.onFailure { Log.e(TAG, "amharic load failed", it) }.getOrNull()
             val en = runCatching { build(app, "english", englishFilter) }.onFailure { Log.e(TAG, "english load failed", it) }.getOrNull()
+            val tr = runCatching { Translator().apply { app.assets.open("translations.tsv").use(::load) } }
+                .onFailure { Log.e(TAG, "translations load failed", it) }.getOrNull()
             Log.i(TAG, "dictionaries ready in ${(System.nanoTime() - t0) / 1_000_000} ms")
             main.post {
-                amharic = am; english = en
+                amharic = am; english = en; translator = tr
                 userDataLoaded = unlocked
                 loading = false
                 val w = waiters.toList(); waiters.clear()

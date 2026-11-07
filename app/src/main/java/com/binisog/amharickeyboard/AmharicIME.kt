@@ -713,7 +713,31 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val items = ArrayList<Item>()
         if (!typed.all { it.isDigit() }) items.add(Item(typed, if (r.typedIsWord) ItemKind.SUGGESTION else ItemKind.TYPED, tag = TAG_TYPED))
         r.suggestions.forEachIndexed { i, sg -> items.add(toItem(sg, i == 0)) }
+        // Translation of the word being typed (or of the best completion), shown third so it
+        // is visible without scrolling: "selam" → ⇄ hello, "water" → ⇄ ውሃ.
+        translationItems(typed, r).takeIf { it.isNotEmpty() }?.let { tr ->
+            items.addAll(minOf(2, items.size), tr)
+        }
         s.show(items)
+    }
+
+    private fun translationItems(typed: String, r: SuggestionEngine.Result): List<Item> {
+        val translator = LanguageModels.translator ?: return emptyList()
+        if (!settings.translate || typed.all { it.isDigit() }) return emptyList()
+        val sources = buildList {
+            add(typed)
+            r.suggestions.firstOrNull { it.kind == SuggestionEngine.Kind.COMPLETION }?.let { add(it.word) }
+        }
+        for (src in sources) {
+            val out = translator.translate(src, limit = 2)
+            if (out.isEmpty()) continue
+            val capital = src.firstOrNull()?.isUpperCase() == true
+            return out.map { t ->
+                val v = if (capital && t.firstOrNull()?.isLowerCase() == true) t.replaceFirstChar { it.uppercaseChar() } else t
+                Item("⇄ $v", ItemKind.SUGGESTION, value = v, tag = TAG_TRANSLATION)
+            }
+        }
+        return emptyList()
     }
 
     private fun toItem(sg: SuggestionEngine.Suggestion, best: Boolean): Item {
@@ -841,6 +865,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         private const val TAG_TYPED = "typed"
         private const val TAG_EMOJI = "emoji"
         private const val TAG_NUMERAL = "numeral"
+        private const val TAG_TRANSLATION = "translation"
         private const val ACTION_EMOJI = "emoji"
         private const val ACTION_CLIPBOARD = "clipboard"
         private const val ACTION_CLOSE_CLIPS = "close_clips"

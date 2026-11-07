@@ -1,0 +1,562 @@
+# Amharic<TAB>English meanings separated by |, most common first.
+# Used for offline translation suggestions; extend freely.
+ሰላም	hello|peace|hi
+ጤና ይስጥልኝ	hello|greetings
+ጤና	health
+ደህና	fine|well|okay
+እንዴት ነህ	how are you
+አመሰግናለሁ	thank you|thanks
+እናመሰግናለን	we thank you
+ይቅርታ	sorry|excuse me|pardon
+እባክህ	please
+እባክሽ	please
+እባካችሁ	please
+እባክዎ	please
+እሺ	okay|ok|alright
+አዎ	yes
+አዎን	yes
+አይ	no
+ቻው	bye|goodbye
+ደህና ሁን	goodbye
+ደህና እደር	good night
+እንደምን አደርክ	good morning
+እንኳን ደህና መጣህ	welcome
+መልካም ልደት	happy birthday
+አዲስ አበባ	Addis Ababa
+ነው	is
+እና	and
+ላይ	on|above
+ውስጥ	inside|in
+ጋር	with
+ወደ	to|towards
+ግን	but
+ይህ	this
+ያ	that
+እኔ	I|me
+እሱ	he|him
+እሷ	she|her
+አንተ	you
+አንቺ	you
+እኛ	we|us
+እናንተ	you
+እነሱ	they|them
+እርስዎ	you
+ምን	what
+ማን	who
+የት	where
+መቼ	when
+እንዴት	how
+ለምን	why
+ስንት	how many|how much
+የትኛው	which
+ናቸው	are
+ነበር	was
+ነኝ	am
+አለ	there is|said
+አሉ	there are
+አለኝ	I have
+አለህ	you have
+አለሽ	you have
+አለን	we have
+አለው	he has
+አላት	she has
+የለም	no|there is not
+አይደለም	not|is not
+ሁሉም	all|everyone
+ሁሉ	all
+ብዙ	many|much|a lot
+ትንሽ	little|small|a bit
+በጣም	very
+ደግሞ	also
+ብቻ	only
+እንኳን	even|welcome
+ገና	yet|still
+አሁን	now
+ዛሬ	today
+ነገ	tomorrow
+ትናንት	yesterday
+እዚህ	here
+እዚያ	there
+እዛ	there
+እንደ	like|as
+እንደገና	again
+ስለ	about
+ስለዚህ	so|therefore
+ምክንያቱም	because
+ምክንያት	reason
+ወይም	or
+እስከ	until
+በፊት	before
+በኋላ	after|later
+ምንም	nothing|anything
+ነገር	thing
+ልክ	right|exactly
+እግዚአብሔር	God
+አምላክ	God
+ተመስገን	thank God
+ደስ	glad|pleased
+ደስታ	happiness|joy
+መልካም	good|happy
+ቀን	day|date
+ምሽት	evening
+ጠዋት	morning
+ማታ	night|evening
+ሌሊት	night
+ሰዓት	hour|time|clock
+ደቂቃ	minute
+ጊዜ	time
+ሳምንት	week
+ወር	month
+ዓመት	year
+አመት	year
+ሰው	person|human|man
+ሰዎች	people
+ልጅ	child|kid
+ልጆች	children|kids
+ሴት	woman|female
+ወንድ	man|male
+እናት	mother|mom
+አባት	father|dad
+ወንድም	brother
+እህት	sister
+ቤተሰብ	family
+ጓደኛ	friend
+ጓደኛዬ	my friend
+ጓደኞች	friends
+ባል	husband
+ሚስት	wife
+አያት	grandparent|grandmother|grandfather
+አጎት	uncle
+አክስት	aunt
+ሕፃን	baby
+ህፃን	baby
+እናቴ	my mother
+አባቴ	my father
+ወንድሜ	my brother
+እህቴ	my sister
+ልጄ	my child
+ባለቤቴ	my spouse
+ውዴ	my dear|darling
+ውድ	dear|expensive
+ሀገር	country
+አገር	country
+ከተማ	city|town
+መንደር	village
+ቤት	house|home
+ትምህርት	education|lesson|study
+ትምህርት ቤት	school
+ቤተ ክርስቲያን	church
+መስጊድ	mosque
+ሆስፒታል	hospital
+ገበያ	market
+መንገድ	road|way|street
+መኪና	car
+አውቶቡስ	bus
+ታክሲ	taxi
+አውሮፕላን	airplane|plane
+ባቡር	train
+ውሃ	water
+ምግብ	food
+እንጀራ	injera
+ዳቦ	bread
+ወተት	milk
+ቡና	coffee
+ሻይ	tea
+ስጋ	meat
+ሥጋ	meat
+ዶሮ	chicken
+ወጥ	stew
+በግ	sheep
+ፍየል	goat
+ላም	cow
+በሬ	ox
+ፈረስ	horse
+አህያ	donkey
+ውሻ	dog
+ድመት	cat
+ወፍ	bird
+አሳ	fish
+ዓሣ	fish
+ዛፍ	tree
+አበባ	flower
+ሳር	grass
+ተራራ	mountain
+ወንዝ	river
+ሐይቅ	lake
+ሀይቅ	lake
+ባህር	sea
+ባሕር	sea
+ሰማይ	sky|heaven
+ፀሐይ	sun
+ጸሀይ	sun
+ጨረቃ	moon
+ኮከብ	star
+ዝናብ	rain
+ንፋስ	wind
+አየር	air|weather
+መሬት	land|ground|earth
+እሳት	fire
+ብርሃን	light
+ጨለማ	darkness|dark
+ገንዘብ	money
+ብር	birr|silver
+ሥራ	work|job
+ስራ	work|job
+ሰራተኛ	worker|employee
+መምህር	teacher
+አስተማሪ	teacher
+ተማሪ	student
+ተማሪዎች	students
+ዶክተር	doctor
+ሐኪም	doctor|physician
+ገበሬ	farmer
+ነጋዴ	merchant|trader
+ፖሊስ	police
+መንግስት	government
+መንግሥት	government
+ሕዝብ	people|public|nation
+ህዝብ	people|public|nation
+ሀይማኖት	religion
+ፍቅር	love
+ሀዘን	sadness|grief
+ተስፋ	hope
+እምነት	faith|trust|belief
+ሕይወት	life
+ህይወት	life
+ሞት	death
+በሽታ	disease|illness
+መድሃኒት	medicine
+ቋንቋ	language
+አማርኛ	Amharic
+እንግሊዝኛ	English
+ኦሮምኛ	Oromo
+ትግርኛ	Tigrinya
+ኢትዮጵያ	Ethiopia
+ኢትዮጵያዊ	Ethiopian
+ኢትዮጵያዊት	Ethiopian
+ኢትዮጵያውያን	Ethiopians
+አዲስ	new
+አፍሪካ	Africa
+አሜሪካ	America
+አውሮፓ	Europe
+ዓለም	world
+አለም	world
+ታሪክ	history|story
+ባህል	culture|tradition
+ሙዚቃ	music
+ዘፈን	song
+ፊልም	film|movie
+ጨዋታ	game|play|chat
+ኳስ	ball
+እግር ኳስ	football|soccer
+እግር	foot|leg
+ስፖርት	sport
+ጽሑፍ	text|writing
+ጽሁፍ	text|writing
+መጽሐፍ	book
+መፅሀፍ	book
+ደብዳቤ	letter
+ዜና	news
+ጋዜጣ	newspaper
+ስልክ	phone|telephone
+ኮምፒውተር	computer
+ኢንተርኔት	internet
+መልዕክት	message
+መልእክት	message
+ቴሌቪዥን	television|TV
+ሬዲዮ	radio
+ፎቶ	photo|picture
+ቪዲዮ	video
+ስም	name
+ስሜ	my name
+ቁጥር	number
+ቃል	word|promise
+ቃላት	words
+ጥያቄ	question|request
+መልስ	answer|reply
+ሀሳብ	idea|thought
+ሃሳብ	idea|thought
+ችግር	problem|trouble
+መፍትሄ	solution
+ልማት	development
+ኢኮኖሚ	economy
+ፖለቲካ	politics
+ምርጫ	election|choice
+ጦርነት	war
+ሰራዊት	army
+ፍትህ	justice
+ሕግ	law
+ህግ	law
+ፍርድ ቤት	court
+ዩኒቨርሲቲ	university
+ኮሌጅ	college
+ክፍል	room|class|part
+ፈተና	exam|test
+ውጤት	result|grade
+ዕድል	luck|chance|opportunity
+እድል	luck|chance|opportunity
+ልደት	birthday|birth
+በዓል	holiday|festival
+በአል	holiday|festival
+ፋሲካ	Easter
+መስቀል	cross
+ጥምቀት	Epiphany
+ሰርግ	wedding
+ቀለም	colour|color|ink
+ቀይ	red
+ቢጫ	yellow
+አረንጓዴ	green
+ሰማያዊ	blue
+ጥቁር	black
+ነጭ	white
+ትልቅ	big|large
+ረጅም	long|tall
+አጭር	short
+ጥሩ	good|nice
+መጥፎ	bad
+ቆንጆ	beautiful|pretty|handsome
+ውብ	beautiful|lovely
+አሮጌ	old
+ቀላል	easy|simple|light
+ከባድ	hard|difficult|heavy
+ሙቅ	hot|warm
+ቀዝቃዛ	cold|cool
+ጣፋጭ	sweet|delicious
+መራራ	bitter
+ፈጣን	fast|quick
+ቀስ	slowly|slow
+ትክክል	correct|right
+ስህተት	mistake|error|wrong
+እውነት	truth|true
+ውሸት	lie|false
+ሙሉ	full|whole
+ግማሽ	half
+መጀመሪያ	first|beginning
+መጨረሻ	end|last
+ቀጣይ	next
+ሌላ	other|another
+ራስ	head|self
+እጅ	hand
+አይን	eye
+ዓይን	eye
+ጆሮ	ear
+አፍ	mouth
+አፍንጫ	nose
+ጥርስ	tooth|teeth
+ፀጉር	hair
+ጸጉር	hair
+ፊት	face|front
+ልብ	heart
+ደም	blood
+ሆድ	stomach|belly
+ጀርባ	back
+ልብስ	clothes|clothing
+ጫማ	shoes|shoe
+ቀሚስ	dress
+ሱሪ	trousers|pants
+ሸሚዝ	shirt
+በር	door|gate
+መስኮት	window
+ጠረጴዛ	table
+ወንበር	chair
+አልጋ	bed
+ኩሽና	kitchen
+የእኔ	my|mine
+የኔ	my|mine
+ያንተ	your|yours
+ያንቺ	your|yours
+የእሱ	his
+የሱ	his
+የእሷ	her|hers
+የሷ	her|hers
+የእኛ	our|ours
+የኛ	our|ours
+የእነሱ	their|theirs
+የነሱ	their|theirs
+እነዚህ	these
+እነዚያ	those
+አንድ	one
+ሁለት	two
+ሶስት	three
+ሦስት	three
+አራት	four
+አምስት	five
+ስድስት	six
+ሰባት	seven
+ስምንት	eight
+ዘጠኝ	nine
+አስር	ten
+አሥር	ten
+ሃያ	twenty
+ሰላሳ	thirty
+አርባ	forty
+ሀምሳ	fifty
+ስልሳ	sixty
+ሰባ	seventy
+ሰማንያ	eighty
+ዘጠና	ninety
+መቶ	hundred
+ሺህ	thousand
+ሚሊዮን	million
+ቢሊዮን	billion
+ሰኞ	Monday
+ማክሰኞ	Tuesday
+ረቡዕ	Wednesday
+ሐሙስ	Thursday
+ዓርብ	Friday
+አርብ	Friday
+ቅዳሜ	Saturday
+እሁድ	Sunday
+ሄደ	went|he went
+ሄድኩ	I went
+መጣ	came|he came
+መጣሁ	I came
+በላ	ate|he ate
+ጠጣ	drank|he drank
+ተኛ	slept|he slept
+ሰማ	heard
+አየ	saw
+አወቀ	knew
+ፈለገ	wanted
+ወደደ	liked|loved
+ጻፈ	wrote
+አነበበ	read
+ተናገረ	spoke
+ጠየቀ	asked
+መለሰ	answered|returned
+ሰጠ	gave
+ወሰደ	took
+ገዛ	bought
+ሸጠ	sold
+ከፈለ	paid
+ከፈተ	opened
+ዘጋ	closed
+ጀመረ	started|began
+ጨረሰ	finished
+ገባ	entered
+ወጣ	went out|left
+ደረሰ	arrived
+ኖረ	lived
+ሞተ	died
+ተወለደ	was born
+ተማረ	learned|studied
+ረዳ	helped
+ደወለ	called|phoned
+ሳቀ	laughed
+አለቀሰ	cried
+አሰበ	thought
+ሆነ	became|happened
+መሆን	to be
+መሄድ	to go
+መምጣት	to come
+መስራት	to work|to do
+መብላት	to eat
+መጠጣት	to drink
+መተኛት	to sleep
+ማየት	to see
+መስማት	to hear
+ማወቅ	to know
+መፈለግ	to want|to look for
+መውደድ	to love|to like
+መጻፍ	to write
+ማንበብ	to read
+መናገር	to speak|to talk
+መጠየቅ	to ask
+መስጠት	to give
+መውሰድ	to take
+መግዛት	to buy
+መሸጥ	to sell
+መክፈል	to pay
+መክፈት	to open
+መዝጋት	to close
+መጀመር	to start|to begin
+መጨረስ	to finish
+መኖር	to live
+መማር	to learn|to study
+ማስተማር	to teach
+መርዳት	to help
+መደወል	to call
+መሳቅ	to laugh
+ማልቀስ	to cry
+ማሰብ	to think
+እፈልጋለሁ	I want|I need
+ትፈልጋለህ	you want
+ይፈልጋል	he wants
+እሄዳለሁ	I am going|I will go
+ይሄዳል	he goes
+እመጣለሁ	I am coming|I will come
+ይመጣል	he comes
+እችላለሁ	I can
+ይችላል	he can|maybe
+አልችልም	I can't
+አውቃለሁ	I know
+አላውቅም	I don't know
+እወዳለሁ	I like|I love
+እወድሻለሁ	I love you
+እወድሃለሁ	I love you
+አልፈልግም	I don't want
+ና	come
+ነይ	come
+ኑ	come
+ሂድ	go
+ሂጂ	go
+ሂዱ	go
+ግባ	come in
+ቆይ	wait
+ጠብቀኝ	wait for me
+ንገረኝ	tell me
+ስጠኝ	give me
+ደውልልኝ	call me
+እንሂድ	let's go
+እንብላ	let's eat
+እንገናኝ	let's meet|see you
+ናፈቀኝ	I miss you
+ናፍቆኛል	I miss you
+ሰላምታ	greeting|regards
+ጉዞ	trip|journey|travel
+ስብሰባ	meeting
+ቢሮ	office
+ኩባንያ	company
+ድርጅት	organization
+ፕሮጀክት	project
+እቅድ	plan
+ጉዳይ	matter|issue
+ዋጋ	price|value|cost
+ዋና	main|chief
+አስፈላጊ	important|necessary
+ምናልባት	maybe|perhaps
+ቶሎ	quickly|soon
+ዘግይቶ	late
+ሁልጊዜ	always
+አንዳንድ	some
+አንዳንዴ	sometimes
+ቅርብ	near|close
+ሩቅ	far
+ውጭ	outside|abroad
+ታች	down|below
+ቀኝ	right
+ግራ	left
+ሰሜን	north
+ደቡብ	south
+ምስራቅ	east
+ምዕራብ	west
+አሜን	amen
+ጸሎት	prayer
+ጾም	fasting|fast
+ቅዱስ	holy|saint
+ቁርስ	breakfast
+ምሳ	lunch
+እራት	dinner
+ሽሮ	shiro
+ልጃገረድ	girl
+ወጣት	young|youth
+ሽማግሌ	old man|elder
+ሀኪም ቤት	clinic
+ሱቅ	shop|store
+ዩኒፎርም	uniform
+ብዕር	pen
+እርሳስ	pencil
+ወረቀት	paper
+ቦርሳ	bag
+ቁልፍ	key
+ሰዓት ቆጣሪ	timer

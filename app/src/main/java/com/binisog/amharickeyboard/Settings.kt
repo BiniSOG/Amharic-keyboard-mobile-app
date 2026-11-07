@@ -19,6 +19,7 @@ class Settings private constructor(p: SharedPreferences) {
     val suggestions = p.getBoolean("suggestions", true)
     val nextWord = p.getBoolean("next_word", true)
     val emojiSuggestions = p.getBoolean("emoji_suggestions", true)
+    val translate = p.getBoolean("translate", true)
     val learn = p.getBoolean("learn", true)
     val theme: String = p.getString("theme", "system") ?: "system"
     val keyHeightDp: Int = p.getString("key_height", "54")?.toIntOrNull() ?: 54
