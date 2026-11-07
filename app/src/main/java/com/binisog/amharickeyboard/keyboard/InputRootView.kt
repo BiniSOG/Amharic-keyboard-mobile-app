@@ -1,6 +1,8 @@
 package com.binisog.amharickeyboard.keyboard
 
 import android.content.Context
+import android.os.Build
+import android.view.WindowInsets
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -28,8 +30,21 @@ class InputRootView(context: Context) : FrameLayout(context) {
         addView(overlay, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
+    /** Space kept free at the bottom for the navigation bar when the window is edge-to-edge. */
+    private var bottomInset = 0
+
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        val bottom = if (Build.VERSION.SDK_INT >= 30) {
+            insets.getInsets(WindowInsets.Type.navigationBars()).bottom
+        } else {
+            @Suppress("DEPRECATION") insets.systemWindowInsetBottom
+        }
+        if (bottom != bottomInset) { bottomInset = bottom; requestLayout() }
+        return insets
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val maxH = MeasureSpec.getSize(heightMeasureSpec)
+        val maxH = (MeasureSpec.getSize(heightMeasureSpec) - bottomInset).coerceAtLeast(0)
         val hSpec = if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {
             MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         } else {
@@ -39,13 +54,16 @@ class InputRootView(context: Context) : FrameLayout(context) {
         val w = column.measuredWidth
         val h = column.measuredHeight
         overlay.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY))
-        setMeasuredDimension(w, h)
+        setMeasuredDimension(w, h + bottomInset)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         column.layout(0, 0, column.measuredWidth, column.measuredHeight)
         overlay.layout(0, 0, overlay.measuredWidth, overlay.measuredHeight)
     }
+
+    /** Colours the navigation-bar strip below the keys to match the keyboard. */
+    fun setKeyboardBackground(color: Int) = setBackgroundColor(color)
 
     /** For tests and debugging: the views in drawing order. */
     internal val layers: List<View> get() = listOf(column, overlay)

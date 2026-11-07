@@ -2,6 +2,8 @@ package com.binisog.amharickeyboard
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.provider.Settings as SystemSettings
 import android.util.TypedValue
@@ -15,7 +17,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.binisog.amharickeyboard.engine.LanguageModels
@@ -30,11 +36,24 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var selectButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Android 15 draws apps edge-to-edge (behind the status and navigation bars).
+        // Opt in on every version and pad for the system bars ourselves, so nothing
+        // (like the "Enable" button) ends up hidden under a bar.
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
         val dp = resources.displayMetrics.density
         val pad = (16 * dp).toInt()
 
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val appBar = TextView(this).apply {
+            text = getString(R.string.app_name)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(Color.WHITE)
+            setBackgroundColor(Color.parseColor("#078930"))
+            setPadding(pad, pad, pad, pad)
+        }
+        root.addView(appBar)
         val header = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(pad, pad, pad, pad / 2)
@@ -65,6 +84,14 @@ class SettingsActivity : AppCompatActivity() {
         val container = FrameLayout(this).apply { id = View.generateViewId() }
         root.addView(container, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         setContentView(root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            appBar.setPadding(pad + bars.left, pad + bars.top, pad + bars.right, pad)
+            v.setPadding(bars.left, 0, bars.right, maxOf(bars.bottom, ime.bottom))
+            WindowInsetsCompat.CONSUMED
+        }
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(container.id, SettingsFragment()).commit()

@@ -194,6 +194,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         }
         strip?.theme = theme
         overlay?.theme = theme
+        (keyboardView?.parent?.parent as? InputRootView)?.setKeyboardBackground(theme.background)
     }
 
     private fun analyseEditor(info: EditorInfo) {
