@@ -6,7 +6,8 @@
         android:imeSubtypeLocale="am_ET"
         android:imeSubtypeMode="keyboard"
         android:label="@string/subtype_amharic"
-        android:languageTag="am-ET" />
+        android:languageTag="am-ET"
+        android:overridesImplicitlyEnabledSubtype="true" />
     <subtype
         android:imeSubtypeLocale="en_US"
         android:imeSubtypeMode="keyboard"
