@@ -80,9 +80,12 @@ class KeyboardView(context: Context) : View(context) {
     private var cursorAnchorX = 0f
 
     fun setLayout(l: KeyboardLayout) {
-        val sameShape = layout?.rows?.map { r -> r.map { it.width } } == l.rows.map { r -> r.map { it.width } }
+        val sameHeight = layout?.rows?.size == l.rows.size
         layout = l
-        if (sameShape && width > 0) placeKeys(width) else requestLayout()
+        // Always re-place keys: a page with the same height (letters ↔ symbols) does not
+        // trigger onSizeChanged, and stale key rectangles would map taps to old keys.
+        if (width > 0) placeKeys(width)
+        if (!sameHeight) requestLayout()
         invalidate()
     }
 

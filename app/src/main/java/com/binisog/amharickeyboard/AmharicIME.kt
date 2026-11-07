@@ -12,13 +12,10 @@ import android.text.InputType
 import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.binisog.amharickeyboard.core.Ethiopic
 import com.binisog.amharickeyboard.core.PhoneticComposer
@@ -30,6 +27,7 @@ import com.binisog.amharickeyboard.core.layout.KeyboardLayout
 import com.binisog.amharickeyboard.core.layout.LayoutOptions
 import com.binisog.amharickeyboard.core.layout.Layouts
 import com.binisog.amharickeyboard.engine.LanguageModels
+import com.binisog.amharickeyboard.keyboard.InputRootView
 import com.binisog.amharickeyboard.keyboard.KeyboardTheme
 import com.binisog.amharickeyboard.keyboard.KeyboardView
 import com.binisog.amharickeyboard.keyboard.KeyboardView.ShiftState
@@ -112,17 +110,13 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onCreateInputView(): View {
-        val root = FrameLayout(this)
-        val column = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val s = SuggestionStripView(this).also { it.listener = this }
-        val ov = PopupOverlay(this)
-        val kv = KeyboardView(this).also { it.listener = this; it.overlay = ov }
-        column.addView(s, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        column.addView(kv, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        root.addView(column, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        root.addView(ov, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        strip = s; keyboardView = kv; overlay = ov
+        val root = InputRootView(this)
+        root.strip.listener = this
+        root.keyboard.listener = this
+        strip = root.strip; keyboardView = root.keyboard; overlay = root.overlay
         applySettings()
+        // A recreated view (e.g. after rotation) must show the current page right away.
+        if (::settings.isInitialized) { renderKeyboard(); updateSuggestions() }
         return root
     }
 
