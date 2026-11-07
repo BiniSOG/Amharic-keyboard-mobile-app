@@ -9,6 +9,7 @@ class TranslatorTest {
     private val t = Translator().apply {
         val assets = listOf(File("../app/src/main/assets"), File("app/src/main/assets")).first { it.isDirectory }
         load(File(assets, "translations.tsv").inputStream())
+        loadEnglishFirst(File(assets, "translations_en.tsv").inputStream())
     }
 
     @Test fun loads() = assertTrue(t.size >= 5000, "only ${t.size} entries")
@@ -35,6 +36,14 @@ class TranslatorTest {
         assertEquals("ሰላም", t.translate("Hello").first())
         assertEquals("መሄድ", t.translate("go").first()) // indexed from "to go"
         assertTrue("ቤት" in t.translate("house"))
+    }
+
+    @Test fun phrasalVerbsInAllForms() {
+        assertEquals("መተው", t.translateText("give up"))
+        assertEquals("መተው", t.translateText("gave up"))
+        assertEquals("መንከባከብ", t.translateText("looking after"))
+        assertEquals("ማወቅ", t.translateText("found out"))
+        assertTrue(t.size >= 7000, "only ${t.size} entries")
     }
 
     @Test fun englishInflections() {

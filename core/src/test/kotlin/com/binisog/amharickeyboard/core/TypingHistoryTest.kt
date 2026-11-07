@@ -56,6 +56,7 @@ class TranslateTextTest {
     private val t = Translator().apply {
         val assets = listOf(File("../app/src/main/assets"), File("app/src/main/assets")).first { it.isDirectory }
         load(File(assets, "translations.tsv").inputStream())
+        loadEnglishFirst(File(assets, "translations_en.tsv").inputStream())
     }
 
     @Test fun amharicSentenceToEnglish() {

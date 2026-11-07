@@ -35,6 +35,34 @@ class Translator {
         }
     }
 
+    /**
+     * Loads English-first data (`english|english forms<TAB>amharic|amharic`). Its Amharic
+     * order takes priority for those English words; call after [load].
+     */
+    fun loadEnglishFirst(input: InputStream) {
+        BufferedReader(InputStreamReader(input, Charsets.UTF_8)).useLines { lines ->
+            for (raw in lines) {
+                val line = raw.trim()
+                if (line.isEmpty() || line.startsWith("#")) continue
+                val tab = line.indexOf('\t')
+                if (tab <= 0) continue
+                val ams = line.substring(tab + 1).split('|').map { it.trim() }.filter { it.isNotEmpty() }
+                for (form in line.substring(0, tab).split('|')) {
+                    val key = form.trim().lowercase()
+                    if (key.isEmpty()) continue
+                    val map = if (' ' in key) toAmPhrase else toAm
+                    val list = map.getOrPut(key) { ArrayList() }
+                    list.removeAll(ams.toSet())
+                    list.addAll(0, ams)
+                }
+                for (am in ams) {
+                    val glosses = toEn.getOrPut(am) { ArrayList() }
+                    for (form in line.substring(0, tab).split('|')) if (form.trim() !in glosses) glosses.add(form.trim())
+                }
+            }
+        }
+    }
+
     fun add(amharic: String, english: List<String>) {
         if (amharic.isEmpty() || english.isEmpty()) return
         val list = toEn.getOrPut(amharic) { ArrayList() }

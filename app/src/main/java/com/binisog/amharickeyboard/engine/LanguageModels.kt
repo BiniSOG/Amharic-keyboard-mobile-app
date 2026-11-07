@@ -63,7 +63,7 @@ object LanguageModels {
             val am = runCatching { build(app, "amharic", amharicFilter) }.onFailure { Log.e(TAG, "amharic load failed", it) }.getOrNull()
             val en = runCatching { build(app, "english", englishFilter) }.onFailure { Log.e(TAG, "english load failed", it) }.getOrNull()
             val hist = if (unlocked) readHistory(app) else null
-            val tr = runCatching { Translator().apply { app.assets.open("translations.tsv").use(::load) } }
+            val tr = runCatching { Translator().apply { app.assets.open("translations.tsv").use(::load); app.assets.open("translations_en.tsv").use(::loadEnglishFirst) } }
                 .onFailure { Log.e(TAG, "translations load failed", it) }.getOrNull()
             Log.i(TAG, "dictionaries ready in ${(System.nanoTime() - t0) / 1_000_000} ms")
             main.post {
