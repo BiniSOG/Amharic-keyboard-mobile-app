@@ -60,6 +60,26 @@ class InputViewTest {
     }
 
     @Test
+    fun languageKeyLongPressOpensQuickSettingsInPlaceOfKeys() {
+        val ime = Robolectric.buildService(AmharicIME::class.java).create().get()
+        val root = ime.onCreateInputView() as InputRootView
+        ime.onStartInputView(EditorInfo().apply { inputType = InputType.TYPE_CLASS_TEXT }, false)
+        measure(root)
+        val heightWithKeys = root.measuredHeight
+
+        ime.onLanguageLongPress()
+        measure(root)
+        assertTrue(root.isQuickSettingsShown)
+        assertEquals(View.GONE, root.keyboard.visibility)
+        assertEquals("panel takes the keys' place without resizing", heightWithKeys, root.measuredHeight)
+
+        // starting a new text field returns to the keys
+        ime.onStartInputView(EditorInfo().apply { inputType = InputType.TYPE_CLASS_TEXT }, false)
+        assertTrue(!root.isQuickSettingsShown)
+        assertEquals(View.VISIBLE, root.keyboard.visibility)
+    }
+
+    @Test
     fun numberFieldShowsNumberPad() {
         val ime = Robolectric.buildService(AmharicIME::class.java).create().get()
         val root = ime.onCreateInputView() as InputRootView

@@ -27,11 +27,14 @@ class InputRootView(context: Context) : FrameLayout(context) {
     val strip = SuggestionStripView(context)
     val overlay = PopupOverlay(context)
     val keyboard = KeyboardView(context).also { it.overlay = overlay }
+    /** In-keyboard quick settings, shown in place of the keys. */
+    val quickSettings = QuickSettingsView(context).apply { visibility = GONE }
     private val column = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
 
     init {
         column.addView(strip, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         column.addView(keyboard, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        column.addView(quickSettings, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0))
         addView(column, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(overlay, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
@@ -70,6 +73,20 @@ class InputRootView(context: Context) : FrameLayout(context) {
             h + bottomInset
         }
         setMeasuredDimension(w, total)
+    }
+
+    val isQuickSettingsShown: Boolean get() = quickSettings.visibility == VISIBLE
+
+    /** Swaps the keys for the quick-settings panel (same height, so nothing jumps). */
+    fun setQuickSettingsShown(show: Boolean) {
+        if (show) {
+            quickSettings.layoutParams = (quickSettings.layoutParams as LinearLayout.LayoutParams).apply {
+                height = keyboard.preferredHeight()
+            }
+        }
+        quickSettings.visibility = if (show) VISIBLE else GONE
+        keyboard.visibility = if (show) GONE else VISIBLE
+        if (show) keyboard.cancelTouch()
     }
 
     /** Top of the visible keyboard (suggestion strip) inside this view. */

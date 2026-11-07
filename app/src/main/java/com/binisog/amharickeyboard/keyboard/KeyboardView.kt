@@ -32,6 +32,8 @@ class KeyboardView(context: Context) : View(context) {
         fun onDeleteRepeat(repeat: Int)
         fun onCursorMove(delta: Int)
         fun onSpaceLongPress()
+        /** Long-press on the language (አም / En) key: open quick settings. */
+        fun onLanguageLongPress() {}
     }
 
     enum class ShiftState { OFF, ON, LOCKED }
@@ -290,6 +292,7 @@ class KeyboardView(context: Context) : View(context) {
         val k = p.key
         when {
             k.code == Code.SPACE -> { longPressed = true; listener?.onSpaceLongPress(); performHaptic() }
+            k.code == Code.LANGUAGE -> { longPressed = true; listener?.onLanguageLongPress(); performHaptic() }
             k.popup.isNotEmpty() -> {
                 longPressed = true
                 performHaptic()

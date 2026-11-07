@@ -42,6 +42,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Background picture:** choose one from your gallery or download it from a web link. You can darken the picture and set how see-through the keys are.
 - The 🌐 key shows the current language: **አም** for Amharic, **En** for English.
 - Key height is adjustable.
+- **Quick settings inside the keyboard.** Tap ⚙ in the top bar, or long-press the **አም/En** key, to open a panel in place of the keys. It has a theme picker with live preview, key height, layout, sound, vibration, key popup, number row, suggestions, translation, emoji, auto-space, double-space ።, learning, background picture, and a link to all settings.
 
 ## Phonetic scheme (SERA-style)
 
@@ -98,7 +99,7 @@ The `:app` module is only included when an Android SDK is configured (`local.pro
 and tests on its own. CI (`.github/workflows/build.yml`) runs the tests and uploads a
 debug APK.
 
-After installing, open **Amharic Keyboard**, tap **Enable**, then **Switch to Amharic Keyboard**.
+After installing, open **Amharic Keyboard** and tap **Enable**. Android shows the system keyboard list, where you switch Amharic Keyboard on once. No app can skip this step, because it protects against hidden keyloggers. As soon as it is on, the app brings you back by itself and opens the "choose keyboard" dialog. The app needs no permissions you have to approve: internet (used only for background pictures from a web link) and vibration are granted automatically when it is installed.
 
 ### Dictionary data
 

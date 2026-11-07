@@ -32,6 +32,7 @@ import com.binisog.amharickeyboard.keyboard.KeyboardTheme
 import com.binisog.amharickeyboard.keyboard.KeyboardView
 import com.binisog.amharickeyboard.keyboard.KeyboardView.ShiftState
 import com.binisog.amharickeyboard.keyboard.PopupOverlay
+import com.binisog.amharickeyboard.keyboard.QuickSettingsView
 import com.binisog.amharickeyboard.keyboard.SuggestionStripView
 import com.binisog.amharickeyboard.keyboard.SuggestionStripView.Item
 import com.binisog.amharickeyboard.keyboard.SuggestionStripView.ItemKind
@@ -114,6 +115,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val root = InputRootView(this)
         root.strip.listener = this
         root.keyboard.listener = this
+        root.quickSettings.onTile = ::onQuickTile
+        root.quickSettings.onClose = { closeQuickSettings() }
         inputRoot = root
         strip = root.strip; keyboardView = root.keyboard; overlay = root.overlay
         applySettings()
@@ -158,6 +161,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         LanguageModels.ensureUserData(this)
         analyseEditor(info)
         if (!restarting) {
+            closeQuickSettings()
             composer.reset()
             vowelRowBase = -1
             showingClipboard = false
@@ -381,6 +385,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val code = if (delta < 0) KeyEvent.KEYCODE_DPAD_LEFT else KeyEvent.KEYCODE_DPAD_RIGHT
         repeat(kotlin.math.abs(delta)) { sendDownUpKeyEvents(code) }
     }
+
+    override fun onLanguageLongPress() = openQuickSettings(QUICK_MAIN)
 
     override fun onSpaceLongPress() {
         (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showInputMethodPicker()
@@ -864,8 +870,117 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             ACTION_CLOSE_CLIPS -> { showingClipboard = false; updateSuggestions() }
             ACTION_LANGUAGE -> cycleLayout()
             ACTION_HIDE -> requestHideSelf(0)
-            ACTION_SETTINGS -> startActivity(Intent(this, SettingsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            ACTION_SETTINGS -> openQuickSettings(QUICK_MAIN)
         }
+    }
+
+    // ================================================================ quick settings
+
+    /** Which quick-settings page is open, or null when the keys are shown. */
+    private var quickPage: String? = null
+
+    private fun openQuickSettings(page: String) {
+        val root = inputRoot ?: return
+        commitComposing(learn = true)
+        quickPage = page
+        root.quickSettings.theme = KeyboardTheme.resolve(this, settings.theme, settings.customColors)
+        if (page == QUICK_THEMES) {
+            val names = resources.getStringArray(R.array.theme_entries)
+            val values = resources.getStringArray(R.array.theme_values)
+            val tiles = listOf(QuickSettingsView.Tile(QUICK_BACK, "←", getString(R.string.qs_back))) +
+                values.mapIndexed { i, v ->
+                    QuickSettingsView.Tile(
+                        id = "theme:$v", icon = if (v == settings.theme) "✓" else "", title = names[i],
+                        active = v == settings.theme, swatch = KeyboardTheme.resolve(this, v, settings.customColors),
+                    )
+                }
+            root.quickSettings.show(getString(R.string.qs_choose_theme), tiles)
+        } else {
+            root.quickSettings.show(getString(R.string.qs_title), mainQuickTiles())
+        }
+        root.setQuickSettingsShown(true)
+    }
+
+    private fun closeQuickSettings() {
+        quickPage = null
+        inputRoot?.setQuickSettingsShown(false)
+        renderKeyboard()
+        updateSuggestions()
+    }
+
+    private fun mainQuickTiles(): List<QuickSettingsView.Tile> {
+        val on = getString(R.string.qs_on)
+        val off = getString(R.string.qs_off)
+        fun state(b: Boolean) = if (b) on else off
+        val themeName = resources.getStringArray(R.array.theme_entries)
+            .getOrNull(resources.getStringArray(R.array.theme_values).indexOf(settings.theme)) ?: settings.theme
+        val heightName = resources.getStringArray(R.array.key_height_entries)
+            .getOrNull(resources.getStringArray(R.array.key_height_values).indexOf(settings.keyHeightDp.toString())) ?: "${settings.keyHeightDp}"
+        val layoutName = when (alphaLayout) {
+            Layouts.FIDEL -> "ፊደል"
+            Layouts.ENGLISH -> "English"
+            else -> "አማርኛ"
+        }
+        return listOf(
+            QuickSettingsView.Tile(QUICK_THEMES, "🎨", getString(R.string.pref_theme), themeName),
+            QuickSettingsView.Tile("key_height", "↕", getString(R.string.pref_key_height), heightName),
+            QuickSettingsView.Tile("layout", "⌨", getString(R.string.qs_layout), layoutName),
+            QuickSettingsView.Tile("sound", "🔊", getString(R.string.qs_sound), state(settings.sound), settings.sound),
+            QuickSettingsView.Tile("haptic", "📳", getString(R.string.qs_vibrate), state(settings.haptic), settings.haptic),
+            QuickSettingsView.Tile("preview", "🔍", getString(R.string.qs_preview), state(settings.preview), settings.preview),
+            QuickSettingsView.Tile("number_row", "🔢", getString(R.string.qs_number_row), state(settings.numberRow), settings.numberRow),
+            QuickSettingsView.Tile("suggestions", "💡", getString(R.string.qs_suggestions), state(settings.suggestions), settings.suggestions),
+            QuickSettingsView.Tile("translate", "⇄", getString(R.string.qs_translate), state(settings.translate), settings.translate),
+            QuickSettingsView.Tile("emoji_suggestions", "😊", getString(R.string.qs_emoji), state(settings.emojiSuggestions), settings.emojiSuggestions),
+            QuickSettingsView.Tile("auto_space", "␣", getString(R.string.qs_auto_space), state(settings.autoSpace), settings.autoSpace),
+            QuickSettingsView.Tile("double_space", "።", getString(R.string.qs_double_space), state(settings.doubleSpacePeriod), settings.doubleSpacePeriod),
+            QuickSettingsView.Tile("learn", "🧠", getString(R.string.qs_learn), state(settings.learn), settings.learn),
+            QuickSettingsView.Tile("background", "🖼", getString(R.string.qs_background)),
+            QuickSettingsView.Tile("all_settings", "⚙", getString(R.string.qs_all_settings)),
+        )
+    }
+
+    private fun onQuickTile(id: String) {
+        val prefs = Settings.prefs(this)
+        fun toggle(key: String, current: Boolean) = prefs.edit().putBoolean(key, !current).apply()
+        when {
+            id == QUICK_BACK -> { openQuickSettings(QUICK_MAIN); return }
+            id == QUICK_THEMES -> { openQuickSettings(QUICK_THEMES); return }
+            id.startsWith("theme:") -> prefs.edit().putString("theme", id.removePrefix("theme:")).apply()
+            id == "key_height" -> {
+                val values = resources.getStringArray(R.array.key_height_values)
+                val next = values[(values.indexOf(settings.keyHeightDp.toString()) + 1).mod(values.size)]
+                prefs.edit().putString("key_height", next).apply()
+            }
+            id == "layout" -> { cycleLayout(); reloadSettings(); openQuickSettings(QUICK_MAIN); return }
+            id == "sound" -> toggle("sound", settings.sound)
+            id == "haptic" -> toggle("haptic", settings.haptic)
+            id == "preview" -> toggle("preview", settings.preview)
+            id == "number_row" -> toggle("number_row", settings.numberRow)
+            id == "suggestions" -> toggle("suggestions", settings.suggestions)
+            id == "translate" -> toggle("translate", settings.translate)
+            id == "emoji_suggestions" -> toggle("emoji_suggestions", settings.emojiSuggestions)
+            id == "auto_space" -> toggle("auto_space", settings.autoSpace)
+            id == "double_space" -> toggle("double_space", settings.doubleSpacePeriod)
+            id == "learn" -> toggle("learn", settings.learn)
+            id == "background" || id == "all_settings" -> {
+                closeQuickSettings()
+                startActivity(Intent(this, SettingsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                return
+            }
+        }
+        reloadSettings()
+        openQuickSettings(quickPage ?: QUICK_MAIN) // redraw tiles with the new state (live preview)
+    }
+
+    /** Re-reads preferences after a quick-settings change and applies them immediately. */
+    private fun reloadSettings() {
+        settings = Settings.load(this)
+        layoutCache.clear()
+        applySettings()
+        applyEngineSettings()
+        editorInfo?.let { analyseEditor(it) }
+        renderKeyboard()
     }
 
     // ================================================================ clipboard
@@ -897,5 +1012,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         private const val ACTION_LANGUAGE = "language"
         private const val ACTION_SETTINGS = "settings"
         private const val ACTION_HIDE = "hide"
+        private const val QUICK_MAIN = "main"
+        private const val QUICK_THEMES = "themes"
+        private const val QUICK_BACK = "back"
     }
 }

@@ -2,6 +2,9 @@ package com.binisog.amharickeyboard
 
 import android.content.Context
 import android.content.Intent
+import android.database.ContentObserver
+import android.os.Handler
+import android.os.Looper
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -39,6 +42,38 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var enableButton: Button
     private lateinit var selectButton: Button
+    private lateinit var setupHint: TextView
+
+    /** Set while the user is in the system keyboard list; we bring them back once enabled. */
+    private var waitingForEnable = false
+    /** Show the keyboard chooser as soon as this screen has focus again. */
+    private var pickerPending = false
+
+    /**
+     * Android does not let any app switch itself on as a keyboard (that protects users from
+     * hidden keyloggers). We make that one step as short as possible: open the exact system
+     * screen, notice the moment the switch is turned on, come straight back here and open
+     * the "choose keyboard" dialog automatically.
+     */
+    private val enabledObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean) {
+            if (waitingForEnable && isEnabled()) {
+                waitingForEnable = false
+                pickerPending = true
+                startActivity(
+                    Intent(this@SettingsActivity, SettingsActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                )
+            }
+            refreshSetupState()
+        }
+    }
+
+    private fun isEnabled(): Boolean =
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).enabledInputMethodList.any { it.packageName == packageName }
+
+    private fun isSelected(): Boolean =
+        SystemSettings.Secure.getString(contentResolver, SystemSettings.Secure.DEFAULT_INPUT_METHOD).orEmpty().startsWith("$packageName/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Android 15 draws apps edge-to-edge (behind the status and navigation bars).
@@ -71,11 +106,17 @@ class SettingsActivity : AppCompatActivity() {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
         })
         enableButton = Button(this).apply {
-            setOnClickListener { startActivity(Intent(SystemSettings.ACTION_INPUT_METHOD_SETTINGS)) }
+            setOnClickListener {
+                waitingForEnable = true
+                startActivity(Intent(SystemSettings.ACTION_INPUT_METHOD_SETTINGS))
+                Toast.makeText(this@SettingsActivity, R.string.setup_enable_toast, Toast.LENGTH_LONG).show()
+            }
         }
         selectButton = Button(this).apply {
             setOnClickListener { (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker() }
         }
+        setupHint = TextView(this).apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f) }
+        header.addView(setupHint)
         header.addView(enableButton)
         header.addView(selectButton)
         header.addView(EditText(this).apply {
@@ -105,6 +146,22 @@ class SettingsActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction().replace(container.id, SettingsFragment()).commit()
         }
         LanguageModels.load(this)
+        contentResolver.registerContentObserver(
+            SystemSettings.Secure.getUriFor(SystemSettings.Secure.ENABLED_INPUT_METHODS), false, enabledObserver,
+        )
+        contentResolver.registerContentObserver(
+            SystemSettings.Secure.getUriFor(SystemSettings.Secure.DEFAULT_INPUT_METHOD), false, enabledObserver,
+        )
+    }
+
+    override fun onDestroy() {
+        contentResolver.unregisterContentObserver(enabledObserver)
+        super.onDestroy()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        refreshSetupState()
     }
 
     override fun onResume() {
@@ -115,17 +172,31 @@ class SettingsActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         // The input method picker is a dialog; re-check once it closes.
-        if (hasFocus) refreshSetupState()
+        if (hasFocus) {
+            refreshSetupState()
+            if (pickerPending && isEnabled() && !isSelected()) {
+                pickerPending = false
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
+            }
+        }
     }
 
     private fun refreshSetupState() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val enabled = imm.enabledInputMethodList.any { it.packageName == packageName }
-        val current = SystemSettings.Secure.getString(contentResolver, SystemSettings.Secure.DEFAULT_INPUT_METHOD).orEmpty()
-        val selected = current.startsWith("$packageName/")
+        val enabled = isEnabled()
+        val selected = isSelected()
         enableButton.text = getString(if (enabled) R.string.setup_enabled else R.string.setup_enable)
         selectButton.text = getString(if (selected) R.string.setup_selected else R.string.setup_select)
         selectButton.isEnabled = enabled
+        // Once set up, the setup buttons step back and the hint explains quick settings.
+        enableButton.visibility = if (enabled && selected) View.GONE else View.VISIBLE
+        selectButton.visibility = if (enabled && selected) View.GONE else View.VISIBLE
+        setupHint.text = getString(
+            when {
+                !enabled -> R.string.setup_hint_enable
+                !selected -> R.string.setup_hint_select
+                else -> R.string.setup_hint_done
+            },
+        )
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
