@@ -25,7 +25,14 @@ completion, next-word prediction, on-device learning and caching.
 - **Context.** Next-word predictions and ranking use bigrams: after **እንዴት** you get ነህ, ነሽ, ናችሁ, and after **አዲስ** you get አበባ.
 - **Typo-tolerant suggestions.** A wrong *first* letter or one slip anywhere in the start of a word still completes it (`ymport` → important, ሸላም → ሰላም). An unknown word gets dictionary words that are at least **60 % similar** (`tommorow` → tomorrow, ኢትዮፕያ → ኢትዮጵያ). Neighbouring QWERTY keys, another vowel form of the same Fidel letter, and sound-alike letters count as smaller mistakes.
 - **Typing history.** The keyboard privately remembers sentences you type, stored on the device only. It never records password or incognito fields, or anything before the phone is first unlocked. When you start a sentence you've typed before, the strip offers the rest of it (📜 …) in one tap. Open 📜 in the toolbar to see recent sentences and tap one to insert it. You can turn history off or clear it in quick settings or in Settings.
-- **Translate several words at once.** Select text, and the strip shows **⇄ its translation**: tap it to replace the selection, or 📋 to copy it. The **⇄** toolbar button translates the sentence you just typed. Known phrases are matched first ("thank you" → አመሰግናለሁ), and everything else is translated word by word, keeping the original word order.
+- **Translate several words at once, with grammar correction.** Select text, and the strip shows **⇄ its translation**: tap it to replace the selection, or 📋 to copy it. The **⇄** toolbar button translates the sentence you just typed. Known phrases are matched first ("thank you very much" → በጣም አመሰግናለሁ). A grammar step then rearranges each clause for the target language:
+  - verb last in Amharic: "I want coffee" ↔ ቡና እፈልጋለሁ
+  - "to be" at the end: "I am fine" ↔ ደህና ነኝ, "The house is big" ↔ ቤቱ ትልቅ ነው
+  - question words first in English: ይህ ምንድን ነው? → "What is this?"
+  - prepositions become Amharic prefixes or postpositions: in Addis Ababa → በአዲስ አበባ, with me → ከእኔ ጋር, on the table → ጠረጴዛ ላይ
+  - English articles are dropped or added
+  
+  These rules cover common sentence shapes. Longer or complex sentences can still come out rough.
 - **Delete and keep going.** Backspacing into a word, or tapping at the end of one, makes it editable again with suggestions, and phonetic typing continues the last syllable (ሰል + `a` → ሰላ).
 - Emoji suggestions (ቡና → ☕).
 - **Translation suggestions (offline).** The strip shows the translation of the word you are typing, marked ⇄: `selam` → ⇄ hello, `water` → ⇄ ውሃ. Tap it to insert the translation. The lexicon has **5,053 Amharic entries** for everyday communication: greetings, chat phrases, family, food, health, shopping, money, phone and internet, school and work, travel, feelings, and verbs in their common past, present, negative and command forms. It also has possessive forms such as ቤቴ (my house) and ስልክህ (your phone). Prefixes and suffixes are handled too (በኢትዮጵያ → in Ethiopia). It translates single words only.

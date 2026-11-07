@@ -78,7 +78,7 @@ def forms(noun):
                 "her": noun + "ዋ", "our": noun + "ችን", "your_pl": noun + "ችሁ", "their": noun + "ቸው"}
     return None
 
-EN = {"my": "my {}", "your_m": "your {}", "your_f": "your {}", "his": "his {}|the {}", "her": "her {}",
+EN = {"my": "my {}", "your_m": "your {}", "your_f": "your {}", "his": "the {}|his {}", "her": "her {}",
       "our": "our {}", "your_pl": "your {}", "their": "their {}"}
 
 rows, skipped = [], []

@@ -618,7 +618,7 @@
 ይቅር በለኝ	forgive me
 ይቅርታ አድርግልኝ	excuse me|forgive me
 ይቅርታ አድርጊልኝ	excuse me|forgive me
-አመሰግናለሁ በጣም	thank you very much
+በጣም አመሰግናለሁ	thank you very much
 ምስጋና	thanks|gratitude|praise
 ምስጋናዬ	my thanks
 አቤት	yes|pardon
@@ -973,7 +973,7 @@
 ጥንታዊ	ancient
 ዕድሜ	age
 እድሜ	age
-ሰዓቱ	the time|his watch|the watch
+ሰዓቱ	the time|the watch|his watch
 ረፋድ	late morning
 ቀትር	noon|midday
 እኩለ ቀን	noon|midday
@@ -3444,7 +3444,7 @@
 እሺ እንገናኝ	okay see you
 ቻው ቻው	bye bye
 ቻው በኋላ	bye see you later
-ቤቱ	his house|the house
+ቤቱ	the house|his house
 ቤታችን	our house
 ቤታችሁ	your house
 ቤታቸው	their house
@@ -3452,7 +3452,7 @@
 ስልኬ	my phone
 ስልክህ	your phone
 ስልክሽ	your phone
-ስልኩ	his phone|the phone
+ስልኩ	the phone|his phone
 ስልካችን	our phone
 ስልካችሁ	your phone
 ስልካቸው	their phone
@@ -3463,14 +3463,14 @@
 ገንዘቤ	my money
 ገንዘብህ	your money
 ገንዘብሽ	your money
-ገንዘቡ	his money|the money
+ገንዘቡ	the money|his money
 ገንዘባችን	our money
 ገንዘባችሁ	your money
 ገንዘባቸው	their money
 ገንዘቧ	her money
 ሥራህ	your work
 ሥራሽ	your work
-ሥራው	his work|the work
+ሥራው	the work|his work
 ሥራዋ	her work
 ሥራችን	our work
 ሥራችሁ	your work
@@ -3478,55 +3478,55 @@
 ስራዬ	my job
 ስራህ	your job
 ስራሽ	your job
-ስራው	his job|the job
+ስራው	the job|his job
 ስራዋ	her job
 ስራችን	our job
 ስራችሁ	your job
 ስራቸው	their job
 ልጅህ	your child
 ልጅሽ	your child
-ልጁ	his child|the child
+ልጁ	the child|his child
 ልጃችን	our child
 ልጃችሁ	your child
 ልጃቸው	their child
 ልጇ	her child
-እናቱ	his mother|the mother
+እናቱ	the mother|his mother
 እናታችን	our mother
 እናታችሁ	your mother
 እናታቸው	their mother
 እናቷ	her mother
-አባቱ	his father|the father
+አባቱ	the father|his father
 አባታችን	our father
 አባታችሁ	your father
 አባታቸው	their father
 አባቷ	her father
 ወንድምሽ	your brother
-ወንድሙ	his brother|the brother
+ወንድሙ	the brother|his brother
 ወንድማችን	our brother
 ወንድማችሁ	your brother
 ወንድማቸው	their brother
 ወንድሟ	her brother
 እህትሽ	your sister
-እህቱ	his sister|the sister
+እህቱ	the sister|his sister
 እህታችን	our sister
 እህታችሁ	your sister
 እህታቸው	their sister
 እህቷ	her sister
-ጓደኛው	his friend|the friend
+ጓደኛው	the friend|his friend
 ጓደኛዋ	her friend
 ጓደኛችን	our friend
 ጓደኛችሁ	your friend
 ጓደኛቸው	their friend
 ባልህ	your husband
 ባልሽ	your husband
-ባሉ	his husband|the husband
+ባሉ	the husband|his husband
 ባላችን	our husband
 ባላችሁ	your husband
 ባላቸው	their husband
 ባሏ	her husband
 ሚስትህ	your wife
 ሚስትሽ	your wife
-ሚስቱ	his wife|the wife
+ሚስቱ	the wife|his wife
 ሚስታችን	our wife
 ሚስታችሁ	your wife
 ሚስታቸው	their wife
@@ -3534,21 +3534,21 @@
 ቤተሰቤ	my family
 ቤተሰብህ	your family
 ቤተሰብሽ	your family
-ቤተሰቡ	his family|the family
+ቤተሰቡ	the family|his family
 ቤተሰባችን	our family
 ቤተሰባችሁ	your family
 ቤተሰባቸው	their family
 ቤተሰቧ	her family
 አገርህ	your country
 አገርሽ	your country
-አገሩ	his country|the country
+አገሩ	the country|his country
 አገራችን	our country
 አገራችሁ	your country
 አገራቸው	their country
 አገሯ	her country
 ሀገርህ	your country
 ሀገርሽ	your country
-ሀገሩ	his country|the country
+ሀገሩ	the country|his country
 ሀገራችን	our country
 ሀገራችሁ	your country
 ሀገራቸው	their country
@@ -3556,7 +3556,7 @@
 ከተማዬ	my city
 ከተማህ	your city
 ከተማሽ	your city
-ከተማው	his city|the city
+ከተማው	the city|his city
 ከተማዋ	her city
 ከተማችን	our city
 ከተማችሁ	your city
@@ -3564,7 +3564,7 @@
 መኪናዬ	my car
 መኪናህ	your car
 መኪናሽ	your car
-መኪናው	his car|the car
+መኪናው	the car|his car
 መኪናዋ	her car
 መኪናችን	our car
 መኪናችሁ	your car
@@ -3572,7 +3572,7 @@
 መጽሐፌ	my book
 መጽሐፍህ	your book
 መጽሐፍሽ	your book
-መጽሐፉ	his book|the book
+መጽሐፉ	the book|his book
 መጽሐፋችን	our book
 መጽሐፋችሁ	your book
 መጽሐፋቸው	their book
@@ -3580,7 +3580,7 @@
 ልብሴ	my clothes
 ልብስህ	your clothes
 ልብስሽ	your clothes
-ልብሱ	his clothes|the clothes
+ልብሱ	the clothes|his clothes
 ልብሳችን	our clothes
 ልብሳችሁ	your clothes
 ልብሳቸው	their clothes
@@ -3588,7 +3588,7 @@
 ጫማዬ	my shoes
 ጫማህ	your shoes
 ጫማሽ	your shoes
-ጫማው	his shoes|the shoes
+ጫማው	the shoes|his shoes
 ጫማዋ	her shoes
 ጫማችን	our shoes
 ጫማችሁ	your shoes
@@ -3596,7 +3596,7 @@
 ቦርሳዬ	my bag
 ቦርሳህ	your bag
 ቦርሳሽ	your bag
-ቦርሳው	his bag|the bag
+ቦርሳው	the bag|his bag
 ቦርሳዋ	her bag
 ቦርሳችን	our bag
 ቦርሳችሁ	your bag
@@ -3611,7 +3611,7 @@
 ቁልፌ	my key
 ቁልፍህ	your key
 ቁልፍሽ	your key
-ቁልፉ	his key|the key
+ቁልፉ	the key|his key
 ቁልፋችን	our key
 ቁልፋችሁ	your key
 ቁልፋቸው	their key
@@ -3619,7 +3619,7 @@
 ኮምፒውተሬ	my computer
 ኮምፒውተርህ	your computer
 ኮምፒውተርሽ	your computer
-ኮምፒውተሩ	his computer|the computer
+ኮምፒውተሩ	the computer|his computer
 ኮምፒውተራችን	our computer
 ኮምፒውተራችሁ	your computer
 ኮምፒውተራቸው	their computer
@@ -3627,7 +3627,7 @@
 ፀጉሬ	my hair
 ፀጉርህ	your hair
 ፀጉርሽ	your hair
-ፀጉሩ	his hair|the hair
+ፀጉሩ	the hair|his hair
 ፀጉራችን	our hair
 ፀጉራችሁ	your hair
 ፀጉራቸው	their hair
@@ -3635,7 +3635,7 @@
 እጄ	my hand
 እጅህ	your hand
 እጅሽ	your hand
-እጁ	his hand|the hand
+እጁ	the hand|his hand
 እጃችን	our hand
 እጃችሁ	your hand
 እጃቸው	their hand
@@ -3643,14 +3643,14 @@
 እግሬ	my leg
 እግርህ	your leg
 እግርሽ	your leg
-እግሩ	his leg|the leg
+እግሩ	the leg|his leg
 እግራችን	our leg
 እግራችሁ	your leg
 እግራቸው	their leg
 እግሯ	her leg
 ልብህ	your heart
 ልብሽ	your heart
-ልቡ	his heart|the heart
+ልቡ	the heart|his heart
 ልባችን	our heart
 ልባችሁ	your heart
 ልባቸው	their heart
@@ -3658,7 +3658,7 @@
 ዓይኔ	my eye
 ዓይንህ	your eye
 ዓይንሽ	your eye
-ዓይኑ	his eye|the eye
+ዓይኑ	the eye|his eye
 ዓይናችን	our eye
 ዓይናችሁ	your eye
 ዓይናቸው	their eye
@@ -3666,7 +3666,7 @@
 አይኔ	my eye
 አይንህ	your eye
 አይንሽ	your eye
-አይኑ	his eye|the eye
+አይኑ	the eye|his eye
 አይናችን	our eye
 አይናችሁ	your eye
 አይናቸው	their eye
@@ -3674,7 +3674,7 @@
 አፌ	my mouth
 አፍህ	your mouth
 አፍሽ	your mouth
-አፉ	his mouth|the mouth
+አፉ	the mouth|his mouth
 አፋችን	our mouth
 አፋችሁ	your mouth
 አፋቸው	their mouth
@@ -3682,7 +3682,7 @@
 ፊቴ	my face
 ፊትህ	your face
 ፊትሽ	your face
-ፊቱ	his face|the face
+ፊቱ	the face|his face
 ፊታችን	our face
 ፊታችሁ	your face
 ፊታቸው	their face
@@ -3690,7 +3690,7 @@
 ሆዴ	my stomach
 ሆድህ	your stomach
 ሆድሽ	your stomach
-ሆዱ	his stomach|the stomach
+ሆዱ	the stomach|his stomach
 ሆዳችን	our stomach
 ሆዳችሁ	your stomach
 ሆዳቸው	their stomach
@@ -3698,7 +3698,7 @@
 ጥርሴ	my tooth
 ጥርስህ	your tooth
 ጥርስሽ	your tooth
-ጥርሱ	his tooth|the tooth
+ጥርሱ	the tooth|his tooth
 ጥርሳችን	our tooth
 ጥርሳችሁ	your tooth
 ጥርሳቸው	their tooth
@@ -3706,7 +3706,7 @@
 ሀሳቤ	my idea
 ሀሳብህ	your idea
 ሀሳብሽ	your idea
-ሀሳቡ	his idea|the idea
+ሀሳቡ	the idea|his idea
 ሀሳባችን	our idea
 ሀሳባችሁ	your idea
 ሀሳባቸው	their idea
@@ -3714,14 +3714,14 @@
 ሃሳቤ	my idea
 ሃሳብህ	your idea
 ሃሳብሽ	your idea
-ሃሳቡ	his idea|the idea
+ሃሳቡ	the idea|his idea
 ሃሳባችን	our idea
 ሃሳባችሁ	your idea
 ሃሳባቸው	their idea
 ሃሳቧ	her idea
 ፍቅርህ	your love
 ፍቅርሽ	your love
-ፍቅሩ	his love|the love
+ፍቅሩ	the love|his love
 ፍቅራችን	our love
 ፍቅራችሁ	your love
 ፍቅራቸው	their love
@@ -3729,7 +3729,7 @@
 ሕይወቴ	my life
 ሕይወትህ	your life
 ሕይወትሽ	your life
-ሕይወቱ	his life|the life
+ሕይወቱ	the life|his life
 ሕይወታችን	our life
 ሕይወታችሁ	your life
 ሕይወታቸው	their life
@@ -3737,7 +3737,7 @@
 ህይወቴ	my life
 ህይወትህ	your life
 ህይወትሽ	your life
-ህይወቱ	his life|the life
+ህይወቱ	the life|his life
 ህይወታችን	our life
 ህይወታችሁ	your life
 ህይወታቸው	their life
@@ -3745,7 +3745,7 @@
 ጤናዬ	my health
 ጤናህ	your health
 ጤናሽ	your health
-ጤናው	his health|the health
+ጤናው	the health|his health
 ጤናዋ	her health
 ጤናችን	our health
 ጤናችሁ	your health
@@ -3753,7 +3753,7 @@
 ትምህርቴ	my education
 ትምህርትህ	your education
 ትምህርትሽ	your education
-ትምህርቱ	his education|the education
+ትምህርቱ	the education|his education
 ትምህርታችን	our education
 ትምህርታችሁ	your education
 ትምህርታቸው	their education
@@ -3761,7 +3761,7 @@
 ምግቤ	my food
 ምግብህ	your food
 ምግብሽ	your food
-ምግቡ	his food|the food
+ምግቡ	the food|his food
 ምግባችን	our food
 ምግባችሁ	your food
 ምግባቸው	their food
@@ -3769,7 +3769,7 @@
 ቡናዬ	my coffee
 ቡናህ	your coffee
 ቡናሽ	your coffee
-ቡናው	his coffee|the coffee
+ቡናው	the coffee|his coffee
 ቡናዋ	her coffee
 ቡናችን	our coffee
 ቡናችሁ	your coffee
@@ -3777,7 +3777,7 @@
 ውሃዬ	my water
 ውሃህ	your water
 ውሃሽ	your water
-ውሃው	his water|the water
+ውሃው	the water|his water
 ውሃዋ	her water
 ውሃችን	our water
 ውሃችሁ	your water
@@ -3785,7 +3785,7 @@
 ቁርሴ	my breakfast
 ቁርስህ	your breakfast
 ቁርስሽ	your breakfast
-ቁርሱ	his breakfast|the breakfast
+ቁርሱ	the breakfast|his breakfast
 ቁርሳችን	our breakfast
 ቁርሳችሁ	your breakfast
 ቁርሳቸው	their breakfast
@@ -3793,7 +3793,7 @@
 ምሳዬ	my lunch
 ምሳህ	your lunch
 ምሳሽ	your lunch
-ምሳው	his lunch|the lunch
+ምሳው	the lunch|his lunch
 ምሳዋ	her lunch
 ምሳችን	our lunch
 ምሳችሁ	your lunch
@@ -3801,7 +3801,7 @@
 እራቴ	my dinner
 እራትህ	your dinner
 እራትሽ	your dinner
-እራቱ	his dinner|the dinner
+እራቱ	the dinner|his dinner
 እራታችን	our dinner
 እራታችሁ	your dinner
 እራታቸው	their dinner
@@ -3809,7 +3809,7 @@
 ክፍሌ	my room
 ክፍልህ	your room
 ክፍልሽ	your room
-ክፍሉ	his room|the room
+ክፍሉ	the room|his room
 ክፍላችን	our room
 ክፍላችሁ	your room
 ክፍላቸው	their room
@@ -3817,7 +3817,7 @@
 አልጋዬ	my bed
 አልጋህ	your bed
 አልጋሽ	your bed
-አልጋው	his bed|the bed
+አልጋው	the bed|his bed
 አልጋዋ	her bed
 አልጋችን	our bed
 አልጋችሁ	your bed
@@ -3825,14 +3825,14 @@
 ወንበሬ	my chair
 ወንበርህ	your chair
 ወንበርሽ	your chair
-ወንበሩ	his chair|the chair
+ወንበሩ	the chair|his chair
 ወንበራችን	our chair
 ወንበራችሁ	your chair
 ወንበራቸው	their chair
 ወንበሯ	her chair
 በርህ	your door
 በርሽ	your door
-በሩ	his door|the door
+በሩ	the door|his door
 በራችን	our door
 በራችሁ	your door
 በራቸው	their door
@@ -3840,7 +3840,7 @@
 ሰፈሬ	my neighbourhood
 ሰፈርህ	your neighbourhood
 ሰፈርሽ	your neighbourhood
-ሰፈሩ	his neighbourhood|the neighbourhood
+ሰፈሩ	the neighbourhood|his neighbourhood
 ሰፈራችን	our neighbourhood
 ሰፈራችሁ	your neighbourhood
 ሰፈራቸው	their neighbourhood
@@ -3848,7 +3848,7 @@
 መንደሬ	my village
 መንደርህ	your village
 መንደርሽ	your village
-መንደሩ	his village|the village
+መንደሩ	the village|his village
 መንደራችን	our village
 መንደራችሁ	your village
 መንደራቸው	their village
@@ -3856,7 +3856,7 @@
 ጎረቤቴ	my neighbour
 ጎረቤትህ	your neighbour
 ጎረቤትሽ	your neighbour
-ጎረቤቱ	his neighbour|the neighbour
+ጎረቤቱ	the neighbour|his neighbour
 ጎረቤታችን	our neighbour
 ጎረቤታችሁ	your neighbour
 ጎረቤታቸው	their neighbour
@@ -3864,7 +3864,7 @@
 አለቃዬ	my boss
 አለቃህ	your boss
 አለቃሽ	your boss
-አለቃው	his boss|the boss
+አለቃው	the boss|his boss
 አለቃዋ	her boss
 አለቃችን	our boss
 አለቃችሁ	your boss
@@ -3872,7 +3872,7 @@
 መምህሬ	my teacher
 መምህርህ	your teacher
 መምህርሽ	your teacher
-መምህሩ	his teacher|the teacher
+መምህሩ	the teacher|his teacher
 መምህራችን	our teacher
 መምህራችሁ	your teacher
 መምህራቸው	their teacher
@@ -3880,7 +3880,7 @@
 ዶክተሬ	my doctor
 ዶክተርህ	your doctor
 ዶክተርሽ	your doctor
-ዶክተሩ	his doctor|the doctor
+ዶክተሩ	the doctor|his doctor
 ዶክተራችን	our doctor
 ዶክተራችሁ	your doctor
 ዶክተራቸው	their doctor
@@ -3888,7 +3888,7 @@
 ሀኪሜ	my doctor
 ሀኪምህ	your doctor
 ሀኪምሽ	your doctor
-ሀኪሙ	his doctor|the doctor
+ሀኪሙ	the doctor|his doctor
 ሀኪማችን	our doctor
 ሀኪማችሁ	your doctor
 ሀኪማቸው	their doctor
@@ -3896,14 +3896,14 @@
 ደንበኛዬ	my customer
 ደንበኛህ	your customer
 ደንበኛሽ	your customer
-ደንበኛው	his customer|the customer
+ደንበኛው	the customer|his customer
 ደንበኛዋ	her customer
 ደንበኛችን	our customer
 ደንበኛችሁ	your customer
 ደንበኛቸው	their customer
 ባለቤትህ	your spouse
 ባለቤትሽ	your spouse
-ባለቤቱ	his spouse|the spouse
+ባለቤቱ	the spouse|his spouse
 ባለቤታችን	our spouse
 ባለቤታችሁ	your spouse
 ባለቤታቸው	their spouse
@@ -3911,14 +3911,14 @@
 እጮኛዬ	my fiancé
 እጮኛህ	your fiancé
 እጮኛሽ	your fiancé
-እጮኛው	his fiancé|the fiancé
+እጮኛው	the fiancé|his fiancé
 እጮኛዋ	her fiancé
 እጮኛችን	our fiancé
 እጮኛችሁ	your fiancé
 እጮኛቸው	their fiancé
 ፍቅረኛህ	your lover
 ፍቅረኛሽ	your lover
-ፍቅረኛው	his lover|the lover
+ፍቅረኛው	the lover|his lover
 ፍቅረኛዋ	her lover
 ፍቅረኛችን	our lover
 ፍቅረኛችሁ	your lover
@@ -3926,7 +3926,7 @@
 ውሻዬ	my dog
 ውሻህ	your dog
 ውሻሽ	your dog
-ውሻው	his dog|the dog
+ውሻው	the dog|his dog
 ውሻዋ	her dog
 ውሻችን	our dog
 ውሻችሁ	your dog
@@ -3934,7 +3934,7 @@
 ድመቴ	my cat
 ድመትህ	your cat
 ድመትሽ	your cat
-ድመቱ	his cat|the cat
+ድመቱ	the cat|his cat
 ድመታችን	our cat
 ድመታችሁ	your cat
 ድመታቸው	their cat
@@ -3942,7 +3942,7 @@
 ላሜ	my cow
 ላምህ	your cow
 ላምሽ	your cow
-ላሙ	his cow|the cow
+ላሙ	the cow|his cow
 ላማችን	our cow
 ላማችሁ	your cow
 ላማቸው	their cow
@@ -3950,7 +3950,7 @@
 ፈረሴ	my horse
 ፈረስህ	your horse
 ፈረስሽ	your horse
-ፈረሱ	his horse|the horse
+ፈረሱ	the horse|his horse
 ፈረሳችን	our horse
 ፈረሳችሁ	your horse
 ፈረሳቸው	their horse
@@ -3958,7 +3958,7 @@
 ኩባንያዬ	my company
 ኩባንያህ	your company
 ኩባንያሽ	your company
-ኩባንያው	his company|the company
+ኩባንያው	the company|his company
 ኩባንያዋ	her company
 ኩባንያችን	our company
 ኩባንያችሁ	your company
@@ -3966,7 +3966,7 @@
 ድርጅቴ	my organization
 ድርጅትህ	your organization
 ድርጅትሽ	your organization
-ድርጅቱ	his organization|the organization
+ድርጅቱ	the organization|his organization
 ድርጅታችን	our organization
 ድርጅታችሁ	your organization
 ድርጅታቸው	their organization
@@ -3974,7 +3974,7 @@
 ሱቄ	my shop
 ሱቅህ	your shop
 ሱቅሽ	your shop
-ሱቁ	his shop|the shop
+ሱቁ	the shop|his shop
 ሱቃችን	our shop
 ሱቃችሁ	your shop
 ሱቃቸው	their shop
@@ -3982,7 +3982,7 @@
 ንግዴ	my business
 ንግድህ	your business
 ንግድሽ	your business
-ንግዱ	his business|the business
+ንግዱ	the business|his business
 ንግዳችን	our business
 ንግዳችሁ	your business
 ንግዳቸው	their business
@@ -3990,7 +3990,7 @@
 ደመወዜ	my salary
 ደመወዝህ	your salary
 ደመወዝሽ	your salary
-ደመወዙ	his salary|the salary
+ደመወዙ	the salary|his salary
 ደመወዛችን	our salary
 ደመወዛችሁ	your salary
 ደመወዛቸው	their salary
@@ -3998,7 +3998,7 @@
 ብሬ	my money
 ብርህ	your money
 ብርሽ	your money
-ብሩ	his money|the money
+ብሩ	the money|his money
 ብራችን	our money
 ብራችሁ	your money
 ብራቸው	their money
@@ -4006,7 +4006,7 @@
 ሂሳቤ	my account
 ሂሳብህ	your account
 ሂሳብሽ	your account
-ሂሳቡ	his account|the account
+ሂሳቡ	the account|his account
 ሂሳባችን	our account
 ሂሳባችሁ	your account
 ሂሳባቸው	their account
@@ -4014,7 +4014,7 @@
 ካርዴ	my card
 ካርድህ	your card
 ካርድሽ	your card
-ካርዱ	his card|the card
+ካርዱ	the card|his card
 ካርዳችን	our card
 ካርዳችሁ	your card
 ካርዳቸው	their card
@@ -4022,7 +4022,7 @@
 ፓስፖርቴ	my passport
 ፓስፖርትህ	your passport
 ፓስፖርትሽ	your passport
-ፓስፖርቱ	his passport|the passport
+ፓስፖርቱ	the passport|his passport
 ፓስፖርታችን	our passport
 ፓስፖርታችሁ	your passport
 ፓስፖርታቸው	their passport
@@ -4030,7 +4030,7 @@
 መታወቂያዬ	my ID
 መታወቂያህ	your ID
 መታወቂያሽ	your ID
-መታወቂያው	his ID|the ID
+መታወቂያው	the ID|his ID
 መታወቂያዋ	her ID
 መታወቂያችን	our ID
 መታወቂያችሁ	your ID
@@ -4038,7 +4038,7 @@
 አድራሻዬ	my address
 አድራሻህ	your address
 አድራሻሽ	your address
-አድራሻው	his address|the address
+አድራሻው	the address|his address
 አድራሻዋ	her address
 አድራሻችን	our address
 አድራሻችሁ	your address
@@ -4046,7 +4046,7 @@
 ቁጥሬ	my number
 ቁጥርህ	your number
 ቁጥርሽ	your number
-ቁጥሩ	his number|the number
+ቁጥሩ	the number|his number
 ቁጥራችን	our number
 ቁጥራችሁ	your number
 ቁጥራቸው	their number
@@ -4054,7 +4054,7 @@
 ኢሜይሌ	my email
 ኢሜይልህ	your email
 ኢሜይልሽ	your email
-ኢሜይሉ	his email|the email
+ኢሜይሉ	the email|his email
 ኢሜይላችን	our email
 ኢሜይላችሁ	your email
 ኢሜይላቸው	their email
@@ -4062,7 +4062,7 @@
 መልዕክቴ	my message
 መልዕክትህ	your message
 መልዕክትሽ	your message
-መልዕክቱ	his message|the message
+መልዕክቱ	the message|his message
 መልዕክታችን	our message
 መልዕክታችሁ	your message
 መልዕክታቸው	their message
@@ -4070,7 +4070,7 @@
 መልሴ	my answer
 መልስህ	your answer
 መልስሽ	your answer
-መልሱ	his answer|the answer
+መልሱ	the answer|his answer
 መልሳችን	our answer
 መልሳችሁ	your answer
 መልሳቸው	their answer
@@ -4078,7 +4078,7 @@
 ቃሌ	my word
 ቃልህ	your word
 ቃልሽ	your word
-ቃሉ	his word|the word
+ቃሉ	the word|his word
 ቃላችን	our word
 ቃላችሁ	your word
 ቃላቸው	their word
@@ -4086,14 +4086,14 @@
 ድምፄ	my voice
 ድምፅህ	your voice
 ድምፅሽ	your voice
-ድምፁ	his voice|the voice
+ድምፁ	the voice|his voice
 ድምፃችን	our voice
 ድምፃችሁ	your voice
 ድምፃቸው	their voice
 ቀኔ	my day
 ቀንህ	your day
 ቀንሽ	your day
-ቀኑ	his day|the day
+ቀኑ	the day|his day
 ቀናችን	our day
 ቀናችሁ	your day
 ቀናቸው	their day
@@ -4101,7 +4101,7 @@
 ልደቴ	my birthday
 ልደትህ	your birthday
 ልደትሽ	your birthday
-ልደቱ	his birthday|the birthday
+ልደቱ	the birthday|his birthday
 ልደታችን	our birthday
 ልደታችሁ	your birthday
 ልደታቸው	their birthday
@@ -4109,7 +4109,7 @@
 ሰርጌ	my wedding
 ሰርግህ	your wedding
 ሰርግሽ	your wedding
-ሰርጉ	his wedding|the wedding
+ሰርጉ	the wedding|his wedding
 ሰርጋችን	our wedding
 ሰርጋችሁ	your wedding
 ሰርጋቸው	their wedding
@@ -4117,7 +4117,7 @@
 ስጦታዬ	my gift
 ስጦታህ	your gift
 ስጦታሽ	your gift
-ስጦታው	his gift|the gift
+ስጦታው	the gift|his gift
 ስጦታዋ	her gift
 ስጦታችን	our gift
 ስጦታችሁ	your gift
@@ -4125,7 +4125,7 @@
 ምስሌ	my picture
 ምስልህ	your picture
 ምስልሽ	your picture
-ምስሉ	his picture|the picture
+ምስሉ	the picture|his picture
 ምስላችን	our picture
 ምስላችሁ	your picture
 ምስላቸው	their picture
@@ -4133,7 +4133,7 @@
 ዘፈኔ	my song
 ዘፈንህ	your song
 ዘፈንሽ	your song
-ዘፈኑ	his song|the song
+ዘፈኑ	the song|his song
 ዘፈናችን	our song
 ዘፈናችሁ	your song
 ዘፈናቸው	their song
@@ -4141,7 +4141,7 @@
 ፊልሜ	my film
 ፊልምህ	your film
 ፊልምሽ	your film
-ፊልሙ	his film|the film
+ፊልሙ	the film|his film
 ፊልማችን	our film
 ፊልማችሁ	your film
 ፊልማቸው	their film
@@ -4149,7 +4149,7 @@
 ጨዋታዬ	my game
 ጨዋታህ	your game
 ጨዋታሽ	your game
-ጨዋታው	his game|the game
+ጨዋታው	the game|his game
 ጨዋታዋ	her game
 ጨዋታችን	our game
 ጨዋታችሁ	your game
@@ -4157,7 +4157,7 @@
 ቡድኔ	my team
 ቡድንህ	your team
 ቡድንሽ	your team
-ቡድኑ	his team|the team
+ቡድኑ	the team|his team
 ቡድናችን	our team
 ቡድናችሁ	your team
 ቡድናቸው	their team
@@ -4165,7 +4165,7 @@
 ክለቤ	my club
 ክለብህ	your club
 ክለብሽ	your club
-ክለቡ	his club|the club
+ክለቡ	the club|his club
 ክለባችን	our club
 ክለባችሁ	your club
 ክለባቸው	their club
@@ -4173,7 +4173,7 @@
 ዕቅዴ	my plan
 ዕቅድህ	your plan
 ዕቅድሽ	your plan
-ዕቅዱ	his plan|the plan
+ዕቅዱ	the plan|his plan
 ዕቅዳችን	our plan
 ዕቅዳችሁ	your plan
 ዕቅዳቸው	their plan
@@ -4181,7 +4181,7 @@
 እቅዴ	my plan
 እቅድህ	your plan
 እቅድሽ	your plan
-እቅዱ	his plan|the plan
+እቅዱ	the plan|his plan
 እቅዳችን	our plan
 እቅዳችሁ	your plan
 እቅዳቸው	their plan
@@ -4189,7 +4189,7 @@
 ፕሮጀክቴ	my project
 ፕሮጀክትህ	your project
 ፕሮጀክትሽ	your project
-ፕሮጀክቱ	his project|the project
+ፕሮጀክቱ	the project|his project
 ፕሮጀክታችን	our project
 ፕሮጀክታችሁ	your project
 ፕሮጀክታቸው	their project
@@ -4197,7 +4197,7 @@
 ሀብቴ	my wealth
 ሀብትህ	your wealth
 ሀብትሽ	your wealth
-ሀብቱ	his wealth|the wealth
+ሀብቱ	the wealth|his wealth
 ሀብታችን	our wealth
 ሀብታችሁ	your wealth
 ሀብታቸው	their wealth
@@ -4205,7 +4205,7 @@
 ችግሬ	my problem
 ችግርህ	your problem
 ችግርሽ	your problem
-ችግሩ	his problem|the problem
+ችግሩ	the problem|his problem
 ችግራችን	our problem
 ችግራችሁ	your problem
 ችግራቸው	their problem
@@ -4213,7 +4213,7 @@
 ስህተቴ	my mistake
 ስህተትህ	your mistake
 ስህተትሽ	your mistake
-ስህተቱ	his mistake|the mistake
+ስህተቱ	the mistake|his mistake
 ስህተታችን	our mistake
 ስህተታችሁ	your mistake
 ስህተታቸው	their mistake
@@ -4221,7 +4221,7 @@
 ጥፋቴ	my fault
 ጥፋትህ	your fault
 ጥፋትሽ	your fault
-ጥፋቱ	his fault|the fault
+ጥፋቱ	the fault|his fault
 ጥፋታችን	our fault
 ጥፋታችሁ	your fault
 ጥፋታቸው	their fault
@@ -4229,7 +4229,7 @@
 መብቴ	my right
 መብትህ	your right
 መብትሽ	your right
-መብቱ	his right|the right
+መብቱ	the right|his right
 መብታችን	our right
 መብታችሁ	your right
 መብታቸው	their right
@@ -4237,7 +4237,7 @@
 ኃላፊነቴ	my responsibility
 ኃላፊነትህ	your responsibility
 ኃላፊነትሽ	your responsibility
-ኃላፊነቱ	his responsibility|the responsibility
+ኃላፊነቱ	the responsibility|his responsibility
 ኃላፊነታችን	our responsibility
 ኃላፊነታችሁ	your responsibility
 ኃላፊነታቸው	their responsibility
@@ -4245,7 +4245,7 @@
 ምርጫዬ	my choice
 ምርጫህ	your choice
 ምርጫሽ	your choice
-ምርጫው	his choice|the choice
+ምርጫው	the choice|his choice
 ምርጫዋ	her choice
 ምርጫችን	our choice
 ምርጫችሁ	your choice
@@ -4253,7 +4253,7 @@
 ህልሜ	my dream
 ህልምህ	your dream
 ህልምሽ	your dream
-ህልሙ	his dream|the dream
+ህልሙ	the dream|his dream
 ህልማችን	our dream
 ህልማችሁ	your dream
 ህልማቸው	their dream
@@ -4261,7 +4261,7 @@
 ተስፋዬ	my hope
 ተስፋህ	your hope
 ተስፋሽ	your hope
-ተስፋው	his hope|the hope
+ተስፋው	the hope|his hope
 ተስፋዋ	her hope
 ተስፋችን	our hope
 ተስፋችሁ	your hope
@@ -4269,7 +4269,7 @@
 እምነቴ	my faith
 እምነትህ	your faith
 እምነትሽ	your faith
-እምነቱ	his faith|the faith
+እምነቱ	the faith|his faith
 እምነታችን	our faith
 እምነታችሁ	your faith
 እምነታቸው	their faith
@@ -4277,7 +4277,7 @@
 ሃይማኖቴ	my religion
 ሃይማኖትህ	your religion
 ሃይማኖትሽ	your religion
-ሃይማኖቱ	his religion|the religion
+ሃይማኖቱ	the religion|his religion
 ሃይማኖታችን	our religion
 ሃይማኖታችሁ	your religion
 ሃይማኖታቸው	their religion
@@ -4285,7 +4285,7 @@
 ታሪኬ	my story
 ታሪክህ	your story
 ታሪክሽ	your story
-ታሪኩ	his story|the story
+ታሪኩ	the story|his story
 ታሪካችን	our story
 ታሪካችሁ	your story
 ታሪካቸው	their story
@@ -4293,7 +4293,7 @@
 ባህሌ	my culture
 ባህልህ	your culture
 ባህልሽ	your culture
-ባህሉ	his culture|the culture
+ባህሉ	the culture|his culture
 ባህላችን	our culture
 ባህላችሁ	your culture
 ባህላቸው	their culture
@@ -4301,7 +4301,7 @@
 ዜግነቴ	my citizenship
 ዜግነትህ	your citizenship
 ዜግነትሽ	your citizenship
-ዜግነቱ	his citizenship|the citizenship
+ዜግነቱ	the citizenship|his citizenship
 ዜግነታችን	our citizenship
 ዜግነታችሁ	your citizenship
 ዜግነታቸው	their citizenship
@@ -4309,7 +4309,7 @@
 ቦታዬ	my place
 ቦታህ	your place
 ቦታሽ	your place
-ቦታው	his place|the place
+ቦታው	the place|his place
 ቦታዋ	her place
 ቦታችን	our place
 ቦታችሁ	your place
@@ -4317,7 +4317,7 @@
 መቀመጫዬ	my seat
 መቀመጫህ	your seat
 መቀመጫሽ	your seat
-መቀመጫው	his seat|the seat
+መቀመጫው	the seat|his seat
 መቀመጫዋ	her seat
 መቀመጫችን	our seat
 መቀመጫችሁ	your seat
@@ -4325,7 +4325,7 @@
 ትኬቴ	my ticket
 ትኬትህ	your ticket
 ትኬትሽ	your ticket
-ትኬቱ	his ticket|the ticket
+ትኬቱ	the ticket|his ticket
 ትኬታችን	our ticket
 ትኬታችሁ	your ticket
 ትኬታቸው	their ticket
@@ -4333,7 +4333,7 @@
 ሻንጣዬ	my suitcase
 ሻንጣህ	your suitcase
 ሻንጣሽ	your suitcase
-ሻንጣው	his suitcase|the suitcase
+ሻንጣው	the suitcase|his suitcase
 ሻንጣዋ	her suitcase
 ሻንጣችን	our suitcase
 ሻንጣችሁ	your suitcase
@@ -4341,7 +4341,7 @@
 ዕቃዬ	my belongings
 ዕቃህ	your belongings
 ዕቃሽ	your belongings
-ዕቃው	his belongings|the belongings
+ዕቃው	the belongings|his belongings
 ዕቃዋ	her belongings
 ዕቃችን	our belongings
 ዕቃችሁ	your belongings
@@ -4349,7 +4349,7 @@
 ሸሚዜ	my shirt
 ሸሚዝህ	your shirt
 ሸሚዝሽ	your shirt
-ሸሚዙ	his shirt|the shirt
+ሸሚዙ	the shirt|his shirt
 ሸሚዛችን	our shirt
 ሸሚዛችሁ	your shirt
 ሸሚዛቸው	their shirt
@@ -4357,7 +4357,7 @@
 ቀሚሴ	my dress
 ቀሚስህ	your dress
 ቀሚስሽ	your dress
-ቀሚሱ	his dress|the dress
+ቀሚሱ	the dress|his dress
 ቀሚሳችን	our dress
 ቀሚሳችሁ	your dress
 ቀሚሳቸው	their dress
@@ -4365,7 +4365,7 @@
 ኮቴ	my coat
 ኮትህ	your coat
 ኮትሽ	your coat
-ኮቱ	his coat|the coat
+ኮቱ	the coat|his coat
 ኮታችን	our coat
 ኮታችሁ	your coat
 ኮታቸው	their coat
@@ -4373,7 +4373,7 @@
 ኮፍያዬ	my hat
 ኮፍያህ	your hat
 ኮፍያሽ	your hat
-ኮፍያው	his hat|the hat
+ኮፍያው	the hat|his hat
 ኮፍያዋ	her hat
 ኮፍያችን	our hat
 ኮፍያችሁ	your hat
@@ -4381,7 +4381,7 @@
 መነፅሬ	my glasses
 መነፅርህ	your glasses
 መነፅርሽ	your glasses
-መነፅሩ	his glasses|the glasses
+መነፅሩ	the glasses|his glasses
 መነፅራችን	our glasses
 መነፅራችሁ	your glasses
 መነፅራቸው	their glasses
@@ -4389,7 +4389,7 @@
 ቀለበቴ	my ring
 ቀለበትህ	your ring
 ቀለበትሽ	your ring
-ቀለበቱ	his ring|the ring
+ቀለበቱ	the ring|his ring
 ቀለበታችን	our ring
 ቀለበታችሁ	your ring
 ቀለበታቸው	their ring
@@ -4397,7 +4397,7 @@
 ትራሴ	my pillow
 ትራስህ	your pillow
 ትራስሽ	your pillow
-ትራሱ	his pillow|the pillow
+ትራሱ	the pillow|his pillow
 ትራሳችን	our pillow
 ትራሳችሁ	your pillow
 ትራሳቸው	their pillow
@@ -4405,7 +4405,7 @@
 ቴሌቪዥኔ	my television
 ቴሌቪዥንህ	your television
 ቴሌቪዥንሽ	your television
-ቴሌቪዥኑ	his television|the television
+ቴሌቪዥኑ	the television|his television
 ቴሌቪዥናችን	our television
 ቴሌቪዥናችሁ	your television
 ቴሌቪዥናቸው	their television
@@ -4413,7 +4413,7 @@
 ፍሪጄ	my fridge
 ፍሪጅህ	your fridge
 ፍሪጅሽ	your fridge
-ፍሪጁ	his fridge|the fridge
+ፍሪጁ	the fridge|his fridge
 ፍሪጃችን	our fridge
 ፍሪጃችሁ	your fridge
 ፍሪጃቸው	their fridge
@@ -4421,7 +4421,7 @@
 ቻርጀሬ	my charger
 ቻርጀርህ	your charger
 ቻርጀርሽ	your charger
-ቻርጀሩ	his charger|the charger
+ቻርጀሩ	the charger|his charger
 ቻርጀራችን	our charger
 ቻርጀራችሁ	your charger
 ቻርጀራቸው	their charger
@@ -4429,7 +4429,7 @@
 ላፕቶፔ	my laptop
 ላፕቶፕህ	your laptop
 ላፕቶፕሽ	your laptop
-ላፕቶፑ	his laptop|the laptop
+ላፕቶፑ	the laptop|his laptop
 ላፕቶፓችን	our laptop
 ላፕቶፓችሁ	your laptop
 ላፕቶፓቸው	their laptop
@@ -4437,7 +4437,7 @@
 ሰውነቴ	my body
 ሰውነትህ	your body
 ሰውነትሽ	your body
-ሰውነቱ	his body|the body
+ሰውነቱ	the body|his body
 ሰውነታችን	our body
 ሰውነታችሁ	your body
 ሰውነታቸው	their body
@@ -4445,7 +4445,7 @@
 ደሜ	my blood
 ደምህ	your blood
 ደምሽ	your blood
-ደሙ	his blood|the blood
+ደሙ	the blood|his blood
 ደማችን	our blood
 ደማችሁ	your blood
 ደማቸው	their blood
@@ -4453,7 +4453,7 @@
 መድሃኒቴ	my medicine
 መድሃኒትህ	your medicine
 መድሃኒትሽ	your medicine
-መድሃኒቱ	his medicine|the medicine
+መድሃኒቱ	the medicine|his medicine
 መድሃኒታችን	our medicine
 መድሃኒታችሁ	your medicine
 መድሃኒታቸው	their medicine
@@ -4461,7 +4461,7 @@
 ዘመዴ	my relative
 ዘመድህ	your relative
 ዘመድሽ	your relative
-ዘመዱ	his relative|the relative
+ዘመዱ	the relative|his relative
 ዘመዳችን	our relative
 ዘመዳችሁ	your relative
 ዘመዳቸው	their relative
@@ -4469,28 +4469,28 @@
 ወላጄ	my parent
 ወላጅህ	your parent
 ወላጅሽ	your parent
-ወላጁ	his parent|the parent
+ወላጁ	the parent|his parent
 ወላጃችን	our parent
 ወላጃችሁ	your parent
 ወላጃቸው	their parent
 ወላጇ	her parent
 አጎትህ	your uncle
 አጎትሽ	your uncle
-አጎቱ	his uncle|the uncle
+አጎቱ	the uncle|his uncle
 አጎታችን	our uncle
 አጎታችሁ	your uncle
 አጎታቸው	their uncle
 አጎቷ	her uncle
 አክስትህ	your aunt
 አክስትሽ	your aunt
-አክስቱ	his aunt|the aunt
+አክስቱ	the aunt|his aunt
 አክስታችን	our aunt
 አክስታችሁ	your aunt
 አክስታቸው	their aunt
 አክስቷ	her aunt
 አያትህ	your grandparent
 አያትሽ	your grandparent
-አያቱ	his grandparent|the grandparent
+አያቱ	the grandparent|his grandparent
 አያታችን	our grandparent
 አያታችሁ	your grandparent
 አያታቸው	their grandparent
@@ -4498,7 +4498,7 @@
 ወዳጄ	my friend
 ወዳጅህ	your friend
 ወዳጅሽ	your friend
-ወዳጁ	his friend|the friend
+ወዳጁ	the friend|his friend
 ወዳጃችን	our friend
 ወዳጃችሁ	your friend
 ወዳጃቸው	their friend
@@ -4506,7 +4506,7 @@
 ጠላቴ	my enemy
 ጠላትህ	your enemy
 ጠላትሽ	your enemy
-ጠላቱ	his enemy|the enemy
+ጠላቱ	the enemy|his enemy
 ጠላታችን	our enemy
 ጠላታችሁ	your enemy
 ጠላታቸው	their enemy
@@ -4514,7 +4514,7 @@
 እንግዳዬ	my guest
 እንግዳህ	your guest
 እንግዳሽ	your guest
-እንግዳው	his guest|the guest
+እንግዳው	the guest|his guest
 እንግዳዋ	her guest
 እንግዳችን	our guest
 እንግዳችሁ	your guest
@@ -4522,7 +4522,7 @@
 ፎቶግራፌ	my photograph
 ፎቶግራፍህ	your photograph
 ፎቶግራፍሽ	your photograph
-ፎቶግራፉ	his photograph|the photograph
+ፎቶግራፉ	the photograph|his photograph
 ፎቶግራፋችን	our photograph
 ፎቶግራፋችሁ	your photograph
 ፎቶግራፋቸው	their photograph
@@ -4530,7 +4530,7 @@
 መንገዴ	my way
 መንገድህ	your way
 መንገድሽ	your way
-መንገዱ	his way|the way
+መንገዱ	the way|his way
 መንገዳችን	our way
 መንገዳችሁ	your way
 መንገዳቸው	their way
@@ -4538,7 +4538,7 @@
 ፈተናዬ	my exam
 ፈተናህ	your exam
 ፈተናሽ	your exam
-ፈተናው	his exam|the exam
+ፈተናው	the exam|his exam
 ፈተናዋ	her exam
 ፈተናችን	our exam
 ፈተናችሁ	your exam
@@ -4546,7 +4546,7 @@
 ውጤቴ	my result
 ውጤትህ	your result
 ውጤትሽ	your result
-ውጤቱ	his result|the result
+ውጤቱ	the result|his result
 ውጤታችን	our result
 ውጤታችሁ	your result
 ውጤታቸው	their result
@@ -4554,7 +4554,7 @@
 ማስታወሻዬ	my note
 ማስታወሻህ	your note
 ማስታወሻሽ	your note
-ማስታወሻው	his note|the note
+ማስታወሻው	the note|his note
 ማስታወሻዋ	her note
 ማስታወሻችን	our note
 ማስታወሻችሁ	your note
@@ -4562,7 +4562,7 @@
 ደብተሬ	my notebook
 ደብተርህ	your notebook
 ደብተርሽ	your notebook
-ደብተሩ	his notebook|the notebook
+ደብተሩ	the notebook|his notebook
 ደብተራችን	our notebook
 ደብተራችሁ	your notebook
 ደብተራቸው	their notebook
@@ -4570,7 +4570,7 @@
 ብዕሬ	my pen
 ብዕርህ	your pen
 ብዕርሽ	your pen
-ብዕሩ	his pen|the pen
+ብዕሩ	the pen|his pen
 ብዕራችን	our pen
 ብዕራችሁ	your pen
 ብዕራቸው	their pen
@@ -4578,7 +4578,7 @@
 እርሳሴ	my pencil
 እርሳስህ	your pencil
 እርሳስሽ	your pencil
-እርሳሱ	his pencil|the pencil
+እርሳሱ	the pencil|his pencil
 እርሳሳችን	our pencil
 እርሳሳችሁ	your pencil
 እርሳሳቸው	their pencil
@@ -4586,13 +4586,13 @@
 ሾፌሬ	my driver
 ሾፌርህ	your driver
 ሾፌርሽ	your driver
-ሾፌሩ	his driver|the driver
+ሾፌሩ	the driver|his driver
 ሾፌራችን	our driver
 ሾፌራችሁ	your driver
 ሾፌራቸው	their driver
 ሾፌሯ	her driver
 ተራሽ	your turn
-ተራው	his turn|the turn
+ተራው	the turn|his turn
 ተራዋ	her turn
 ተራችን	our turn
 ተራችሁ	your turn
@@ -4600,7 +4600,7 @@
 ሚስጥሬ	my secret
 ሚስጥርህ	your secret
 ሚስጥርሽ	your secret
-ሚስጥሩ	his secret|the secret
+ሚስጥሩ	the secret|his secret
 ሚስጥራችን	our secret
 ሚስጥራችሁ	your secret
 ሚስጥራቸው	their secret
@@ -4608,7 +4608,7 @@
 ፍላጎቴ	my wish
 ፍላጎትህ	your wish
 ፍላጎትሽ	your wish
-ፍላጎቱ	his wish|the wish
+ፍላጎቱ	the wish|his wish
 ፍላጎታችን	our wish
 ፍላጎታችሁ	your wish
 ፍላጎታቸው	their wish
@@ -4616,7 +4616,7 @@
 ስሜቴ	my feeling
 ስሜትህ	your feeling
 ስሜትሽ	your feeling
-ስሜቱ	his feeling|the feeling
+ስሜቱ	the feeling|his feeling
 ስሜታችን	our feeling
 ስሜታችሁ	your feeling
 ስሜታቸው	their feeling
@@ -4624,7 +4624,7 @@
 ድካሜ	my tiredness
 ድካምህ	your tiredness
 ድካምሽ	your tiredness
-ድካሙ	his tiredness|the tiredness
+ድካሙ	the tiredness|his tiredness
 ድካማችን	our tiredness
 ድካማችሁ	your tiredness
 ድካማቸው	their tiredness
@@ -4632,7 +4632,7 @@
 ልማዴ	my habit
 ልማድህ	your habit
 ልማድሽ	your habit
-ልማዱ	his habit|the habit
+ልማዱ	the habit|his habit
 ልማዳችን	our habit
 ልማዳችሁ	your habit
 ልማዳቸው	their habit
@@ -4640,7 +4640,7 @@
 ዕድሌ	my luck
 ዕድልህ	your luck
 ዕድልሽ	your luck
-ዕድሉ	his luck|the luck
+ዕድሉ	the luck|his luck
 ዕድላችን	our luck
 ዕድላችሁ	your luck
 ዕድላቸው	their luck
@@ -4648,7 +4648,7 @@
 እድሌ	my luck
 እድልህ	your luck
 እድልሽ	your luck
-እድሉ	his luck|the luck
+እድሉ	the luck|his luck
 እድላችን	our luck
 እድላችሁ	your luck
 እድላቸው	their luck
@@ -4656,7 +4656,7 @@
 ፀሎቴ	my prayer
 ፀሎትህ	your prayer
 ፀሎትሽ	your prayer
-ፀሎቱ	his prayer|the prayer
+ፀሎቱ	the prayer|his prayer
 ፀሎታችን	our prayer
 ፀሎታችሁ	your prayer
 ፀሎታቸው	their prayer
@@ -4664,7 +4664,7 @@
 ጸሎቴ	my prayer
 ጸሎትህ	your prayer
 ጸሎትሽ	your prayer
-ጸሎቱ	his prayer|the prayer
+ጸሎቱ	the prayer|his prayer
 ጸሎታችን	our prayer
 ጸሎታችሁ	your prayer
 ጸሎታቸው	their prayer
@@ -4672,7 +4672,7 @@
 ምክሬ	my advice
 ምክርህ	your advice
 ምክርሽ	your advice
-ምክሩ	his advice|the advice
+ምክሩ	the advice|his advice
 ምክራችን	our advice
 ምክራችሁ	your advice
 ምክራቸው	their advice
@@ -4680,7 +4680,7 @@
 ፍርዴ	my judgement
 ፍርድህ	your judgement
 ፍርድሽ	your judgement
-ፍርዱ	his judgement|the judgement
+ፍርዱ	the judgement|his judgement
 ፍርዳችን	our judgement
 ፍርዳችሁ	your judgement
 ፍርዳቸው	their judgement
@@ -4688,7 +4688,7 @@
 ፈቃዴ	my permission
 ፈቃድህ	your permission
 ፈቃድሽ	your permission
-ፈቃዱ	his permission|the permission
+ፈቃዱ	the permission|his permission
 ፈቃዳችን	our permission
 ፈቃዳችሁ	your permission
 ፈቃዳቸው	their permission
@@ -4696,7 +4696,7 @@
 መሬቴ	my land
 መሬትህ	your land
 መሬትሽ	your land
-መሬቱ	his land|the land
+መሬቱ	the land|his land
 መሬታችን	our land
 መሬታችሁ	your land
 መሬታቸው	their land
@@ -4704,7 +4704,7 @@
 እርሻዬ	my farm
 እርሻህ	your farm
 እርሻሽ	your farm
-እርሻው	his farm|the farm
+እርሻው	the farm|his farm
 እርሻዋ	her farm
 እርሻችን	our farm
 እርሻችሁ	your farm
@@ -4712,7 +4712,7 @@
 ከብቴ	my cattle
 ከብትህ	your cattle
 ከብትሽ	your cattle
-ከብቱ	his cattle|the cattle
+ከብቱ	the cattle|his cattle
 ከብታችን	our cattle
 ከብታችሁ	your cattle
 ከብታቸው	their cattle
@@ -4720,7 +4720,7 @@
 በጌ	my sheep
 በግህ	your sheep
 በግሽ	your sheep
-በጉ	his sheep|the sheep
+በጉ	the sheep|his sheep
 በጋችን	our sheep
 በጋችሁ	your sheep
 በጋቸው	their sheep
@@ -4728,7 +4728,7 @@
 ፍየሌ	my goat
 ፍየልህ	your goat
 ፍየልሽ	your goat
-ፍየሉ	his goat|the goat
+ፍየሉ	the goat|his goat
 ፍየላችን	our goat
 ፍየላችሁ	your goat
 ፍየላቸው	their goat
@@ -4736,7 +4736,7 @@
 ዛፌ	my tree
 ዛፍህ	your tree
 ዛፍሽ	your tree
-ዛፉ	his tree|the tree
+ዛፉ	the tree|his tree
 ዛፋችን	our tree
 ዛፋችሁ	your tree
 ዛፋቸው	their tree
@@ -4744,7 +4744,7 @@
 አበባዬ	my flower
 አበባህ	your flower
 አበባሽ	your flower
-አበባው	his flower|the flower
+አበባው	the flower|his flower
 አበባዋ	her flower
 አበባችን	our flower
 አበባችሁ	your flower
@@ -4752,7 +4752,7 @@
 ትከሻዬ	my shoulder
 ትከሻህ	your shoulder
 ትከሻሽ	your shoulder
-ትከሻው	his shoulder|the shoulder
+ትከሻው	the shoulder|his shoulder
 ትከሻዋ	her shoulder
 ትከሻችን	our shoulder
 ትከሻችሁ	your shoulder
@@ -4760,7 +4760,7 @@
 አንገቴ	my neck
 አንገትህ	your neck
 አንገትሽ	your neck
-አንገቱ	his neck|the neck
+አንገቱ	the neck|his neck
 አንገታችን	our neck
 አንገታችሁ	your neck
 አንገታቸው	their neck
@@ -4768,7 +4768,7 @@
 ጣቴ	my finger
 ጣትህ	your finger
 ጣትሽ	your finger
-ጣቱ	his finger|the finger
+ጣቱ	the finger|his finger
 ጣታችን	our finger
 ጣታችሁ	your finger
 ጣታቸው	their finger
@@ -4776,7 +4776,7 @@
 ቆዳዬ	my skin
 ቆዳህ	your skin
 ቆዳሽ	your skin
-ቆዳው	his skin|the skin
+ቆዳው	the skin|his skin
 ቆዳዋ	her skin
 ቆዳችን	our skin
 ቆዳችሁ	your skin
@@ -4784,7 +4784,7 @@
 ፍራሼ	my mattress
 ፍራሽህ	your mattress
 ፍራሽሽ	your mattress
-ፍራሹ	his mattress|the mattress
+ፍራሹ	the mattress|his mattress
 ፍራሻችን	our mattress
 ፍራሻችሁ	your mattress
 ፍራሻቸው	their mattress
@@ -4792,7 +4792,7 @@
 ሳህኔ	my plate
 ሳህንህ	your plate
 ሳህንሽ	your plate
-ሳህኑ	his plate|the plate
+ሳህኑ	the plate|his plate
 ሳህናችን	our plate
 ሳህናችሁ	your plate
 ሳህናቸው	their plate
@@ -4800,7 +4800,7 @@
 ድስቴ	my pot
 ድስትህ	your pot
 ድስትሽ	your pot
-ድስቱ	his pot|the pot
+ድስቱ	the pot|his pot
 ድስታችን	our pot
 ድስታችሁ	your pot
 ድስታቸው	their pot
@@ -4808,7 +4808,7 @@
 ማንኪያዬ	my spoon
 ማንኪያህ	your spoon
 ማንኪያሽ	your spoon
-ማንኪያው	his spoon|the spoon
+ማንኪያው	the spoon|his spoon
 ማንኪያዋ	her spoon
 ማንኪያችን	our spoon
 ማንኪያችሁ	your spoon
@@ -4816,7 +4816,7 @@
 ቢላዋዬ	my knife
 ቢላዋህ	your knife
 ቢላዋሽ	your knife
-ቢላዋው	his knife|the knife
+ቢላዋው	the knife|his knife
 ቢላዋዋ	her knife
 ቢላዋችን	our knife
 ቢላዋችሁ	your knife
@@ -4824,7 +4824,7 @@
 ሳሙናዬ	my soap
 ሳሙናህ	your soap
 ሳሙናሽ	your soap
-ሳሙናው	his soap|the soap
+ሳሙናው	the soap|his soap
 ሳሙናዋ	her soap
 ሳሙናችን	our soap
 ሳሙናችሁ	your soap
@@ -4832,7 +4832,7 @@
 ፎጣዬ	my towel
 ፎጣህ	your towel
 ፎጣሽ	your towel
-ፎጣው	his towel|the towel
+ፎጣው	the towel|his towel
 ፎጣዋ	her towel
 ፎጣችን	our towel
 ፎጣችሁ	your towel
@@ -4840,7 +4840,7 @@
 መስኮቴ	my window
 መስኮትህ	your window
 መስኮትሽ	your window
-መስኮቱ	his window|the window
+መስኮቱ	the window|his window
 መስኮታችን	our window
 መስኮታችሁ	your window
 መስኮታቸው	their window
@@ -4848,7 +4848,7 @@
 ግድግዳዬ	my wall
 ግድግዳህ	your wall
 ግድግዳሽ	your wall
-ግድግዳው	his wall|the wall
+ግድግዳው	the wall|his wall
 ግድግዳዋ	her wall
 ግድግዳችን	our wall
 ግድግዳችሁ	your wall
@@ -4856,7 +4856,7 @@
 ጣሪያዬ	my roof
 ጣሪያህ	your roof
 ጣሪያሽ	your roof
-ጣሪያው	his roof|the roof
+ጣሪያው	the roof|his roof
 ጣሪያዋ	her roof
 ጣሪያችን	our roof
 ጣሪያችሁ	your roof
@@ -4864,7 +4864,7 @@
 አትክልቴ	my garden
 አትክልትህ	your garden
 አትክልትሽ	your garden
-አትክልቱ	his garden|the garden
+አትክልቱ	the garden|his garden
 አትክልታችን	our garden
 አትክልታችሁ	your garden
 አትክልታቸው	their garden
@@ -4872,7 +4872,7 @@
 እንቁላሌ	my egg
 እንቁላልህ	your egg
 እንቁላልሽ	your egg
-እንቁላሉ	his egg|the egg
+እንቁላሉ	the egg|his egg
 እንቁላላችን	our egg
 እንቁላላችሁ	your egg
 እንቁላላቸው	their egg
@@ -4880,7 +4880,7 @@
 ወተቴ	my milk
 ወተትህ	your milk
 ወተትሽ	your milk
-ወተቱ	his milk|the milk
+ወተቱ	the milk|his milk
 ወተታችን	our milk
 ወተታችሁ	your milk
 ወተታቸው	their milk
@@ -4888,7 +4888,7 @@
 ዘይቴ	my oil
 ዘይትህ	your oil
 ዘይትሽ	your oil
-ዘይቱ	his oil|the oil
+ዘይቱ	the oil|his oil
 ዘይታችን	our oil
 ዘይታችሁ	your oil
 ዘይታቸው	their oil
@@ -4896,14 +4896,14 @@
 ስኳሬ	my sugar
 ስኳርህ	your sugar
 ስኳርሽ	your sugar
-ስኳሩ	his sugar|the sugar
+ስኳሩ	the sugar|his sugar
 ስኳራችን	our sugar
 ስኳራችሁ	your sugar
 ስኳራቸው	their sugar
 ስኳሯ	her sugar
 ማርህ	your honey
 ማርሽ	your honey
-ማሩ	his honey|the honey
+ማሩ	the honey|his honey
 ማራችን	our honey
 ማራችሁ	your honey
 ማራቸው	their honey
@@ -4911,7 +4911,7 @@
 ገበያዬ	my market
 ገበያህ	your market
 ገበያሽ	your market
-ገበያው	his market|the market
+ገበያው	the market|his market
 ገበያዋ	her market
 ገበያችን	our market
 ገበያችሁ	your market
@@ -4919,7 +4919,7 @@
 ሆስፒታሌ	my hospital
 ሆስፒታልህ	your hospital
 ሆስፒታልሽ	your hospital
-ሆስፒታሉ	his hospital|the hospital
+ሆስፒታሉ	the hospital|his hospital
 ሆስፒታላችን	our hospital
 ሆስፒታላችሁ	your hospital
 ሆስፒታላቸው	their hospital
@@ -4927,7 +4927,7 @@
 ስብሰባዬ	my meeting
 ስብሰባህ	your meeting
 ስብሰባሽ	your meeting
-ስብሰባው	his meeting|the meeting
+ስብሰባው	the meeting|his meeting
 ስብሰባዋ	her meeting
 ስብሰባችን	our meeting
 ስብሰባችሁ	your meeting
@@ -4935,7 +4935,7 @@
 ጥናቴ	my study
 ጥናትህ	your study
 ጥናትሽ	your study
-ጥናቱ	his study|the study
+ጥናቱ	the study|his study
 ጥናታችን	our study
 ጥናታችሁ	your study
 ጥናታቸው	their study
@@ -4943,7 +4943,7 @@
 ምርምሬ	my research
 ምርምርህ	your research
 ምርምርሽ	your research
-ምርምሩ	his research|the research
+ምርምሩ	the research|his research
 ምርምራችን	our research
 ምርምራችሁ	your research
 ምርምራቸው	their research
@@ -4951,7 +4951,7 @@
 ሰርተፊኬቴ	my certificate
 ሰርተፊኬትህ	your certificate
 ሰርተፊኬትሽ	your certificate
-ሰርተፊኬቱ	his certificate|the certificate
+ሰርተፊኬቱ	the certificate|his certificate
 ሰርተፊኬታችን	our certificate
 ሰርተፊኬታችሁ	your certificate
 ሰርተፊኬታቸው	their certificate
@@ -4959,7 +4959,7 @@
 ደረጃዬ	my level
 ደረጃህ	your level
 ደረጃሽ	your level
-ደረጃው	his level|the level
+ደረጃው	the level|his level
 ደረጃዋ	her level
 ደረጃችን	our level
 ደረጃችሁ	your level
@@ -4967,7 +4967,7 @@
 ውድድሬ	my competition
 ውድድርህ	your competition
 ውድድርሽ	your competition
-ውድድሩ	his competition|the competition
+ውድድሩ	the competition|his competition
 ውድድራችን	our competition
 ውድድራችሁ	your competition
 ውድድራቸው	their competition
@@ -4975,7 +4975,7 @@
 ዋንጫዬ	my cup
 ዋንጫህ	your cup
 ዋንጫሽ	your cup
-ዋንጫው	his cup|the cup
+ዋንጫው	the cup|his cup
 ዋንጫዋ	her cup
 ዋንጫችን	our cup
 ዋንጫችሁ	your cup
@@ -4983,7 +4983,7 @@
 ሽልማቴ	my prize
 ሽልማትህ	your prize
 ሽልማትሽ	your prize
-ሽልማቱ	his prize|the prize
+ሽልማቱ	the prize|his prize
 ሽልማታችን	our prize
 ሽልማታችሁ	your prize
 ሽልማታቸው	their prize
@@ -4991,7 +4991,7 @@
 ሰነዴ	my document
 ሰነድህ	your document
 ሰነድሽ	your document
-ሰነዱ	his document|the document
+ሰነዱ	the document|his document
 ሰነዳችን	our document
 ሰነዳችሁ	your document
 ሰነዳቸው	their document
@@ -4999,7 +4999,7 @@
 ፊርማዬ	my signature
 ፊርማህ	your signature
 ፊርማሽ	your signature
-ፊርማው	his signature|the signature
+ፊርማው	the signature|his signature
 ፊርማዋ	her signature
 ፊርማችን	our signature
 ፊርማችሁ	your signature
@@ -5007,7 +5007,7 @@
 ውሌ	my contract
 ውልህ	your contract
 ውልሽ	your contract
-ውሉ	his contract|the contract
+ውሉ	the contract|his contract
 ውላችን	our contract
 ውላችሁ	your contract
 ውላቸው	their contract
@@ -5015,7 +5015,7 @@
 ጋብቻዬ	my marriage
 ጋብቻህ	your marriage
 ጋብቻሽ	your marriage
-ጋብቻው	his marriage|the marriage
+ጋብቻው	the marriage|his marriage
 ጋብቻዋ	her marriage
 ጋብቻችን	our marriage
 ጋብቻችሁ	your marriage
@@ -5023,7 +5023,7 @@
 ትዳሬ	my marriage
 ትዳርህ	your marriage
 ትዳርሽ	your marriage
-ትዳሩ	his marriage|the marriage
+ትዳሩ	the marriage|his marriage
 ትዳራችን	our marriage
 ትዳራችሁ	your marriage
 ትዳራቸው	their marriage
@@ -5031,7 +5031,7 @@
 ጉብኝቴ	my visit
 ጉብኝትህ	your visit
 ጉብኝትሽ	your visit
-ጉብኝቱ	his visit|the visit
+ጉብኝቱ	the visit|his visit
 ጉብኝታችን	our visit
 ጉብኝታችሁ	your visit
 ጉብኝታቸው	their visit
@@ -5039,7 +5039,7 @@
 ዕረፍቴ	my vacation
 ዕረፍትህ	your vacation
 ዕረፍትሽ	your vacation
-ዕረፍቱ	his vacation|the vacation
+ዕረፍቱ	the vacation|his vacation
 ዕረፍታችን	our vacation
 ዕረፍታችሁ	your vacation
 ዕረፍታቸው	their vacation
@@ -5047,7 +5047,7 @@
 በዓሌ	my holiday
 በዓልህ	your holiday
 በዓልሽ	your holiday
-በዓሉ	his holiday|the holiday
+በዓሉ	the holiday|his holiday
 በዓላችን	our holiday
 በዓላችሁ	your holiday
 በዓላቸው	their holiday

@@ -60,7 +60,7 @@ class TranslateTextTest {
 
     @Test fun amharicSentenceToEnglish() {
         assertEquals("Hello how are you?", t.translateText("ሰላም እንዴት ነህ?"))
-        assertEquals("Very thank you.", t.translateText("በጣም አመሰግናለሁ።")) // word by word, order kept
+        assertEquals("Thank you very much.", t.translateText("በጣም አመሰግናለሁ።"))
         assertEquals("My house.", t.translateText("ቤቴ።"))
     }
 
@@ -70,6 +70,27 @@ class TranslateTextTest {
         assertEquals("ደህና እደር", t.translateText("good night"))
         assertTrue(t.translateText("I love you").contains("እወድ"), t.translateText("I love you"))
         assertEquals("ውሃ፣ ቡና።", t.translateText("water, coffee."))
+    }
+
+    @Test fun grammarAmharicToEnglish() {
+        assertEquals("I want coffee", t.translateText("ቡና እፈልጋለሁ"))           // SOV → SVO
+        assertEquals("I am going to the market", t.translateText("ወደ ገበያ እሄዳለሁ"))
+        assertEquals("The house is big.", t.translateText("ቤቱ ትልቅ ነው።"))   // copula moves
+        assertEquals("What is this?", t.translateText("ይህ ምንድን ነው?"))        // question word first
+        assertEquals("It is good", t.translateText("ጥሩ ነው"))                  // implied subject
+        assertEquals("I am fine", t.translateText("ደህና ነኝ"))
+    }
+
+    @Test fun grammarEnglishToAmharic() {
+        assertEquals("ቡና እፈልጋለሁ", t.translateText("I want coffee"))           // verb last
+        assertEquals("ደህና ነኝ", t.translateText("I am fine"))                   // copula, no pronoun
+        assertEquals("ቤቱ ትልቅ ነው", t.translateText("the house is big")) // "the house" → definite ቤቱ
+        assertEquals("በጣም አመሰግናለሁ", t.translateText("thank you very much"))
+        assertEquals("በአዲስ አበባ እኖራለሁ", t.translateText("I live in Addis Ababa")) // in → በ
+        assertEquals("ወደ ገበያው እሄዳለሁ።", t.translateText("I am going to the market.")) // the market → ገበያው
+        assertEquals("ከእኔ ጋር", t.translateText("with me"))
+        assertEquals("ጠረጴዛ ላይ", t.translateText("on the table"))
+        assertEquals("የት ነህ?", t.translateText("where are you?"))
     }
 
     @Test fun unknownWordsAreKept() {
