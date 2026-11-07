@@ -1,0 +1,158 @@
+# Places, city, travel, transport, directions
+ቦታ	place|space|location
+ቦታዎች	places
+አካባቢ	area|neighbourhood|environment
+ሰፈር	neighbourhood|quarter
+ከተማ	city|town
+ከተሞች	cities|towns
+ዋና ከተማ	capital city
+ገጠር	countryside|rural area
+መንደር	village
+ቀበሌ	kebele|local district
+ወረዳ	woreda|district
+ዞን	zone
+ክልል	region|state
+አገር	country
+ሀገር	country
+ሀገሬ	my country
+አገሬ	my country
+ድንበር	border
+ዓለም አቀፍ	international
+ሀገር ውስጥ	domestic|local
+አዲስ አበባ	Addis Ababa
+ጎንደር	Gondar
+ባሕር ዳር	Bahir Dar
+መቀሌ	Mekelle
+ሀዋሳ	Hawassa
+ድሬ ዳዋ	Dire Dawa
+ድሬዳዋ	Dire Dawa
+አዳማ	Adama
+ጅማ	Jimma
+ደሴ	Dessie
+ሐረር	Harar
+ላሊበላ	Lalibela
+አክሱም	Axum
+አሜሪካ	America|USA
+እንግሊዝ	England|Britain
+ጣሊያን	Italy
+ፈረንሳይ	France
+ጀርመን	Germany
+ቻይና	China
+ህንድ	India
+ጃፓን	Japan
+ኬንያ	Kenya
+ሱዳን	Sudan
+ጅቡቲ	Djibouti
+ሶማሊያ	Somalia
+ኤርትራ	Eritrea
+ግብፅ	Egypt
+ሳዑዲ አረቢያ	Saudi Arabia
+ዱባይ	Dubai
+እስራኤል	Israel
+ካናዳ	Canada
+አውስትራሊያ	Australia
+መንገድ	road|street|way
+ጎዳና	street|avenue
+አውራ ጎዳና	highway|main road
+መስቀለኛ መንገድ	crossroads|intersection
+አደባባይ	square|roundabout
+ድልድይ	bridge
+ዋሻ	tunnel|cave
+የእግረኛ መንገድ	sidewalk|footpath
+ትራፊክ	traffic
+የትራፊክ መብራት	traffic light
+መናኸሪያ	bus station|terminal
+ፌርማታ	bus stop
+ጣቢያ	station
+የባቡር ጣቢያ	train station
+አውሮፕላን ማረፊያ	airport
+ኤርፖርት	airport
+ወደብ	port|harbour
+ማቆሚያ	parking|stop
+መኪና ማቆሚያ	parking lot
+ነዳጅ ማደያ	petrol station|gas station
+ገበያ	market
+ሱቅ	shop|store
+ሱቆች	shops
+ሱፐርማርኬት	supermarket
+የገበያ አዳራሽ	shopping mall
+ሞል	mall
+ባንክ	bank
+ፖስታ ቤት	post office
+ቤተ መጻሕፍት	library
+ቤተ መዘክር	museum
+ሙዚየም	museum
+መናፈሻ	park
+ፓርክ	park
+ስታዲየም	stadium
+ሲኒማ	cinema
+ቲያትር	theatre|theater
+አዳራሽ	hall
+ሆቴል	hotel
+ሆስቴል	hostel
+ፋብሪካ	factory
+ቢሮ	office
+ሕንፃ	building
+ህንፃ	building
+ፎቅ	floor|storey|multi-storey building
+ግንብ	tower|castle|wall
+ቤተ መንግሥት	palace
+ቤተ ክርስቲያን	church
+መስጊድ	mosque
+ገዳም	monastery
+ትምህርት ቤት	school
+ዩኒቨርሲቲ	university
+ፍርድ ቤት	court
+እስር ቤት	prison|jail
+ፖሊስ ጣቢያ	police station
+ማዘጋጃ ቤት	municipality|city hall
+ኤምባሲ	embassy
+ጉዞ	journey|trip|travel
+ጉብኝት	visit|tour
+መጓዝ	to travel
+ተጓዥ	traveller|traveler
+ቱሪዝም	tourism
+ቲኬት	ticket
+ትኬት	ticket
+ፓስፖርት	passport
+ቪዛ	visa
+ካርታ	map|card
+አድራሻ	address
+አቅጣጫ	direction
+ሰሜን	north
+ደቡብ	south
+ምሥራቅ	east
+ምስራቅ	east
+ምዕራብ	west
+መኪና	car|vehicle
+መኪኖች	cars
+ተሽከርካሪ	vehicle
+አውቶቡስ	bus
+ሚኒባስ	minibus
+ታክሲ	taxi
+ባጃጅ	bajaj|tuk-tuk
+ብስክሌት	bicycle|bike
+ሞተር ሳይክል	motorcycle
+ጭነት መኪና	truck|lorry
+አይሱዙ	truck
+ባቡር	train
+ቀላል ባቡር	light rail
+አውሮፕላን	airplane|plane
+ሄሊኮፕተር	helicopter
+መርከብ	ship
+ጀልባ	boat
+ጋሪ	cart|carriage
+ጎማ	tyre|tire|wheel
+መሪ	steering wheel|leader
+ፍሬን	brake
+መንጃ ፈቃድ	driving licence|driver's license
+ማሽከርከር	to drive
+መሳፈር	to board|to ride
+መውረድ	to get off|to go down
+መድረስ	to arrive|to reach
+መነሳት	to depart|to get up
+ቀጥ ብለህ ሂድ	go straight
+ወደ ቀኝ ታጠፍ	turn right
+ወደ ግራ ታጠፍ	turn left
+ቅርብ ነው	it is near
+ሩቅ ነው	it is far

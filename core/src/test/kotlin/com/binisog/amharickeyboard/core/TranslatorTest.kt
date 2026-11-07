@@ -11,7 +11,18 @@ class TranslatorTest {
         load(File(assets, "translations.tsv").inputStream())
     }
 
-    @Test fun loads() = assertTrue(t.size > 400)
+    @Test fun loads() = assertTrue(t.size >= 5000, "only ${t.size} entries")
+
+    @Test fun dailyVocabulary() {
+        assertEquals("my house", t.translate("ቤቴ").first())
+        assertEquals("our money", t.translate("ገንዘባችን").first())
+        assertEquals("her phone", t.translate("ስልኳ").first())
+        assertEquals("I am hungry", t.translate("ርቦኛል").first())
+        assertEquals("I am tired", t.translate("ደክሞኛል").first())
+        assertTrue("ሂሳብ" in t.translate("bill", limit = 5))
+        assertTrue("ጉንፋን" in t.translate("flu", limit = 5))
+        assertTrue("ማሽከርከር" in t.translate("drive", limit = 5))
+    }
 
     @Test fun amharicToEnglish() {
         assertEquals("hello", t.translate("ሰላም").first())
@@ -27,7 +38,9 @@ class TranslatorTest {
     }
 
     @Test fun englishInflections() {
-        assertEquals("መኪና", t.translate("cars").first())
+        assertEquals("መኪኖች", t.translate("cars").first()) // has its own plural entry
+        assertEquals("መኪና", t.translate("car").first())
+        assertEquals("ጓደኛ", t.translate("friend").first())
         assertEquals("ፈለገ", t.translate("wanted").first())
     }
 

@@ -163,18 +163,18 @@ class SuggestionEngineTest {
 
     @Test fun userDataRoundTrip() {
         val e = amharic()
-        e.learn("ቡና", "እንጠጣ")
+        e.learn("ቡና", "ቡናጠጪዎቻችን")
         e.forget("ሰላም")
         val saved = e.dictionary.userDataToString()
 
         val e2 = amharic()
         e2.dictionary.readUserData(saved)
-        assertEquals("እንጠጣ", words(e2.suggest("ቡና", "")).first())
+        assertEquals("ቡናጠጪዎቻችን", words(e2.suggest("ቡና", "")).first())
         assertFalse("ሰላም" in e2.dictionary)
 
         e2.clearUserData()
         assertTrue("ሰላም" in e2.dictionary)
-        assertFalse("እንጠጣ" in e2.dictionary)
+        assertFalse("ቡናጠጪዎቻችን" in e2.dictionary)
     }
 
     @Test fun binaryCacheRoundTrip() {

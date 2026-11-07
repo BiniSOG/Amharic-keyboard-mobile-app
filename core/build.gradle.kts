@@ -20,5 +20,7 @@ dependencies {
 
 tasks.test {
     useJUnit()
+    // Tests read the shipped dictionaries directly; rerun them when the data changes.
+    inputs.dir(rootProject.file("app/src/main/assets")).withPropertyName("dictionaries")
     testLogging { events("failed"); exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL }
 }
