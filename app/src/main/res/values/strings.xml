@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Amharic Keyboard</string>
+    <string name="ime_name">Amharic Keyboard · አማርኛ</string>
+    <string name="subtype_amharic">አማርኛ (Amharic)</string>
+    <string name="subtype_english">English</string>
+
+    <string name="setup_title">Set up the keyboard</string>
+    <string name="setup_enable">1. Enable Amharic Keyboard</string>
+    <string name="setup_select">2. Switch to Amharic Keyboard</string>
+    <string name="setup_enabled">✓ Enabled</string>
+    <string name="setup_selected">✓ Active keyboard</string>
+    <string name="try_hint">Try it here… selam → ሰላም</string>
+    <string name="phonetic_help">Phonetic typing: le ለ · lu ሉ · li ሊ · la ላ · lE ሌ · l ል · lo ሎ · lua ሏ\nsh ሽ · ch ች · ny ኝ · ts ጽ · T ጥ · C ጭ · P ጵ · H ሕ · A ዓ · `s ሥ · `h ኅ\nUse an apostrophe to split syllables: l\'e → ልእ</string>
+
+    <string name="cat_layout">Layout</string>
+    <string name="cat_typing">Typing</string>
+    <string name="cat_suggestions">Suggestions &amp; learning</string>
+    <string name="cat_appearance">Look &amp; feel</string>
+    <string name="cat_dictionary">Personal dictionary</string>
+
+    <string name="pref_layouts">Enabled layouts</string>
+    <string name="pref_layouts_summary">Layouts the 🌐 key cycles through</string>
+    <string name="pref_number_row">Number row</string>
+    <string name="pref_number_row_summary">Always show a row of digits</string>
+    <string name="pref_hints">Fidel hints on keys</string>
+    <string name="pref_hints_summary">Show the Ge\'ez letter each latin key produces</string>
+    <string name="pref_double_space">Double-space full stop</string>
+    <string name="pref_double_space_summary">Two spaces insert ። (or . in English)</string>
+    <string name="pref_auto_space">Space after suggestion</string>
+    <string name="pref_auto_cap">Auto-capitalisation (English)</string>
+    <string name="pref_space_cursor">Swipe space bar to move the cursor</string>
+    <string name="pref_suggestions">Word suggestions</string>
+    <string name="pref_next_word">Next-word prediction</string>
+    <string name="pref_learn">Learn new words</string>
+    <string name="pref_learn_summary">Remember words and phrases you type (stored only on this device)</string>
+    <string name="pref_emoji">Emoji suggestions</string>
+    <string name="pref_theme">Theme</string>
+    <string name="pref_key_height">Key height</string>
+    <string name="pref_haptic">Vibrate on keypress</string>
+    <string name="pref_sound">Sound on keypress</string>
+    <string name="pref_preview">Key preview popup</string>
+    <string name="pref_clear">Clear learned words</string>
+    <string name="pref_clear_summary">%1$d learned Amharic and %2$d learned English words</string>
+    <string name="pref_clear_confirm">Forget every word and phrase the keyboard has learned?</string>
+    <string name="cleared">Learned words cleared</string>
+    <string name="removed_suggestion">“%1$s” removed from suggestions</string>
+    <string name="clipboard_empty">Clipboard history is empty</string>
+    <string name="loading">Loading dictionary…</string>
+
+    <string-array name="layout_entries">
+        <item>አማርኛ phonetic (QWERTY → ፊደል)</item>
+        <item>ፊደል grid (tap letter, pick vowel)</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="layout_values">
+        <item>am_phonetic</item>
+        <item>am_fidel</item>
+        <item>en</item>
+    </string-array>
+    <string-array name="theme_entries">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Ethiopian (green · gold · red)</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+        <item>ethiopia</item>
+    </string-array>
+    <string-array name="key_height_entries">
+        <item>Short</item>
+        <item>Normal</item>
+        <item>Tall</item>
+    </string-array>
+    <string-array name="key_height_values">
+        <item>46</item>
+        <item>54</item>
+        <item>62</item>
+    </string-array>
+</resources>

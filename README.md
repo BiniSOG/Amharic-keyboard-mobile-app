@@ -1,0 +1,105 @@
+# Amharic Keyboard · አማርኛ ኪቦርድ
+
+An Android keyboard (IME) for Amharic with phonetic typing, a Fidel grid layout, word
+completion, next-word prediction, on-device learning and caching.
+
+## Features
+
+**Typing**
+- **Phonetic layout (QWERTY → ፊደል).** Type `selam` and get **ሰላም**. Each keystroke updates the current syllable as you type (`l` ል → `la` ላ).
+- **Undo-aware backspace.** Backspace after `la` (ላ) goes back to `l` (ል), so you can fix a vowel without retyping the consonant.
+- **Fidel grid layout.** Every consonant has its own key in ሀ ለ ሐ መ order. Tap a letter, then choose its vowel form (ለ ሉ ሊ ላ ሌ ል ሎ ሏ) from the strip. You can also long-press a letter to get its forms.
+- **Long-press alternatives.** Long-press `s` for ስ ሥ ሽ ጽ ፅ, a vowel key for አ/ዐ forms, or `.` and `,` for Ethiopic punctuation.
+- **English layout** with accent popups, auto-capitalisation and English suggestions.
+- **Ethiopic punctuation and numerals:** ። ፣ ፤ ፥ ፦ ፧ ፡ ፨. There's a Ge'ez numeral page (፩–፱, ፲–፺, ፻, ፼), and typing digits suggests the Ge'ez form (`2026` → **፳፻፳፮**).
+- **Double space** inserts `። ` (or `. ` in English).
+- **Field-aware.** Number and phone fields get number pads. Email and URL fields get `@`, `/` and `.com` keys. Password fields get no suggestions, no learning and no composing. The keyboard also respects "no personalised learning" (incognito) fields.
+- The enter key shows the editor's action (Go, Search, Send, Next, Done).
+- **Space-bar swipe** moves the cursor, and long-pressing space opens the keyboard picker.
+- Delete auto-repeats when held and speeds up to deleting whole words. Multi-finger roll-over typing works too.
+- Key preview bubbles, haptic and sound feedback (configurable), and an optional number row.
+
+**Suggestions and learning**
+- **Completions while the syllable is still open.** `sel` (ሰል) already suggests ሰላም, because the last letter matches every vowel form of its row.
+- **Homophone-tolerant matching.** ሀ/ሐ/ኀ, ሰ/ሠ, ጸ/ፀ and አ/ዐ are interchangeable, so `ሠላ` still finds ሰላም.
+- **Context.** Next-word predictions and ranking use bigrams: after **እንዴት** you get ነህ, ነሽ, ናችሁ, and after **አዲስ** you get አበባ.
+- **Typo corrections** (one deleted or swapped letter), plus emoji suggestions (ቡና → ☕).
+- **Learns as you type.** Words you commit and the word pairs they form get boosted. Long-press a suggestion to remove it. Learned data stays on the device and can be cleared in settings.
+- **Re-correction.** If you backspace into a word, it becomes editable again with suggestions.
+- **Clipboard history** in the toolbar. Clips marked sensitive, such as copied passwords, are never stored.
+
+**Performance and caching**
+- **LRU suggestion cache.** It stores results per (previous word, typed prefix). When the keyboard learns a word, only the cached entries that word affects are removed.
+- **Binary dictionary cache.** The shipped TSV word lists are parsed once per app version and stored in a compact binary file, so later starts skip text parsing.
+- **Fast lookups.** The frequency trie uses sorted child arrays and tracks the highest rank in each subtree. Top-K completion is a best-first search that skips branches that can't win.
+- **Background work.** Dictionaries load off the UI thread, and the personal dictionary is written in the background with atomic file replacement.
+
+**Themes:** light, dark, follow-system, and an Ethiopian green/gold/red theme. Key height is adjustable.
+
+## Phonetic scheme (SERA-style)
+
+| Type | Get | Type | Get | Type | Get |
+|---|---|---|---|---|---|
+| `le` | ለ | `lu` | ሉ | `li` | ሊ |
+| `la` | ላ | `lE` / `lie` | ሌ | `l` | ል |
+| `lo` | ሎ | `lua` | ሏ | `kua` | ኳ |
+| `sh` / `x` | ሽ | `ch` / `c` | ች | `ny` / `N` | ኝ |
+| `ts` / `S` | ጽ | `tz` / `` `S `` | ፅ | `zh` / `Z` | ዥ |
+| `T` | ጥ | `C` | ጭ | `P` / `ph` | ጵ |
+| `H` / `hh` | ሕ | `` `h `` | ኅ | `` `s `` / `sz` | ሥ |
+| `a` | አ | `u` | ኡ | `i` | ኢ |
+| `aa` | ኣ | `E` | ኤ | `e` | እ |
+| `o` | ኦ | `A` | ዓ | `` `a `` | ዐ |
+
+Use an apostrophe to split syllables: `l'e` → ልእ, `t's` → ትስ.
+
+Examples: `selam` ሰላም · `ityoPya` ኢትዮጵያ · `amesegnalehu` አመሰግናለሁ · `TEna ysTlN` ጤና ይስጥልኝ · `endEt neh` እንዴት ነህ
+
+## Project layout
+
+```
+core/   Pure Kotlin engine (no Android dependencies, unit tested)
+  Ethiopic.kt         syllabary model: rows, vowel orders, homophones, punctuation
+  Transliteration.kt  latin → fidel table + PhoneticComposer (undo-aware)
+  Trie.kt             frequency trie, fuzzy PrefixPattern, best-first top-K
+  Dictionary.kt       unigrams + bigrams, binary cache, user-data persistence
+  SuggestionEngine.kt scoring, predictions, corrections, LRU cache, learning
+  LruCache.kt         thread-safe LRU with hit/miss stats
+  GeezNumerals.kt     2026 → ፳፻፳፮
+  layout/Layouts.kt   all keyboard pages (phonetic, fidel, English, symbols, Ge'ez numerals, emoji, pads)
+app/    Android IME
+  AmharicIME.kt              InputMethodService: composing, commit, learning, clipboard
+  keyboard/KeyboardView.kt   canvas-drawn keys, long-press, repeat, space swipe
+  keyboard/PopupOverlay.kt   key previews and long-press popups
+  keyboard/SuggestionStripView.kt  suggestions / vowel forms / clipboard / toolbar
+  engine/LanguageModels.kt   async loading, binary cache, persistence
+  SettingsActivity.kt        setup steps, test field, preferences
+tools/  curated word lists + build_dictionaries.py → app/src/main/assets/*.tsv
+```
+
+## Building
+
+Requirements: JDK 17+ and the Android SDK (compileSdk 35). The minimum Android version is 7.0 (API 24).
+
+```bash
+./gradlew :core:test          # engine unit tests (no Android SDK needed)
+./gradlew :app:assembleDebug  # APK in app/build/outputs/apk/debug/
+```
+
+The `:app` module is only included when an Android SDK is configured (`local.properties`
+`sdk.dir`, `ANDROID_HOME` or `ANDROID_SDK_ROOT`). Without one, the engine still builds
+and tests on its own. CI (`.github/workflows/build.yml`) runs the tests and uploads a
+debug APK.
+
+After installing, open **Amharic Keyboard**, tap **Enable**, then **Switch to Amharic Keyboard**.
+
+### Extending the dictionary
+
+Add words to `tools/amharic_words_ranked.txt` (one per line, most frequent first) and
+phrases to `tools/amharic_bigrams.txt`, then run:
+
+```bash
+python3 tools/build_dictionaries.py
+```
+
+The binary cache rebuilds automatically on the next app version.

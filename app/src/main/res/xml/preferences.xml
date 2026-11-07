@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/cat_layout" app:iconSpaceReserved="false">
+        <MultiSelectListPreference
+            app:key="layouts"
+            app:title="@string/pref_layouts"
+            app:summary="@string/pref_layouts_summary"
+            app:entries="@array/layout_entries"
+            app:entryValues="@array/layout_values"
+            app:defaultValue="@array/layout_values"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="number_row" app:title="@string/pref_number_row"
+            app:summary="@string/pref_number_row_summary" app:defaultValue="false" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="hints" app:title="@string/pref_hints"
+            app:summary="@string/pref_hints_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/cat_typing" app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat app:key="double_space" app:title="@string/pref_double_space"
+            app:summary="@string/pref_double_space_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="auto_space" app:title="@string/pref_auto_space"
+            app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="auto_cap" app:title="@string/pref_auto_cap"
+            app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="space_cursor" app:title="@string/pref_space_cursor"
+            app:defaultValue="true" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/cat_suggestions" app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat app:key="suggestions" app:title="@string/pref_suggestions"
+            app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="next_word" app:title="@string/pref_next_word"
+            app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="emoji_suggestions" app:title="@string/pref_emoji"
+            app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="learn" app:title="@string/pref_learn"
+            app:summary="@string/pref_learn_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/cat_appearance" app:iconSpaceReserved="false">
+        <ListPreference app:key="theme" app:title="@string/pref_theme"
+            app:entries="@array/theme_entries" app:entryValues="@array/theme_values"
+            app:defaultValue="system" app:useSimpleSummaryProvider="true" app:iconSpaceReserved="false" />
+        <ListPreference app:key="key_height" app:title="@string/pref_key_height"
+            app:entries="@array/key_height_entries" app:entryValues="@array/key_height_values"
+            app:defaultValue="54" app:useSimpleSummaryProvider="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="haptic" app:title="@string/pref_haptic"
+            app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="sound" app:title="@string/pref_sound"
+            app:defaultValue="false" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="preview" app:title="@string/pref_preview"
+            app:defaultValue="true" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/cat_dictionary" app:iconSpaceReserved="false">
+        <Preference app:key="clear_learned" app:title="@string/pref_clear" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
