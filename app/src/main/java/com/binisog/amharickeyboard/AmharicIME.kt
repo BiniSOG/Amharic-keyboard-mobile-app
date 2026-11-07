@@ -135,6 +135,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         applySettings()
         applyEngineSettings()
 
+        LanguageModels.ensureUserData(this)
         analyseEditor(info)
         if (!restarting) {
             composer.reset()
@@ -220,7 +221,9 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val noSuggest = (type and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0
         suggestionsAllowed = settings.suggestions && !isPassword && !noSuggest && fieldKind == FieldKind.TEXT && inputKind == InputKind.TEXT
         val incognito = (info.imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0
-        learningAllowed = settings.learn && !incognito && !isPassword && inputKind == InputKind.TEXT
+        // Before the first unlock nothing learned could be saved, so do not learn at all.
+        learningAllowed = settings.learn && !incognito && !isPassword && inputKind == InputKind.TEXT &&
+            DirectBoot.isUnlocked(this)
     }
 
     // ================================================================ keyboard rendering

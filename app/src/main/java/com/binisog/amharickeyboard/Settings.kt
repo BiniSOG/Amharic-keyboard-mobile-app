@@ -33,7 +33,22 @@ class Settings private constructor(p: SharedPreferences) {
 
         private const val KEY_LAST_LAYOUT = "last_layout"
 
-        fun prefs(ctx: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx)
+        @Volatile private var migrated = false
+
+        /**
+         * Preferences live in device-protected storage so they can be read before the first
+         * unlock after a reboot. Settings saved by older versions are moved over once.
+         */
+        fun prefs(ctx: Context): SharedPreferences {
+            val de = DirectBoot.deviceProtected(ctx)
+            if (!migrated && DirectBoot.isUnlocked(ctx)) {
+                migrated = true
+                runCatching { de.moveSharedPreferencesFrom(ctx, defaultPrefsName(ctx)) }
+            }
+            return PreferenceManager.getDefaultSharedPreferences(de)
+        }
+
+        fun defaultPrefsName(ctx: Context) = ctx.packageName + "_preferences"
         fun load(ctx: Context) = Settings(prefs(ctx))
 
         fun lastLayout(ctx: Context): String = prefs(ctx).getString(KEY_LAST_LAYOUT, LAYOUT_PHONETIC) ?: LAYOUT_PHONETIC

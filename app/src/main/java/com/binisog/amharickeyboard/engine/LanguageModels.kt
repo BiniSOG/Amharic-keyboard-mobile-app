@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.binisog.amharickeyboard.DirectBoot
 import com.binisog.amharickeyboard.core.Dictionary
 import com.binisog.amharickeyboard.core.Ethiopic
 import com.binisog.amharickeyboard.core.SuggestionEngine
@@ -36,6 +37,8 @@ object LanguageModels {
     private var loading = false
     private val waiters = ArrayList<() -> Unit>()
     private var unsaved = 0
+    /** False while the engines were loaded before the first unlock (no learned words yet). */
+    private var userDataLoaded = false
 
     fun engine(lang: Language): SuggestionEngine? = if (lang == Language.AMHARIC) amharic else english
 
@@ -46,6 +49,7 @@ object LanguageModels {
         if (loading) return
         loading = true
         val app = context.applicationContext
+        val unlocked = DirectBoot.isUnlocked(app)
         io.execute {
             val t0 = System.nanoTime()
             val am = runCatching { build(app, "amharic", amharicFilter) }.onFailure { Log.e(TAG, "amharic load failed", it) }.getOrNull()
@@ -53,6 +57,7 @@ object LanguageModels {
             Log.i(TAG, "dictionaries ready in ${(System.nanoTime() - t0) / 1_000_000} ms")
             main.post {
                 amharic = am; english = en
+                userDataLoaded = unlocked
                 loading = false
                 val w = waiters.toList(); waiters.clear()
                 w.forEach { it() }
@@ -70,7 +75,7 @@ object LanguageModels {
         val pkg = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
         @Suppress("DEPRECATION")
         val versionKey = "${pkg.versionCode}-${pkg.lastUpdateTime}"
-        val cacheDir = File(ctx.noBackupFilesDir, "dict-cache").apply { mkdirs() }
+        val cacheDir = File(DirectBoot.deviceProtected(ctx).noBackupFilesDir, "dict-cache").apply { mkdirs() }
         val source = dict.loadShipped(
             versionKey = versionKey,
             cacheFile = File(cacheDir, "$name.bin"),
@@ -78,12 +83,31 @@ object LanguageModels {
             openBigrams = { ctx.assets.open("${name}_bigrams.tsv") },
         )
         val user = userFile(ctx, name)
-        if (user.isFile) runCatching { user.inputStream().use(dict::readUserData) }.onFailure { Log.w(TAG, "user dict unreadable", it) }
+        if (DirectBoot.isUnlocked(ctx) && user.isFile) runCatching { user.inputStream().use(dict::readUserData) }.onFailure { Log.w(TAG, "user dict unreadable", it) }
         Log.i(TAG, "$name: ${dict.wordCount} words, ${dict.bigramCount} bigrams from $source")
         return SuggestionEngine(dict, cacheSize = 384, learnFilter = filter, fuzzy = name == "amharic")
     }
 
     private fun userFile(ctx: Context, name: String) = File(ctx.filesDir, "user_$name.tsv")
+
+    /**
+     * If the engines were loaded on the lock screen (before the first unlock), load the
+     * learned words now that normal storage is available.
+     */
+    fun ensureUserData(context: Context) {
+        if (userDataLoaded || loading || amharic == null || !DirectBoot.isUnlocked(context)) return
+        userDataLoaded = true
+        val app = context.applicationContext
+        io.execute {
+            val texts = listOf("amharic", "english").associateWith { name ->
+                userFile(app, name).takeIf { it.isFile }?.let { f -> runCatching { f.readText(Charsets.UTF_8) }.getOrNull() }
+            }
+            main.post {
+                texts["amharic"]?.let { amharic?.dictionary?.readUserData(it); amharic?.cache?.clear() }
+                texts["english"]?.let { english?.dictionary?.readUserData(it); english?.cache?.clear() }
+            }
+        }
+    }
 
     /** Call after learning; persists every few words so little is lost if the process dies. */
     fun noteLearned(context: Context) {
@@ -92,6 +116,9 @@ object LanguageModels {
 
     fun save(context: Context) {
         unsaved = 0
+        // Before unlock the learned-words files are unreadable and were not loaded: never
+        // overwrite them with the (empty) lock-screen state.
+        if (!userDataLoaded || !DirectBoot.isUnlocked(context)) return
         val app = context.applicationContext
         val snapshots = listOfNotNull(
             amharic?.let { "amharic" to it.dictionary.userDataToString() },

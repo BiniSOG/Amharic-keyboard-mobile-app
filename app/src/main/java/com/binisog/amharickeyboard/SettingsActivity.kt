@@ -122,6 +122,9 @@ class SettingsActivity : AppCompatActivity() {
 
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            // Same device-protected store the keyboard reads (see Settings.prefs).
+            Settings.prefs(requireContext())
+            preferenceManager.setStorageDeviceProtected()
             setPreferencesFromResource(R.xml.preferences, rootKey)
             findPreference<Preference>("clear_learned")?.apply {
                 updateLearnedSummary(this)
