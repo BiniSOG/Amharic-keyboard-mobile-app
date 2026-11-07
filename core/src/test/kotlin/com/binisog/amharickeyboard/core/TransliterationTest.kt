@@ -64,6 +64,16 @@ class TransliterationTest {
         assertFalse(c.backspace())
     }
 
+    @Test fun resumedWordContinuesSyllable() {
+        val c = PhoneticComposer()
+        c.setWord("ሰል")
+        c.type('a'); c.type('m')
+        assertEquals("ሰላም", c.text)
+        c.setWord("ቡና")
+        c.type('w')
+        assertEquals("ቡናው", c.text)
+    }
+
     @Test fun replaceLastForFidelLayout() {
         val c = PhoneticComposer()
         c.appendLiteral("ል")

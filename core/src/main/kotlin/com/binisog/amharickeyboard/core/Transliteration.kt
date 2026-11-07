@@ -203,11 +203,20 @@ class PhoneticComposer(private val table: TransliterationTable = Transliteration
         syllable = ""; syllableOut = 0
     }
 
-    /** Starts composing on an existing word (e.g. when the cursor is placed back on a word). */
+    /**
+     * Starts composing on an existing word (e.g. after deleting back into it). The last
+     * Fidel letter's syllable is restored, so typing continues naturally: ሰል + `a` → ሰላ.
+     */
     fun setWord(word: String) {
         reset()
         sb.append(word)
         latinSb.append(word)
+        val last = word.lastOrNull() ?: return
+        val latin = table.reverse[last] ?: return
+        if (latin.isNotEmpty() && latin.all { it.isLetter() || it == '`' }) {
+            syllable = latin
+            syllableOut = 1
+        }
     }
 
     fun reset() {

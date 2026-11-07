@@ -123,6 +123,44 @@ class SuggestionEngineTest {
         assertTrue("Wonderful" in words(e.suggest(null, "Wonderf")))
     }
 
+    private fun english(): SuggestionEngine {
+        val d = Dictionary()
+        d.loadText(File(assets, "english_words.tsv").inputStream(), File(assets, "english_bigrams.tsv").inputStream())
+        return SuggestionEngine(d, fuzzy = false)
+    }
+
+    @Test fun wrongFirstLetterStillCompletes() {
+        val e = english()
+        assertTrue("important" in words(e.suggest(null, "ymport")), words(e.suggest(null, "ymport")).toString())
+        assertTrue("hello" in words(e.suggest(null, "gello")), words(e.suggest(null, "gello")).toString())
+        val am = amharic()
+        assertTrue("ሰላም" in words(am.suggest(null, "ሸላም")), words(am.suggest(null, "ሸላም")).toString())
+    }
+
+    @Test fun sixtyPercentSimilarWordsAreSuggested() {
+        val e = english()
+        assertTrue("because" in words(e.suggest(null, "becuase")))
+        assertTrue("tomorrow" in words(e.suggest(null, "tommorow")), words(e.suggest(null, "tommorow")).toString())
+        assertTrue("beautiful" in words(e.suggest(null, "beutifull")), words(e.suggest(null, "beutifull")).toString())
+        val am = amharic()
+        assertTrue("ኢትዮጵያ" in words(am.suggest(null, "ኢትዮፕያ")), words(am.suggest(null, "ኢትዮፕያ")).toString())
+        // nothing is at least 60 % similar to random letters
+        assertTrue(e.suggest(null, "zqxjvk").suggestions.none { it.kind == SuggestionEngine.Kind.CORRECTION })
+        assertTrue(Typos.similarity(5, 5, 2f) >= SuggestionEngine.MIN_SIMILARITY)
+        assertTrue(Typos.similarity(5, 5, 2.5f) < SuggestionEngine.MIN_SIMILARITY)
+    }
+
+    @Test fun fuzzySearchIsFast() {
+        val e = english()
+        val words = listOf("becuase", "tommorow", "ymport", "beutifull", "definately", "recieve", "acommodate")
+        e.suggest(null, "warmup")
+        val t0 = System.nanoTime()
+        for (w in words) for (i in 2..w.length) { e.cache.clear(); e.suggest(null, w.substring(0, i)) }
+        val perQueryMs = (System.nanoTime() - t0) / 1e6 / words.sumOf { it.length - 1 }
+        println("fuzzy suggest: %.2f ms/query".format(perQueryMs))
+        assertTrue(perQueryMs < 25.0, "too slow: $perQueryMs ms")
+    }
+
     @Test fun userDataRoundTrip() {
         val e = amharic()
         e.learn("ቡና", "እንጠጣ")

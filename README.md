@@ -23,14 +23,16 @@ completion, next-word prediction, on-device learning and caching.
 - **Completions while the syllable is still open.** `sel` (ሰል) already suggests ሰላም, because the last letter matches every vowel form of its row.
 - **Homophone-tolerant matching.** ሀ/ሐ/ኀ, ሰ/ሠ, ጸ/ፀ and አ/ዐ are interchangeable, so `ሠላ` still finds ሰላም.
 - **Context.** Next-word predictions and ranking use bigrams: after **እንዴት** you get ነህ, ነሽ, ናችሁ, and after **አዲስ** you get አበባ.
-- **Typo corrections** (one deleted or swapped letter), plus emoji suggestions (ቡና → ☕).
+- **Typo-tolerant suggestions.** A wrong *first* letter or one slip anywhere in the start of a word still completes it (`ymport` → important, ሸላም → ሰላም). An unknown word gets dictionary words that are at least **60 % similar** (`tommorow` → tomorrow, ኢትዮፕያ → ኢትዮጵያ). Neighbouring QWERTY keys, another vowel form of the same Fidel letter, and sound-alike letters count as smaller mistakes.
+- **Delete and keep going.** Backspacing into a word, or tapping at the end of one, makes it editable again with suggestions, and phonetic typing continues the last syllable (ሰል + `a` → ሰላ).
+- Emoji suggestions (ቡና → ☕).
 - **Translation suggestions (offline).** The strip shows the translation of the word you are typing, marked ⇄: `selam` → ⇄ hello, `water` → ⇄ ውሃ. Tap it to insert the translation. It handles common Amharic prefixes and suffixes (በኢትዮጵያ → in Ethiopia, መኪናዎች → cars) and simple English endings (cars → መኪና). It translates single words only, and the word list is in `tools/translations.tsv`.
 - **Learns as you type.** Words you commit and the word pairs they form get boosted. Long-press a suggestion to remove it. Learned data stays on the device and can be cleared in settings.
 - **Re-correction.** If you backspace into a word, it becomes editable again with suggestions.
 - **Clipboard history** in the toolbar. Clips marked sensitive, such as copied passwords, are never stored.
 
 **Performance and caching**
-- **LRU suggestion cache.** It stores results per (previous word, typed prefix). When the keyboard learns a word, only the cached entries that word affects are removed.
+- **LRU suggestion cache.** It stores results per (previous word, typed prefix), so backspacing and retyping inside a word is instant. The cache is cleared whenever the keyboard learns a new word.
 - **Binary dictionary cache.** The shipped TSV word lists are parsed once per app version and stored in a compact binary file, so later starts skip text parsing.
 - **Fast lookups.** The frequency trie uses sorted child arrays and tracks the highest rank in each subtree. Top-K completion is a best-first search that skips branches that can't win.
 - **Background work.** Dictionaries load off the UI thread, and the personal dictionary is written in the background with atomic file replacement.

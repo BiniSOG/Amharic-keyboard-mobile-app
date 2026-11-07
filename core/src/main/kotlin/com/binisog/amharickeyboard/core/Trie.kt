@@ -203,10 +203,11 @@ class Trie {
      * Top [limit] completions for [pattern], ordered by `rank * weight` descending.
      * The pattern may allow several characters per position (fuzzy matching).
      */
+    private class Start(val node: Node, val prefix: String, val weight: Float)
+
     fun complete(pattern: PrefixPattern, limit: Int, minWeight: Float = 0.05f): List<Entry> {
         if (limit <= 0) return emptyList()
         // 1. Expand the (fuzzy) prefix into matching trie nodes.
-        data class Start(val node: Node, val prefix: String, val weight: Float)
         var frontier = listOf(Start(root, "", 1f))
         for (pos in pattern.positions) {
             val next = ArrayList<Start>()
@@ -221,8 +222,11 @@ class Trie {
             if (next.isEmpty()) return emptyList()
             frontier = if (next.size > MAX_FRONTIER) next.sortedByDescending { it.weight * it.node.maxRank }.take(MAX_FRONTIER) else next
         }
+        return bestFirst(frontier, limit)
+    }
 
-        // 2. Best-first search over all start nodes, bounded by subtree max rank.
+    /** Best-first search over all start nodes, bounded by subtree max rank. */
+    private fun bestFirst(frontier: List<Start>, limit: Int): List<Entry> {
         class Item(val node: Node, val word: String, val weight: Float, val bound: Double)
         val queue = PriorityQueue<Item>(compareByDescending { it.bound })
         for (s in frontier) if (s.node.maxRank > 0) queue.add(Item(s.node, s.prefix, s.weight, s.node.maxRank * s.weight.toDouble()))
@@ -253,6 +257,84 @@ class Trie {
         return results
     }
 
+    /** A word found by [fuzzy] together with its edit cost. */
+    data class FuzzyHit(val word: String, val freq: Int, val userFreq: Int, val cost: Float)
+
+    /**
+     * Typo-tolerant search: weighted Damerau-Levenshtein distance (insert, delete, substitute,
+     * swap neighbours) between [typed] and dictionary words, computed row by row while
+     * walking the trie and pruned as soon as no path can stay within [maxCost].
+     *
+     * - [prefix] = true: [typed] may be the (misspelt) *beginning* of a word; matching subtrees
+     *   are expanded best-first, so "kel" (wrong first letter) still completes to "hello".
+     *   Each entry's weight is `penalty^cost`.
+     * - [prefix] = false: whole-word matches only (corrections for unknown words).
+     *
+     * [subCost] gives the cost of reading typed char `a` where the word has `b` (≤ 1).
+     */
+    fun fuzzy(
+        typed: String,
+        maxCost: Float,
+        prefix: Boolean,
+        limit: Int,
+        penalty: Float = 0.3f,
+        subCost: (Char, Char) -> Float = { _, _ -> 1f },
+    ): List<FuzzyHit> {
+        val n = typed.length
+        if (n == 0 || limit <= 0) return emptyList()
+        val starts = HashMap<Node, Start>()
+        val startCost = HashMap<Node, Float>()
+        val hits = ArrayList<FuzzyHit>()
+        val path = StringBuilder()
+        var visited = 0
+
+        fun walk(node: Node, prevRow: FloatArray, prevPrevRow: FloatArray?, prevChar: Char) {
+            node.forEachChild { c, child ->
+                if (child.maxRank <= 0 || visited > MAX_FUZZY_NODES) return@forEachChild
+                visited++
+                val row = FloatArray(n + 1)
+                row[0] = prevRow[0] + 1f
+                var rowMin = row[0]
+                for (j in 1..n) {
+                    val t = typed[j - 1]
+                    val sub = if (t == c) 0f else subCost(t, c)
+                    var v = minOf(prevRow[j] + 1f, row[j - 1] + 1f, prevRow[j - 1] + sub)
+                    if (prevPrevRow != null && j > 1 && t == prevChar && typed[j - 2] == c && c != prevChar) {
+                        v = minOf(v, prevPrevRow[j - 2] + 1f) // swapped neighbours
+                    }
+                    row[j] = v
+                    if (v < rowMin) rowMin = v
+                }
+                path.append(c)
+                val cost = row[n]
+                if (prefix) {
+                    if (cost <= maxCost) {
+                        val prev = startCost[child]
+                        if (prev == null || cost < prev) {
+                            startCost[child] = cost
+                            starts[child] = Start(child, path.toString(), Math.pow(penalty.toDouble(), cost.toDouble()).toFloat())
+                        }
+                    }
+                } else if (cost <= maxCost && child.isActive()) {
+                    hits.add(FuzzyHit(path.toString(), child.freq, child.userFreq, cost))
+                }
+                if (rowMin <= maxCost) walk(child, row, prevRow, c)
+                path.setLength(path.length - 1)
+            }
+        }
+        walk(root, FloatArray(n + 1) { it.toFloat() }, null, '\u0000')
+
+        if (!prefix) {
+            return hits.sortedWith(compareBy<FuzzyHit> { it.cost }.thenByDescending { rankOf(it.freq, it.userFreq) }).take(limit)
+        }
+        // Deeper starts lie inside shallower ones' subtrees; bestFirst keeps each word's best score.
+        val frontier = starts.values.sortedByDescending { it.weight * it.node.maxRank }.take(MAX_FRONTIER * 4)
+        return bestFirst(frontier, limit).map { e ->
+            val cost = if (e.weight >= 1f) 0f else (Math.log(e.weight.toDouble()) / Math.log(penalty.toDouble())).toFloat()
+            FuzzyHit(e.word, e.freq, e.userFreq, cost)
+        }
+    }
+
     /** Visits every non-blocked word (used for serialisation and diagnostics). */
     fun forEachWord(f: (word: String, freq: Int, userFreq: Int, blocked: Boolean) -> Unit) {
         val sb = StringBuilder()
@@ -270,6 +352,8 @@ class Trie {
         const val USER_WEIGHT = 40L
         const val MAX_USER_FREQ = 10_000
         private const val MAX_FRONTIER = 64
+        /** Safety valve for fuzzy search on very large dictionaries. */
+        private const val MAX_FUZZY_NODES = 60_000
         private val EMPTY_KEYS = CharArray(0)
         private val EMPTY_CHILDREN = arrayOfNulls<Node>(0)
 

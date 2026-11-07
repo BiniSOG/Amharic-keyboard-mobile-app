@@ -604,6 +604,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         ic.deleteSurroundingText(word.length, 0)
         ic.setComposingText(word, 1)
         ic.endBatchEdit()
+        lastEditTime = SystemClock.uptimeMillis()
         composer.setWord(word)
         prevWord = readPrevWord()
         updateSuggestions()
@@ -668,7 +669,12 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int,
     ) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
-        if (!composer.isEmpty && (candidatesEnd == -1 || newSelStart != candidatesEnd || newSelEnd != candidatesEnd)) {
+        // Updates arriving right after our own edits are usually stale (they describe the
+        // editor before our latest change, e.g. the delete that preceded re-composing a word).
+        // Acting on them used to cancel the word being edited, so suggestions stopped after
+        // deleting and retyping.
+        val ownEdit = SystemClock.uptimeMillis() - lastEditTime <= OWN_EDIT_WINDOW_MS
+        if (!composer.isEmpty && !ownEdit && (candidatesEnd == -1 || newSelStart != candidatesEnd || newSelEnd != candidatesEnd)) {
             // The user moved the cursor away from the word being composed.
             composer.reset()
             vowelRowBase = -1
@@ -679,13 +685,32 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         } else if (composer.isEmpty && SystemClock.uptimeMillis() - lastEditTime > OWN_EDIT_WINDOW_MS &&
             (newSelStart != oldSelStart || newSelEnd != oldSelEnd)
         ) {
-            // Jumps (taps elsewhere): refresh the context word.
+            // Jumps (taps elsewhere): refresh the context word, and if the cursor now sits at
+            // the end of a word, pick that word up again so it can be continued with suggestions.
             justAutoSpaced = false
             spaceFollowsWord = false
-            prevWord = readPrevWord()
+            if (newSelStart == newSelEnd && candidatesEnd == -1) resumeComposingAt(newSelStart)
+            if (composer.isEmpty) prevWord = readPrevWord()
             updateAutoShift()
             updateSuggestions()
         }
+    }
+
+    /** Makes the word ending at absolute position [cursor] composing again (no text is rewritten). */
+    private fun resumeComposingAt(cursor: Int) {
+        if (!suggestionsAllowed || !canCompose() || cursor <= 0) return
+        val ic = currentInputConnection ?: return
+        val after = ic.getTextAfterCursor(1, 0)
+        if (!after.isNullOrEmpty() && isWordChar(after[0])) return
+        val before = ic.getTextBeforeCursor(SuggestionEngine.MAX_WORD + 1, 0)?.toString() ?: return
+        var i = before.length
+        while (i > 0 && isWordChar(before[i - 1])) i--
+        val word = before.substring(i)
+        if (word.isEmpty() || (i == 0 && before.length > SuggestionEngine.MAX_WORD)) return
+        if (!ic.setComposingRegion(cursor - word.length, cursor)) return
+        lastEditTime = SystemClock.uptimeMillis()
+        composer.setWord(word)
+        prevWord = readPrevWord()
     }
 
     // ================================================================ suggestions strip

@@ -82,15 +82,29 @@ class SuggestionEngine(
             val e = dictionary.trie.get(w) ?: continue
             offer(w, score(prev, w, e.freq, e.userFreq) + ln(weight.toDouble()), Kind.COMPLETION)
         }
-        // Simple typo corrections when nothing matches: one deleted / transposed character.
-        if (scored.size < 3 && typed.length >= 3) {
-            for (cand in edits(typed)) {
-                val e = dictionary.trie.get(cand) ?: continue
-                offer(cand, score(prev, cand, e.freq, e.userFreq) + ln(0.25), Kind.CORRECTION)
+        val typedIsWord = typed in dictionary
+        // How many real completions of what was typed exist; typo matches must not crowd them out.
+        val exactCompletions = scored.size
+        if (typed.length >= 4 || (typed.length == 3 && exactCompletions < 3)) {
+            // Misspelt beginning, including a wrong FIRST letter: "kel" → hello, "ዐበባ" → አበባ.
+            // One edit is allowed anywhere in what was typed so far.
+            for (h in dictionary.trie.fuzzy(typed, maxCost = 1f, prefix = true, limit = CANDIDATES, subCost = Typos::cost)) {
+                if (h.cost <= 0f) continue // exact prefixes were already offered above
+                val kind = if (h.word.length > typed.length) Kind.COMPLETION else Kind.CORRECTION
+                offer(h.word, score(prev, h.word, h.freq, h.userFreq) + ln(FUZZY_PREFIX_PENALTY) * h.cost, kind)
+            }
+        }
+        if (!typedIsWord && typed.length >= 3) {
+            // Unknown word: suggest dictionary words that are at least 60 % similar.
+            val maxCost = minOf(MAX_CORRECTION_COST, (1f - MIN_SIMILARITY) * typed.length + 0.01f)
+            for (h in dictionary.trie.fuzzy(typed, maxCost, prefix = false, limit = CANDIDATES, subCost = Typos::cost)) {
+                val sim = Typos.similarity(typed.length, h.word.length, h.cost)
+                if (sim < MIN_SIMILARITY) continue
+                val crowded = if (exactCompletions >= 3) CROWDED_PENALTY else 0.0
+                offer(h.word, score(prev, h.word, h.freq, h.userFreq) + ln(CORRECTION_PENALTY) + 3 * ln(sim.toDouble()) - crowded, Kind.CORRECTION)
             }
         }
 
-        val typedIsWord = typed in dictionary
         val list = scored.values
             .filter { it.word != typed }
             .sortedWith(compareByDescending<Suggestion> { it.score }.thenBy { it.word.length })
@@ -127,19 +141,9 @@ class SuggestionEngine(
         return uni + BIGRAM_WEIGHT * bi
     }
 
-    private fun edits(w: String): Set<String> {
-        val out = HashSet<String>()
-        for (i in w.indices) out.add(w.removeRange(i, i + 1))
-        for (i in 0 until w.length - 1) {
-            val c = w.toCharArray(); val t = c[i]; c[i] = c[i + 1]; c[i + 1] = t
-            out.add(String(c))
-        }
-        return out
-    }
-
     /**
-     * Learns a committed word (and its bigram with the previous word), then invalidates
-     * only the cached queries that the new statistics can affect.
+     * Learns a committed word (and its bigram with the previous word). Cached results are
+     * dropped: with typo-tolerant matching almost any query may now rank differently.
      */
     fun learn(prev: String?, word: String): Boolean {
         val w = word.trim()
@@ -161,17 +165,20 @@ class SuggestionEngine(
         cache.clear()
     }
 
-    private fun invalidateFor(prev: String?, word: String) {
-        cache.removeIf { k ->
-            (prev != null && k.prev == prev) ||
-                (k.typed.isNotEmpty() && PrefixPattern.forTyped(k.typed, k.open, fuzzy).match(word) != null)
-        }
-    }
+    @Suppress("UNUSED_PARAMETER")
+    private fun invalidateFor(prev: String?, word: String) = cache.clear()
 
     companion object {
         const val MAX_WORD = 48
         private const val CANDIDATES = 24
         private const val BIGRAM_WEIGHT = 2.5
+        /** Words at least this similar to an unknown typed word are suggested. */
+        const val MIN_SIMILARITY = 0.6f
+        private const val MAX_CORRECTION_COST = 3f
+        private const val CORRECTION_PENALTY = 0.35
+        private const val FUZZY_PREFIX_PENALTY = 0.03
+        /** Extra penalty for corrections while real completions of the typed prefix exist. */
+        private const val CROWDED_PENALTY = 4.0
 
         /** A handful of everyday Amharic words with an obvious emoji. */
         val EMOJI: Map<String, String> = mapOf(
