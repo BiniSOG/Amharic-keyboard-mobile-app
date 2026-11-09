@@ -168,6 +168,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
 
         LanguageModels.ensureUserData(this)
         analyseEditor(info)
+        syncComposing() // e.g. the app restarted input after sending and clearing the field
         if (!restarting) {
             textTranslation = null
             closeQuickSettings()
@@ -368,6 +369,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onKey(key: Key) {
+        syncComposing()
         textTranslation = null // typing goes on: drop a pending translation offer
         when (key.code) {
             Code.CHAR -> {
@@ -694,6 +696,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         if (newSelStart == 0 && newSelEnd == 0 && oldSelStart > 0 && candidatesEnd == -1 &&
             SystemClock.uptimeMillis() - lastEditTime > OWN_EDIT_WINDOW_MS
         ) {
+            syncComposing()
             pendingSentence?.let { LanguageModels.recordHistory(this, it) }
             pendingSentence = null
         }
@@ -788,6 +791,34 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val cont = LanguageModels.history.continuation(context, typed) ?: return null
         val label = if (cont.length > 32) cont.take(31) + "…" else cont
         return Item("📜 $label", ItemKind.SUGGESTION, value = cont, tag = TAG_HISTORY)
+    }
+
+    /**
+     * Apps can change or clear the text behind the keyboard's back, most often with their own
+     * Send button. The word being composed would then survive in [composer] and come back
+     * with the next key press. So before acting on input, check that the word is really
+     * still before the cursor; if not, drop it. If the field was emptied, the word was sent:
+     * learn it and record the sentence, as if it had been finished with a space.
+     */
+    private fun syncComposing() {
+        if (composer.isEmpty) return
+        val ic = currentInputConnection ?: return
+        val word = composer.text
+        val before = ic.getTextBeforeCursor(word.length + 1, 0)?.toString() ?: return // cannot verify
+        if (before.endsWith(word)) return
+        composer.reset()
+        vowelRowBase = -1
+        ic.finishComposingText()
+        if (before.isEmpty()) {
+            learnWord(word)
+            if (settings.history && learningAllowed) {
+                val sentence = listOfNotNull(pendingSentence, word).joinToString(" ").trim()
+                if (sentence.isNotEmpty()) LanguageModels.recordHistory(this, sentence)
+            }
+            pendingSentence = null
+        }
+        prevWord = readPrevWord()
+        updateSuggestions()
     }
 
     /** The sentence being typed, recorded if the app clears the field (its own "send" button). */
@@ -918,6 +949,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onStripItem(item: Item) {
+        syncComposing()
         val ic = currentInputConnection ?: return
         when (item.kind) {
             ItemKind.ACTION -> onToolbar(item.value)
