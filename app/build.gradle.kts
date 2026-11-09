@@ -87,6 +87,9 @@ kotlin {
 // Show each app test as passed / skipped / failed in the CI log.
 tasks.withType<Test>().configureEach {
     testLogging { events("passed", "skipped", "failed") }
+    // Each test class gets a fresh JVM: the keyboard keeps process-wide state (loaded
+    // dictionaries), and a load started by one test must not leak into the next.
+    forkEvery = 1
 }
 
 dependencies {

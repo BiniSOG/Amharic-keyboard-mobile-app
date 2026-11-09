@@ -34,7 +34,7 @@ class NoSuggestionsFlagTest {
             Thread.sleep(50)
             shadowOf(Looper.getMainLooper()).idle()
         }
-        assumeTrue("dictionaries did not load", LanguageModels.amharic != null)
+        assertTrue("dictionaries did not load", LanguageModels.amharic != null)
 
         val field = EditText(RuntimeEnvironment.getApplication())
         val ic = field.onCreateInputConnection(EditorInfo())
