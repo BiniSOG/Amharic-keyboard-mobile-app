@@ -104,6 +104,15 @@ app/    Android IME
 tools/  curated word lists + build_dictionaries.py → app/src/main/assets/*.tsv
 ```
 
+## App icon
+
+The launcher icon is the gold-and-navy keyboard tile with አ ሀ ለ ሐ, with the white outer background removed (transparent).
+
+- **Android 8+** uses an adaptive icon: the tile on a matching navy background (`#203149`), so circle, squircle and square launcher shapes all look right.
+- **Android 7** uses the tile itself.
+- Icons ship as WebP files, about 75 KB in total.
+- [`store/play-store-icon-512.png`](store/play-store-icon-512.png) is the 512×512 icon for the Play Store listing.
+
 ## Privacy
 
 Everything stays on the device: there are no accounts, analytics or ads. Learned words and typing history are never recorded in password or incognito fields, and you can clear them in Settings. The internet is used only when you download a background picture or emoticons from a link. The About screen in the app explains this. For a Play Store listing, publish the same text at a public privacy-policy URL.
