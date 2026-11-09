@@ -20,6 +20,8 @@ class Settings private constructor(p: SharedPreferences) {
     val nextWord = p.getBoolean("next_word", true)
     val emojiSuggestions = p.getBoolean("emoji_suggestions", true)
     val translate = p.getBoolean("translate", true)
+    /** Suggest even in boxes where the app asks for no suggestions (e.g. TikTok). */
+    val suggestEverywhere = p.getBoolean("suggest_everywhere", true)
     /** Keep a private log of typed sentences and suggest from it. */
     val history = p.getBoolean("history", true)
     val learn = p.getBoolean("learn", true)

@@ -283,11 +283,15 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             InputType.TYPE_TEXT_VARIATION_URI -> FieldKind.URL
             else -> FieldKind.TEXT
         }.takeIf { cls == InputType.TYPE_CLASS_TEXT } ?: FieldKind.TEXT
+        // Many apps (TikTok comments and captions, some chat apps) flag ordinary text boxes as
+        // "no suggestions". By default we still suggest there, from the dictionary, but we do
+        // not learn or keep history in such boxes, in case the app set the flag for privacy.
         val noSuggest = (type and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0
-        suggestionsAllowed = settings.suggestions && !isPassword && !noSuggest && fieldKind == FieldKind.TEXT && inputKind == InputKind.TEXT
+        suggestionsAllowed = settings.suggestions && !isPassword && fieldKind == FieldKind.TEXT &&
+            inputKind == InputKind.TEXT && (!noSuggest || settings.suggestEverywhere)
         val incognito = (info.imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0
         // Before the first unlock nothing learned could be saved, so do not learn at all.
-        learningAllowed = settings.learn && !incognito && !isPassword && inputKind == InputKind.TEXT &&
+        learningAllowed = settings.learn && !incognito && !isPassword && !noSuggest && inputKind == InputKind.TEXT &&
             DirectBoot.isUnlocked(this)
     }
 

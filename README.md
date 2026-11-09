@@ -35,6 +35,7 @@ completion, next-word prediction, on-device learning and caching.
   - English articles are dropped or added
   
   These rules cover common sentence shapes. Longer or complex sentences can still come out rough.
+- **Suggestions in every app.** Some apps, such as TikTok comments and captions, ask keyboards not to suggest. By default the keyboard still shows dictionary suggestions there, but it doesn't learn words or keep history in those boxes. You can turn this off with *Suggestions in all apps*. Password fields never get suggestions.
 - **Delete and keep going.** Backspacing into a word, or tapping at the end of one, makes it editable again with suggestions, and phonetic typing continues the last syllable (ሰል + `a` → ሰላ).
 - Emoji suggestions (ቡና → ☕).
 - **Translation suggestions (offline).** The strip shows the translation of the word you are typing, marked ⇄: `selam` → ⇄ hello, `water` → ⇄ ውሃ. Tap it to insert the translation. The lexicon has **5,053 Amharic entries** for everyday communication: greetings, chat phrases, family, food, health, shopping, money, phone and internet, school and work, travel, feelings, and verbs in their common past, present, negative and command forms. It also has possessive forms such as ቤቴ (my house) and ስልክህ (your phone). Prefixes and suffixes are handled too (በኢትዮጵያ → in Ethiopia). It translates single words only.

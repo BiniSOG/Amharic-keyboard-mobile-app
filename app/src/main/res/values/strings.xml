@@ -36,6 +36,8 @@
     <string name="pref_space_cursor">Swipe space bar to move the cursor</string>
     <string name="pref_suggestions">Word suggestions</string>
     <string name="pref_next_word">Next-word prediction</string>
+    <string name="pref_suggest_everywhere">Suggestions in all apps</string>
+    <string name="pref_suggest_everywhere_summary">Also suggest where an app turns suggestions off (e.g. TikTok). Nothing is learned in those boxes. Password fields always stay off.</string>
     <string name="pref_learn">Learn new words</string>
     <string name="pref_learn_summary">Remember words and phrases you type (stored only on this device)</string>
     <string name="pref_emoji">Emoji suggestions</string>

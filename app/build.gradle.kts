@@ -84,6 +84,11 @@ kotlin {
     compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
 }
 
+// Show each app test as passed / skipped / failed in the CI log.
+tasks.withType<Test>().configureEach {
+    testLogging { events("passed", "skipped", "failed") }
+}
+
 dependencies {
     implementation(project(":core"))
     implementation("androidx.core:core-ktx:1.13.1")

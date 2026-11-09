@@ -47,7 +47,9 @@ class SuggestionStripView(context: Context) : FrameLayout(context) {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
     }
-    private var items: List<Item> = emptyList()
+    /** What the strip currently shows. */
+    var items: List<Item> = emptyList()
+        private set
 
     init {
         scroll.addView(row, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT))

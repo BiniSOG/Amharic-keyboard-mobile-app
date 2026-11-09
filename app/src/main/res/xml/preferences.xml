@@ -31,6 +31,9 @@
     <PreferenceCategory app:title="@string/cat_suggestions" app:iconSpaceReserved="false">
         <SwitchPreferenceCompat app:key="suggestions" app:title="@string/pref_suggestions"
             app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="suggest_everywhere" app:title="@string/pref_suggest_everywhere"
+            app:summary="@string/pref_suggest_everywhere_summary"
+            app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="next_word" app:title="@string/pref_next_word"
             app:dependency="suggestions" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="emoji_suggestions" app:title="@string/pref_emoji"
