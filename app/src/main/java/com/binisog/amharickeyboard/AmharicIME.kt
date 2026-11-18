@@ -307,7 +307,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     private fun currentLayout(): KeyboardLayout {
-        val opts = LayoutOptions(numberRow = settings.numberRow, hints = settings.hints, fieldKind = fieldKind)
+        val opts = LayoutOptions(numberRow = settings.numberRow, hints = settings.hints, fieldKind = fieldKind, amharic = isAmharic)
         val shifted = shift != ShiftState.OFF && (page == Layouts.PHONETIC || page == Layouts.ENGLISH)
         val cacheKey = "$page|$opts|$shifted"
         return layoutCache.getOrPut(cacheKey) {

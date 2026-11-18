@@ -54,6 +54,8 @@ data class LayoutOptions(
     val numberRow: Boolean = false,
     val hints: Boolean = true,
     val fieldKind: FieldKind = FieldKind.TEXT,
+    /** Current language, shown on the symbol pages' language key (አም / En). */
+    val amharic: Boolean = true,
 )
 
 enum class FieldKind { TEXT, EMAIL, URL }
@@ -95,7 +97,7 @@ object Layouts {
         PHONETIC -> phonetic(opt)
         FIDEL -> fidel(opt)
         ENGLISH -> english(opt)
-        in SYMBOL_PAGES -> symbolPage(id)
+        in SYMBOL_PAGES -> symbolPage(id, if (opt.amharic) LANG_AMHARIC else LANG_ENGLISH)
         NUMBER_PAD -> numberPad()
         PHONE_PAD -> phonePad()
         else -> phonetic(opt)
@@ -240,19 +242,18 @@ object Layouts {
 
     private fun charKeys(s: String): List<Key> = s.map { Key(it.toString()) }
 
-    /** Each page: two rows of 10 characters and 7 for the row with the page key and ⌫. */
+    private fun keys(vararg labels: String): List<Key> = labels.map { Key(it) }
+
+    /** Each page under the number row: two rows of 10 characters and 7 beside the page key and ⌫. */
     private class PageContent(val row1: List<Key>, val row2: List<Key>, val row3: List<Key>)
 
     private fun content(id: String): PageContent = when (id) {
-        SYMBOLS -> PageContent(
-            numberRow(geez = true),
-            charKeys("@#$%&-+()") + Key("ብር", popup = listOf(Key("$"), Key("€"), Key("£"), Key("¥"))),
-            charKeys("*\"':;!?"),
-        )
-        SYMBOLS_2 -> PageContent(charKeys("~`|•√π÷×¶∆"), charKeys("£€¥^°={}\\_"), charKeys("<>[]%✓…"))
-        MATH -> PageContent(charKeys("±×÷≠≈≤≥∞√∑"), charKeys("π°½¼¾²³‰∆∫"), charKeys("¢₹₦₵₩₽µ"))
-        ARROWS -> PageContent(charKeys("←→↑↓↔↕⇐⇒⇑⇓"), charKeys("★☆●○■□◆◇▲△"), charKeys("♥♦♣♠♪♫✗"))
-        PUNCTUATION -> PageContent(charKeys("«»‹›“”‘’„‚"), charKeys("—–…•·§¶†‡№"), charKeys("¿¡©®™℃′"))
+        // Pages 1 and 2 follow the familiar Samsung Keyboard layout.
+        SYMBOLS -> PageContent(charKeys("+×÷=/_<>[]"), charKeys("!@#$%^&*()"), charKeys("-'\":;,?"))
+        SYMBOLS_2 -> PageContent(charKeys("`~\\|{}€£¥₩"), charKeys("°•○●□■♤♡◇♧"), charKeys("☆▪¤《》¡¿"))
+        MATH -> PageContent(charKeys("±≠≈≤≥∞√∑π∫"), charKeys("½¼¾²³‰∆µ¢₹"), keys("₦", "₵", "₽", "₺", "₿", "ብር", "℃"))
+        ARROWS -> PageContent(charKeys("←→↑↓↔↕⇐⇒⇑⇓"), charKeys("★✦●◆▲▼►◄♪♫"), charKeys("♥♦♣♠✓✗※"))
+        PUNCTUATION -> PageContent(charKeys("«»‹›“”‘’„‚"), charKeys("—–…·§¶†‡№™"), charKeys("©®′″‽¦¬"))
         ACCENTS -> PageContent(charKeys("áàâäãåæçéè"), charKeys("êëíìîïñóòô"), charKeys("öøœßúùü"))
         // Labialised Ethiopic letters that phonetic typing does not reach easily (ቈ ኈ ጐ ዀ ኰ…).
         ETHIOPIC_EXTRA -> PageContent(
@@ -271,31 +272,38 @@ object Layouts {
     }
 
     /**
-     * A symbol page. Every page has the same balanced shape (each row 10 key-widths):
-     * 10 / 10 / [page key] 7 [⌫] / [ABC] [፩፪ or ,] [፣] [space] [።] [↵].
+     * A symbol page, Samsung-style; every row is 10 key-widths and every page has 5 rows:
+     *   1 2 3 4 5 6 7 8 9 0
+     *   10 symbols
+     *   10 symbols
+     *   [1/8] 7 symbols [⌫]
+     *   [ABC] [አም/En] [,] [space] [.] [↵]
      * The page key steps to the next page; long-press it to jump to any page.
      */
-    private fun symbolPage(id: String): KeyboardLayout {
+    private fun symbolPage(id: String, langLabel: String = LANG_AMHARIC): KeyboardLayout {
         val c = content(id)
         val i = SYMBOL_PAGES.indexOf(id)
         val next = SYMBOL_PAGES[(i + 1) % SYMBOL_PAGES.size]
         val pageKey = Key(
-            "${i + 1}/${SYMBOL_PAGES.size} ▸", output = next, code = Code.PAGE, width = 1.5f,
+            "${i + 1}/${SYMBOL_PAGES.size}", output = next, code = Code.PAGE, width = 1.5f,
             popup = SYMBOL_PAGES.map { Key(PAGE_ICONS.getValue(it), output = it, code = Code.PAGE) },
         )
-        val shortcut = if (id == GEEZ_NUMBERS) Key(",") else Key("፩፪", output = GEEZ_NUMBERS, code = Code.PAGE)
+        val digitsRow = digits.map { d ->
+            Key(d.toString(), popup = listOfNotNull(GeezNumerals.toGeez(d.toString().toLong())?.let { Key(it) }))
+        }
         return KeyboardLayout(
             id,
             listOf(
+                digitsRow,
                 c.row1,
                 c.row2,
                 listOf(pageKey) + c.row3 + Key("⌫", code = Code.DELETE, width = 1.5f),
                 listOf(
                     Key("ABC", code = Code.ALPHA, width = 1.5f),
-                    shortcut,
-                    Key("፣", popup = listOf(Key(","), Key("፤"), Key("፥"), Key("፦"))),
+                    Key(langLabel, code = Code.LANGUAGE, hint = "🌐", width = 1f),
+                    Key(",", popup = listOf(Key("፣"), Key("፤"), Key("፥"), Key("፦"))),
                     Key(" ", code = Code.SPACE, width = 4f),
-                    Key("።", popup = listOf(Key("."), Key("፧"), Key("፨"))),
+                    Key(".", popup = listOf(Key("።"), Key("፧"), Key("፨"))),
                     Key("↵", code = Code.ENTER, width = 1.5f),
                 ),
             ),
