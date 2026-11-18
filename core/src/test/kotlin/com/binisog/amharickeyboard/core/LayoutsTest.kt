@@ -10,9 +10,8 @@ import kotlin.test.assertTrue
 
 class LayoutsTest {
     private val all = listOf(
-        Layouts.PHONETIC, Layouts.FIDEL, Layouts.ENGLISH, Layouts.SYMBOLS, Layouts.SYMBOLS_2,
-        Layouts.GEEZ_NUMBERS, Layouts.NUMBER_PAD, Layouts.PHONE_PAD,
-    )
+        Layouts.PHONETIC, Layouts.FIDEL, Layouts.ENGLISH, Layouts.NUMBER_PAD, Layouts.PHONE_PAD,
+    ) + Layouts.SYMBOL_PAGES
 
     @Test fun everyPageHasDeleteAndNoEmptyRows() {
         for (id in all) {
@@ -27,7 +26,7 @@ class LayoutsTest {
         val rows = l.rows.flatten().filter { it.fidelRow >= 0 }.map { it.fidelRow }.toSet()
         assertEquals(Ethiopic.rows.map { it.base }.toSet(), rows)
         // all four letter rows are equally wide
-        assertEquals(1, l.rows.take(4).map { r -> r.sumOf { it.width.toDouble() } }.toSet().size)
+        assertEquals(1, l.rows.take(4).map { r -> Math.round(r.sumOf { it.width.toDouble() } * 1000) }.toSet().size)
     }
 
     @Test fun phoneticHintsAndPopups() {
@@ -48,6 +47,34 @@ class LayoutsTest {
         assertEquals("አም", lang(Layouts.FIDEL).label)
         assertEquals("En", lang(Layouts.ENGLISH).label)
         assertEquals("🌐", lang(Layouts.ENGLISH).hint)
+    }
+
+    private fun rowWidths(id: String, opt: LayoutOptions = LayoutOptions()) =
+        Layouts.build(id, opt).rows.map { r -> Math.round(r.sumOf { it.width.toDouble() } * 1000) / 1000.0 }
+
+    @Test fun fidelRowsAreAsWideAsTheNumberRow() {
+        // previously the letter rows were 9 keys wide under a 10-key number row
+        assertEquals(setOf(10.0), rowWidths(Layouts.FIDEL, LayoutOptions(numberRow = true)).toSet())
+        assertEquals(setOf(10.0), rowWidths(Layouts.FIDEL).toSet())
+    }
+
+    @Test fun symbolPagesAreBalancedAndChained() {
+        assertEquals(8, Layouts.SYMBOL_PAGES.size)
+        val visited = mutableListOf<String>()
+        var id = Layouts.SYMBOLS
+        repeat(Layouts.SYMBOL_PAGES.size) {
+            assertEquals(setOf(10.0), rowWidths(id).toSet(), "$id rows")
+            val keys = Layouts.build(id).rows.flatten()
+            val pageKey = keys.first { it.code == Code.PAGE && it.label.contains("/") }
+            assertEquals(Layouts.SYMBOL_PAGES.size, pageKey.popup.size) // long-press: jump to any page
+            visited += id
+            id = pageKey.output
+        }
+        assertEquals(Layouts.SYMBOL_PAGES, visited)   // the page key visits every page once
+        assertEquals(Layouts.SYMBOLS, id)              // and wraps around
+        val extra = Layouts.build(Layouts.ETHIOPIC_EXTRA).rows.take(3).flatten().filter { !it.isFunction }.map { it.label }
+        assertTrue("ቋ" in extra && "ኋ" in extra && "ጓ" in extra && "ኳ" in extra)
+        assertTrue(extra.all { l -> l.all(Ethiopic::isWordChar) })
     }
 
     @Test fun emailFieldsGetAtKey() {

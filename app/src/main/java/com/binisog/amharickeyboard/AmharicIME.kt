@@ -385,8 +385,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             Code.ENTER -> handleEnter()
             Code.SPACE -> handleSpace()
             Code.SYMBOLS -> setPage(Layouts.SYMBOLS)
-            Code.SYMBOLS_2 -> setPage(Layouts.SYMBOLS_2)
-            Code.GEEZ_NUMBERS -> setPage(Layouts.GEEZ_NUMBERS)
+            Code.PAGE -> setPage(key.output)
             Code.ALPHA -> setPage(if (isPassword) Layouts.ENGLISH else alphaLayout)
             Code.LANGUAGE -> cycleLayout()
         }

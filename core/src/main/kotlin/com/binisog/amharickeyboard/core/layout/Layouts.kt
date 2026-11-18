@@ -32,8 +32,8 @@ object Code {
     const val ENTER = -4
     const val DELETE = -5
     const val LANGUAGE = -6
-    const val SYMBOLS_2 = -8
-    const val GEEZ_NUMBERS = -9
+    /** Switches to the page whose id is the key's [Key.output]. */
+    const val PAGE = -8
     const val SPACE = -10
 }
 
@@ -65,6 +65,20 @@ object Layouts {
     const val SYMBOLS = "symbols"
     const val SYMBOLS_2 = "symbols2"
     const val GEEZ_NUMBERS = "geez_numbers"
+    const val MATH = "math"
+    const val ARROWS = "arrows"
+    const val PUNCTUATION = "punctuation"
+    const val ACCENTS = "accents"
+    const val ETHIOPIC_EXTRA = "ethiopic_extra"
+
+    /** Symbol pages in the order the page key (1/8 ▸) steps through them. */
+    val SYMBOL_PAGES = listOf(SYMBOLS, SYMBOLS_2, MATH, ARROWS, PUNCTUATION, ACCENTS, ETHIOPIC_EXTRA, GEEZ_NUMBERS)
+
+    /** Short label per page, used in the page key's long-press menu. */
+    private val PAGE_ICONS = mapOf(
+        SYMBOLS to "?123", SYMBOLS_2 to "~|", MATH to "±∑", ARROWS to "→★", PUNCTUATION to "«»",
+        ACCENTS to "é", ETHIOPIC_EXTRA to "ቈ", GEEZ_NUMBERS to "፩፪",
+    )
     const val NUMBER_PAD = "number_pad"
     const val PHONE_PAD = "phone_pad"
 
@@ -81,9 +95,7 @@ object Layouts {
         PHONETIC -> phonetic(opt)
         FIDEL -> fidel(opt)
         ENGLISH -> english(opt)
-        SYMBOLS -> symbols(amharic = true)
-        SYMBOLS_2 -> symbols2()
-        GEEZ_NUMBERS -> geezNumbers()
+        in SYMBOL_PAGES -> symbolPage(id)
         NUMBER_PAD -> numberPad()
         PHONE_PAD -> phonePad()
         else -> phonetic(opt)
@@ -171,8 +183,11 @@ object Layouts {
      */
     private fun fidel(opt: LayoutOptions): KeyboardLayout {
         val ordered = Ethiopic.rows.filter { it.base != 0x1250 } + Ethiopic.rows.filter { it.base == 0x1250 }
+        // 9 letters per row, widened so every row spans the same 10 key-widths as the number row
+        val w = 10f / 9f
         val keys = ordered.map { row ->
             Key(
+                width = w,
                 label = row.first.toString(),
                 hint = if (!opt.hints) null else when (row.base) {
                     0x12A0 -> "a"
@@ -188,8 +203,8 @@ object Layouts {
         rows.add(keys.subList(0, 9))
         rows.add(keys.subList(9, 18))
         rows.add(keys.subList(18, 27))
-        rows.add(keys.subList(27, keys.size) + Key("⌫", code = Code.DELETE, width = 9f - (keys.size - 27)))
-        rows.add(bottomRow(amharic = true, opt.fieldKind, symbolsLabel = "?123", langLabel = LANG_AMHARIC, widthScale = 0.9f))
+        rows.add(keys.subList(27, keys.size) + Key("⌫", code = Code.DELETE, width = 10f - (keys.size - 27) * w))
+        rows.add(bottomRow(amharic = true, opt.fieldKind, symbolsLabel = "?123", langLabel = LANG_AMHARIC))
         return KeyboardLayout(FIDEL, rows, shiftable = false, spaceLabel = "ፊደል")
     }
 
@@ -198,7 +213,7 @@ object Layouts {
         Key(d.toString(), popup = listOfNotNull(g?.let { Key(it) }), hint = if (geez) g else null)
     }
 
-    private fun bottomRow(amharic: Boolean, kind: FieldKind, symbolsLabel: String, langLabel: String, widthScale: Float = 1f): List<Key> {
+    private fun bottomRow(amharic: Boolean, kind: FieldKind, symbolsLabel: String, langLabel: String): List<Key> {
         val comma = when (kind) {
             FieldKind.EMAIL -> Key("@", popup = listOf(Key(".com"), Key(".et"), Key("_"), Key("-")))
             FieldKind.URL -> Key("/", popup = listOf(Key(".com"), Key(".et"), Key("www."), Key("https://")))
@@ -210,15 +225,14 @@ object Layouts {
         } else {
             Key(".", popup = listOf(Key("?"), Key("!"), Key(","), Key("…"), Key("።")))
         }
-        val s = widthScale
         return listOf(
-            Key(symbolsLabel, code = Code.SYMBOLS, width = 1.5f * s),
+            Key(symbolsLabel, code = Code.SYMBOLS, width = 1.5f),
             // Shows the current language; the small globe marks it as the switch key.
-            Key(langLabel, code = Code.LANGUAGE, hint = "🌐", width = 1f * s),
-            comma.copy(width = 1f * s),
-            Key(" ", code = Code.SPACE, width = 4f * s),
-            period.copy(width = 1f * s),
-            Key("↵", code = Code.ENTER, width = 1.5f * s),
+            Key(langLabel, code = Code.LANGUAGE, hint = "🌐", width = 1f),
+            comma.copy(width = 1f),
+            Key(" ", code = Code.SPACE, width = 4f),
+            period.copy(width = 1f),
+            Key("↵", code = Code.ENTER, width = 1.5f),
         )
     }
 
@@ -226,47 +240,67 @@ object Layouts {
 
     private fun charKeys(s: String): List<Key> = s.map { Key(it.toString()) }
 
-    private fun symbols(amharic: Boolean): KeyboardLayout = KeyboardLayout(
-        SYMBOLS,
-        listOf(
-            numberRow(geez = amharic),
-            charKeys("@#$%&-+()").plus(Key("ብር", popup = listOf(Key("$"), Key("€"), Key("£"), Key("¥")))),
-            listOf(Key("=\\<", code = Code.SYMBOLS_2, width = 1.5f)) + charKeys("*\"':;!?") + Key("⌫", code = Code.DELETE, width = 1.5f),
-            listOf(Key("ABC", code = Code.ALPHA, width = 1.5f), Key("፩፪", code = Code.GEEZ_NUMBERS, width = 1f),
-                Key("፣", popup = listOf(Key(","), Key("፤"), Key("፥"), Key("፦"))),
-                Key(" ", code = Code.SPACE, width = 4f),
-                Key("።", popup = listOf(Key("."), Key("፧"), Key("፨"))),
-                Key("↵", code = Code.ENTER, width = 1.5f)),
-        ),
-    )
+    /** Each page: two rows of 10 characters and 7 for the row with the page key and ⌫. */
+    private class PageContent(val row1: List<Key>, val row2: List<Key>, val row3: List<Key>)
 
-    private fun symbols2(): KeyboardLayout = KeyboardLayout(
-        SYMBOLS_2,
-        listOf(
-            charKeys("~`|•√π÷×¶∆"),
-            charKeys("£€¥^°={}\\_"),
-            listOf(Key("?123", code = Code.SYMBOLS, width = 1.5f)) + charKeys("%©®™✓[]") + Key("⌫", code = Code.DELETE, width = 1.5f),
-            listOf(Key("ABC", code = Code.ALPHA, width = 1.5f), Key("<", width = 1f), Key(">", width = 1f),
-                Key(" ", code = Code.SPACE, width = 4f), Key("…", width = 1f), Key("↵", code = Code.ENTER, width = 1.5f)),
-        ),
-    )
-
-    /** Ge'ez numerals ፩–፱, ፲–፺, ፻, ፼ plus Ethiopic punctuation. */
-    private fun geezNumbers(): KeyboardLayout {
-        val k = GeezNumerals.keys
-        return KeyboardLayout(
-            GEEZ_NUMBERS,
-            listOf(
+    private fun content(id: String): PageContent = when (id) {
+        SYMBOLS -> PageContent(
+            numberRow(geez = true),
+            charKeys("@#$%&-+()") + Key("ብር", popup = listOf(Key("$"), Key("€"), Key("£"), Key("¥"))),
+            charKeys("*\"':;!?"),
+        )
+        SYMBOLS_2 -> PageContent(charKeys("~`|•√π÷×¶∆"), charKeys("£€¥^°={}\\_"), charKeys("<>[]%✓…"))
+        MATH -> PageContent(charKeys("±×÷≠≈≤≥∞√∑"), charKeys("π°½¼¾²³‰∆∫"), charKeys("¢₹₦₵₩₽µ"))
+        ARROWS -> PageContent(charKeys("←→↑↓↔↕⇐⇒⇑⇓"), charKeys("★☆●○■□◆◇▲△"), charKeys("♥♦♣♠♪♫✗"))
+        PUNCTUATION -> PageContent(charKeys("«»‹›“”‘’„‚"), charKeys("—–…•·§¶†‡№"), charKeys("¿¡©®™℃′"))
+        ACCENTS -> PageContent(charKeys("áàâäãåæçéè"), charKeys("êëíìîïñóòô"), charKeys("öøœßúùü"))
+        // Labialised Ethiopic letters that phonetic typing does not reach easily (ቈ ኈ ጐ ዀ ኰ…).
+        ETHIOPIC_EXTRA -> PageContent(
+            charKeys("ቈቊቋቌቍኈኊኋኌኍ"),
+            charKeys("ጐጒጓጔጕዀዂዃዄዅ"),
+            charKeys("ኰኲኳኴኵፘ") + Key("ፙ", popup = listOf(Key("ፚ"), Key("ሇ"), Key("ፙ"))),
+        )
+        GEEZ_NUMBERS -> GeezNumerals.keys.let { k ->
+            PageContent(
                 k.subList(0, 9).map { Key(it.toString()) } + Key(GeezNumerals.HUNDRED.toString()),
                 k.subList(9, 18).map { Key(it.toString()) } + Key(GeezNumerals.TEN_THOUSAND.toString()),
-                listOf(Key("?123", code = Code.SYMBOLS, width = 1.5f)) +
-                    Ethiopic.punctuation.take(7).map { Key(it.toString()) } + Key("⌫", code = Code.DELETE, width = 1.5f),
-                listOf(Key("ABC", code = Code.ALPHA, width = 1.5f), Key("፨"), Key("፣"),
-                    Key(" ", code = Code.SPACE, width = 4f), Key("።"), Key("↵", code = Code.ENTER, width = 1.5f)),
+                Ethiopic.punctuation.take(7).map { Key(it.toString()) },
+            )
+        }
+        else -> error("not a symbol page: $id")
+    }
+
+    /**
+     * A symbol page. Every page has the same balanced shape (each row 10 key-widths):
+     * 10 / 10 / [page key] 7 [⌫] / [ABC] [፩፪ or ,] [፣] [space] [።] [↵].
+     * The page key steps to the next page; long-press it to jump to any page.
+     */
+    private fun symbolPage(id: String): KeyboardLayout {
+        val c = content(id)
+        val i = SYMBOL_PAGES.indexOf(id)
+        val next = SYMBOL_PAGES[(i + 1) % SYMBOL_PAGES.size]
+        val pageKey = Key(
+            "${i + 1}/${SYMBOL_PAGES.size} ▸", output = next, code = Code.PAGE, width = 1.5f,
+            popup = SYMBOL_PAGES.map { Key(PAGE_ICONS.getValue(it), output = it, code = Code.PAGE) },
+        )
+        val shortcut = if (id == GEEZ_NUMBERS) Key(",") else Key("፩፪", output = GEEZ_NUMBERS, code = Code.PAGE)
+        return KeyboardLayout(
+            id,
+            listOf(
+                c.row1,
+                c.row2,
+                listOf(pageKey) + c.row3 + Key("⌫", code = Code.DELETE, width = 1.5f),
+                listOf(
+                    Key("ABC", code = Code.ALPHA, width = 1.5f),
+                    shortcut,
+                    Key("፣", popup = listOf(Key(","), Key("፤"), Key("፥"), Key("፦"))),
+                    Key(" ", code = Code.SPACE, width = 4f),
+                    Key("።", popup = listOf(Key("."), Key("፧"), Key("፨"))),
+                    Key("↵", code = Code.ENTER, width = 1.5f),
+                ),
             ),
         )
     }
-
 
     private fun numberPad(): KeyboardLayout = KeyboardLayout(
         NUMBER_PAD,
