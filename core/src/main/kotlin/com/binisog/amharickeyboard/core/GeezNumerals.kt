@@ -51,7 +51,4 @@ object GeezNumerals {
         if (o > 0) sb.append((ONES + o - 1).toChar())
         return sb.toString()
     }
-
-    /** Units, tens and the two multipliers, in keyboard order. */
-    val keys: List<Char> = (0 until 9).map { (ONES + it).toChar() } + (0 until 9).map { (TENS + it).toChar() } + listOf(HUNDRED, TEN_THOUSAND)
 }

@@ -59,7 +59,7 @@ class LayoutsTest {
     }
 
     @Test fun symbolPagesAreBalancedAndChained() {
-        assertEquals(8, Layouts.SYMBOL_PAGES.size)
+        assertEquals(listOf(Layouts.SYMBOLS, Layouts.SYMBOLS_2, Layouts.MATH), Layouts.SYMBOL_PAGES)
         val visited = mutableListOf<String>()
         var id = Layouts.SYMBOLS
         repeat(Layouts.SYMBOL_PAGES.size) {
@@ -72,23 +72,22 @@ class LayoutsTest {
         }
         assertEquals(Layouts.SYMBOL_PAGES, visited)   // the page key visits every page once
         assertEquals(Layouts.SYMBOLS, id)              // and wraps around
-        val extra = Layouts.build(Layouts.ETHIOPIC_EXTRA).rows.subList(1, 4).flatten().filter { !it.isFunction }.map { it.label }
-        assertTrue("ቋ" in extra && "ኋ" in extra && "ጓ" in extra && "ኳ" in extra)
-        assertTrue(extra.all { l -> l.all(Ethiopic::isWordChar) })
     }
 
     @Test fun symbolPagesFollowSamsungLayout() {
         fun labels(id: String, row: Int) = Layouts.build(id).rows[row].map { it.label }
-        // every page: number row, 10, 10, [n/8] 7 [⌫], bottom row; 5 rows like Samsung Keyboard
+        // every page: number row, 10, 10, [n/3] 7 [⌫], bottom row; 5 rows like Samsung Keyboard
         for (id in Layouts.SYMBOL_PAGES) assertEquals(5, Layouts.build(id).rows.size, id)
         assertEquals("1234567890", labels(Layouts.SYMBOLS, 0).joinToString(""))
         assertEquals("+×÷=/_<>[]", labels(Layouts.SYMBOLS, 1).joinToString(""))
         assertEquals("!@#$%^&*()", labels(Layouts.SYMBOLS, 2).joinToString(""))
-        assertEquals(listOf("1/8", "-", "'", "\"", ":", ";", ",", "?", "⌫"), labels(Layouts.SYMBOLS, 3))
+        assertEquals(listOf("1/3", "-", "'", "\"", ":", ";", ",", "?", "⌫"), labels(Layouts.SYMBOLS, 3))
         assertEquals(listOf("ABC", "አም", ",", " ", ".", "↵"), labels(Layouts.SYMBOLS, 4))
         assertEquals("`~\\|{}€£¥₩", labels(Layouts.SYMBOLS_2, 1).joinToString(""))
         assertEquals("°•○●□■♤♡◇♧", labels(Layouts.SYMBOLS_2, 2).joinToString(""))
-        assertEquals(listOf("2/8", "☆", "▪", "¤", "《", "》", "¡", "¿", "⌫"), labels(Layouts.SYMBOLS_2, 3))
+        assertEquals("±≠≈≤≥∞√∑π∫", labels(Layouts.MATH, 1).joinToString(""))
+        assertEquals("3/3", labels(Layouts.MATH, 3).first())
+        assertEquals(listOf("2/3", "☆", "▪", "¤", "《", "》", "¡", "¿", "⌫"), labels(Layouts.SYMBOLS_2, 3))
         // the language key shows the language being typed
         assertEquals("En", Layouts.build(Layouts.SYMBOLS, LayoutOptions(amharic = false)).rows[4][1].label)
     }

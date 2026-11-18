@@ -13,17 +13,12 @@ completion, next-word prediction, on-device learning and caching.
 - **Fidel grid layout.** Every consonant has its own key in ሀ ለ ሐ መ order. Tap a letter, then choose its vowel form (ለ ሉ ሊ ላ ሌ ል ሎ ሏ) from the strip. You can also long-press a letter to get its forms.
 - **Long-press alternatives.** Long-press `s` for ስ ሥ ሽ ጽ ፅ, a vowel key for አ/ዐ forms, or `.` and `,` for Ethiopic punctuation.
 - **English layout** with accent popups, auto-capitalisation, and suggestions from a 20,000-word frequency dictionary.
-- **8 symbol pages, Samsung-style.** Every page has a number row, two rows of 10 symbols, then **[1/8]** + 7 symbols + ⌫, then ABC · አም/En · , · space · . · ↵.
+- **3 symbol pages, Samsung-style.** Every page has a number row, two rows of 10 symbols, then **[1/3]** + 7 symbols + ⌫, then ABC · አም/En · , · space · . · ↵.
   1. `+ × ÷ = / _ < > [ ]` · `! @ # $ % ^ & * ( )` · `- ' " : ; , ?`
   2. `` ` ~ \ | { } € £ ¥ ₩`` · `° • ○ ● □ ■ ♤ ♡ ◇ ♧` · `☆ ▪ ¤ 《 》 ¡ ¿`
-  3. math and currency
-  4. arrows and shapes
-  5. typography
-  6. accented letters
-  7. extra Ethiopic letters (ቈ ቋ ኈ ኋ ጐ ጓ ዀ ኰ ኳ ፘ ፙ ፚ)
-  8. Ge'ez numerals
+  3. math and currency: `± ≠ ≈ ≤ ≥ ∞ √ ∑ π ∫` · `½ ¼ ¾ ² ³ ‰ ∆ µ ¢ ₹` · `₦ ₵ ₽ ₺ ₿ ብር ℃`
   
-  Tap **1/8** for the next page; long-press it to jump to any page.
+  Tap **1/3** for the next page; long-press it to jump to any page. Ge'ez numerals are on a long-press of each number key (1 → ፩).
 - **Ethiopic punctuation and numerals:** ። ፣ ፤ ፥ ፦ ፧ ፡ ፨. There's a Ge'ez numeral page (፩–፱, ፲–፺, ፻, ፼), and typing digits suggests the Ge'ez form (`2026` → **፳፻፳፮**).
 - **Double space** inserts `። ` (or `. ` in English).
 - **Field-aware.** Number and phone fields get number pads. Email and URL fields get `@`, `/` and `.com` keys. Password fields get no suggestions, no learning and no composing. The keyboard also respects "no personalised learning" (incognito) fields.

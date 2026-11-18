@@ -66,20 +66,14 @@ object Layouts {
     const val ENGLISH = "en"
     const val SYMBOLS = "symbols"
     const val SYMBOLS_2 = "symbols2"
-    const val GEEZ_NUMBERS = "geez_numbers"
     const val MATH = "math"
-    const val ARROWS = "arrows"
-    const val PUNCTUATION = "punctuation"
-    const val ACCENTS = "accents"
-    const val ETHIOPIC_EXTRA = "ethiopic_extra"
 
-    /** Symbol pages in the order the page key (1/8 ▸) steps through them. */
-    val SYMBOL_PAGES = listOf(SYMBOLS, SYMBOLS_2, MATH, ARROWS, PUNCTUATION, ACCENTS, ETHIOPIC_EXTRA, GEEZ_NUMBERS)
+    /** Symbol pages in the order the page key (1/3) steps through them. */
+    val SYMBOL_PAGES = listOf(SYMBOLS, SYMBOLS_2, MATH)
 
     /** Short label per page, used in the page key's long-press menu. */
     private val PAGE_ICONS = mapOf(
-        SYMBOLS to "?123", SYMBOLS_2 to "~|", MATH to "±∑", ARROWS to "→★", PUNCTUATION to "«»",
-        ACCENTS to "é", ETHIOPIC_EXTRA to "ቈ", GEEZ_NUMBERS to "፩፪",
+        SYMBOLS to "?123", SYMBOLS_2 to "~|", MATH to "±∑",
     )
     const val NUMBER_PAD = "number_pad"
     const val PHONE_PAD = "phone_pad"
@@ -252,22 +246,6 @@ object Layouts {
         SYMBOLS -> PageContent(charKeys("+×÷=/_<>[]"), charKeys("!@#$%^&*()"), charKeys("-'\":;,?"))
         SYMBOLS_2 -> PageContent(charKeys("`~\\|{}€£¥₩"), charKeys("°•○●□■♤♡◇♧"), charKeys("☆▪¤《》¡¿"))
         MATH -> PageContent(charKeys("±≠≈≤≥∞√∑π∫"), charKeys("½¼¾²³‰∆µ¢₹"), keys("₦", "₵", "₽", "₺", "₿", "ብር", "℃"))
-        ARROWS -> PageContent(charKeys("←→↑↓↔↕⇐⇒⇑⇓"), charKeys("★✦●◆▲▼►◄♪♫"), charKeys("♥♦♣♠✓✗※"))
-        PUNCTUATION -> PageContent(charKeys("«»‹›“”‘’„‚"), charKeys("—–…·§¶†‡№™"), charKeys("©®′″‽¦¬"))
-        ACCENTS -> PageContent(charKeys("áàâäãåæçéè"), charKeys("êëíìîïñóòô"), charKeys("öøœßúùü"))
-        // Labialised Ethiopic letters that phonetic typing does not reach easily (ቈ ኈ ጐ ዀ ኰ…).
-        ETHIOPIC_EXTRA -> PageContent(
-            charKeys("ቈቊቋቌቍኈኊኋኌኍ"),
-            charKeys("ጐጒጓጔጕዀዂዃዄዅ"),
-            charKeys("ኰኲኳኴኵፘ") + Key("ፙ", popup = listOf(Key("ፚ"), Key("ሇ"), Key("ፙ"))),
-        )
-        GEEZ_NUMBERS -> GeezNumerals.keys.let { k ->
-            PageContent(
-                k.subList(0, 9).map { Key(it.toString()) } + Key(GeezNumerals.HUNDRED.toString()),
-                k.subList(9, 18).map { Key(it.toString()) } + Key(GeezNumerals.TEN_THOUSAND.toString()),
-                Ethiopic.punctuation.take(7).map { Key(it.toString()) },
-            )
-        }
         else -> error("not a symbol page: $id")
     }
 
@@ -276,7 +254,7 @@ object Layouts {
      *   1 2 3 4 5 6 7 8 9 0
      *   10 symbols
      *   10 symbols
-     *   [1/8] 7 symbols [⌫]
+     *   [1/3] 7 symbols [⌫]
      *   [ABC] [አም/En] [,] [space] [.] [↵]
      * The page key steps to the next page; long-press it to jump to any page.
      */

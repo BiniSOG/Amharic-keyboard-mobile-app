@@ -553,7 +553,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             lastSpaceTime = now
         }
         justAutoSpaced = false
-        if (page != alphaLayout && (page == Layouts.SYMBOLS || page == Layouts.GEEZ_NUMBERS)) setPage(alphaLayout)
+        if (page != alphaLayout && page == Layouts.SYMBOLS) setPage(alphaLayout)
         afterCommit()
     }
 
