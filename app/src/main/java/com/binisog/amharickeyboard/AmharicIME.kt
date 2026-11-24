@@ -375,6 +375,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     override fun onKey(key: Key) {
         syncComposing()
         textTranslation = null // typing goes on: drop a pending translation offer
+        if (key.code != Code.DELETE) lastPick = null
         when (key.code) {
             Code.CHAR -> {
                 handleText(key.output)
@@ -579,6 +580,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         justAutoSpaced = false
         spaceFollowsWord = false
         showingClipboard = false
+        if (repeat == 0 && composer.isEmpty && undoPick(ic)) return
+        lastPick = null
         if (!composer.isEmpty) {
             composer.backspace()
             if (alphaLayout == Layouts.FIDEL && !composer.isEmpty) vowelRowBase = -1
@@ -723,6 +726,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             // the end of a word, pick that word up again so it can be continued with suggestions.
             justAutoSpaced = false
             spaceFollowsWord = false
+            lastPick = null
             if (newSelStart == newSelEnd && candidatesEnd == -1) resumeComposingAt(newSelStart)
             if (composer.isEmpty) prevWord = readPrevWord()
             updateAutoShift()
@@ -973,42 +977,79 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     private fun pickSuggestion(item: Item, ic: InputConnection) {
-        val autoSpace = settings.autoSpace && fieldKind == FieldKind.TEXT
+        val autoSpace = settings.autoSpace && fieldKind == FieldKind.TEXT && inputKind == InputKind.TEXT
         if (item.tag == TAG_SELECTION || item.tag == TAG_SENTENCE) { applyTextTranslation(item, ic); return }
+        val typed = composer.text
+        lastEditTime = SystemClock.uptimeMillis() // the selection updates that follow are ours
         when (item.tag) {
             TAG_HISTORY -> {
                 // the continuation replaces the partly typed word and adds the following words
                 composer.reset()
                 vowelRowBase = -1
-                ic.commitText(item.value + if (autoSpace) " " else "", 1)
+                commitWithSpace(ic, item.value, autoSpace)
             }
             TAG_EMOJI -> {
                 val hadWord = !composer.isEmpty
                 commitComposing(learn = true)
-                ic.commitText((if (hadWord) " " else "") + item.value + (if (autoSpace) " " else ""), 1)
+                commitWithSpace(ic, (if (hadWord) " " else "") + item.value, autoSpace)
             }
             TAG_NUMERAL -> {
                 composer.reset()
-                ic.commitText(item.value, 1)
-                if (autoSpace) ic.commitText(" ", 1)
+                commitWithSpace(ic, item.value, autoSpace)
             }
             else -> {
-                ic.beginBatchEdit()
-                ic.commitText(item.value, 1) // replaces the composing region
+                // One commit for word + space: it replaces the composing region, and some editors
+                // dropped a second commit sent right after it, so no space appeared.
+                commitWithSpace(ic, item.value, autoSpace)
                 composer.reset()
                 vowelRowBase = -1
                 learnWord(item.value)
                 prevWord = item.value
-                if (autoSpace) ic.commitText(" ", 1)
-                ic.endBatchEdit()
+                // only corrections are undone; a completion of the typed word is simply backspaced
+                if (typed.isNotEmpty() && !item.value.startsWith(typed, ignoreCase = true)) lastPick = Pick(item.value, typed, autoSpace)
             }
         }
         justAutoSpaced = autoSpace
         spaceFollowsWord = autoSpace
         lastSpaceTime = SystemClock.uptimeMillis()
         val keepJustAutoSpaced = justAutoSpaced
+        val keepPick = lastPick
         afterCommit()
         justAutoSpaced = keepJustAutoSpaced
+        lastPick = keepPick
+    }
+
+    /**
+     * Commits [text] followed by a space. When a space already follows the cursor, the cursor
+     * just moves past it instead of doubling it.
+     */
+    private fun commitWithSpace(ic: InputConnection, text: String, space: Boolean) {
+        if (!space) { ic.commitText(text, 1); return }
+        val after = ic.getTextAfterCursor(1, 0)
+        if (!after.isNullOrEmpty() && after[0] == ' ') ic.commitText(text, 2) else ic.commitText("$text ", 1)
+    }
+
+    /** A suggestion that replaced what was typed; backspace right after it brings the typed word back. */
+    private data class Pick(val picked: String, val typed: String, val spaced: Boolean)
+    private var lastPick: Pick? = null
+
+    /** Backspace right after picking a correction: put back what the user had typed. */
+    private fun undoPick(ic: InputConnection): Boolean {
+        val pick = lastPick ?: return false
+        lastPick = null
+        val tail = pick.picked + if (pick.spaced) " " else ""
+        val before = ic.getTextBeforeCursor(tail.length, 0)?.toString() ?: return false
+        if (before != tail || !canCompose()) return false
+        ic.beginBatchEdit()
+        ic.deleteSurroundingText(tail.length, 0)
+        ic.setComposingText(pick.typed, 1)
+        ic.endBatchEdit()
+        lastEditTime = SystemClock.uptimeMillis()
+        composer.setWord(pick.typed)
+        vowelRowBase = -1
+        prevWord = readPrevWord()
+        updateSuggestions()
+        return true
     }
 
     override fun onStripItemLongPress(item: Item): Boolean {
