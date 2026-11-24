@@ -35,6 +35,8 @@ object Code {
     /** Switches to the page whose id is the key's [Key.output]. */
     const val PAGE = -8
     const val SPACE = -10
+    /** Opens the emoji panel (emoji, your downloaded emoticons and stickers). */
+    const val EMOJI = -11
 }
 
 /** One keyboard page. [columns] is the width (in key units) all rows are laid out against. */
@@ -225,8 +227,9 @@ object Layouts {
             Key(symbolsLabel, code = Code.SYMBOLS, width = 1.5f),
             // Shows the current language; the small globe marks it as the switch key.
             Key(langLabel, code = Code.LANGUAGE, hint = "🌐", width = 1f),
+            Key("😊", code = Code.EMOJI, width = 1f),
             comma.copy(width = 1f),
-            Key(" ", code = Code.SPACE, width = 4f),
+            Key(" ", code = Code.SPACE, width = 3f),
             period.copy(width = 1f),
             Key("↵", code = Code.ENTER, width = 1.5f),
         )

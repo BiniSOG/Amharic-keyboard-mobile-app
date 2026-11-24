@@ -27,6 +27,8 @@ class EmojiPanelView(context: Context) : LinearLayout(context) {
         fun onEmojiDelete()
         fun onEmojiSpace()
         fun onEmojiClose()
+        /** The empty ⭐ tab was tapped: open the settings page where links are added. */
+        fun onAddEmoticons() {}
     }
 
     /** What a tab shows. */
@@ -95,10 +97,12 @@ class EmojiPanelView(context: Context) : LinearLayout(context) {
         val tab = tabs.firstOrNull { it.id == selectedTab } ?: return
         if (tab.texts.isEmpty() && tab.stickers.isEmpty()) {
             grid.addView(TextView(context).apply {
-                text = if (tab.id == RECENT) "🕘  …" else "⭐  …"
+                text = if (tab.id == RECENT) "🕘  …" else context.getString(com.binisog.amharickeyboard.R.string.emoticons_empty)
                 setTextColor(theme.hint)
                 gravity = Gravity.CENTER
-                setPadding(0, (32 * density).toInt(), 0, 0)
+                val pad = (24 * density).toInt()
+                setPadding(pad, (32 * density).toInt(), pad, 0)
+                if (tab.id == MY_PACKS) setOnClickListener { listener?.onAddEmoticons() }
             })
             return
         }

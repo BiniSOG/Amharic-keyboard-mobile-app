@@ -38,6 +38,9 @@ object CustomEmoticons {
         val ext = imageExtension(res.bytes)
         if (ext != null) return Added.STICKER to addSticker(ctx, res.bytes, ext)
         if (res.contentType.startsWith("image/")) throw IOException("Unsupported picture format")
+        if (looksLikeWebPage(res)) throw IOException(
+            "that link is a web page, not a picture. Long-press the picture on the page, choose \"Copy image link\" (or \"Open image in new tab\" and copy that address), and add that link",
+        )
         if (res.bytes.size > MAX_TEXT_BYTES) throw IOException("Text pack is too large")
         val items = String(res.bytes, Charsets.UTF_8).lineSequence()
             .map { it.trim() }
@@ -65,6 +68,13 @@ object CustomEmoticons {
         "webp" -> "image/webp"
         "jpg", "jpeg" -> "image/jpeg"
         else -> "image/png"
+    }
+
+    private fun looksLikeWebPage(res: Downloads.Result): Boolean {
+        if (res.contentType.contains("html") || res.contentType.contains("xml") ||
+            res.contentType.contains("javascript") || res.contentType.contains("json")) return true
+        val head = String(res.bytes, 0, minOf(res.bytes.size, 2048), Charsets.UTF_8).trimStart().lowercase()
+        return head.startsWith("<") || head.contains("<html") || head.contains("<!doctype") || head.startsWith("{")
     }
 
     /** Detects a supported picture by its first bytes (the server's content type is not trusted). */

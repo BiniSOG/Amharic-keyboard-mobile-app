@@ -28,6 +28,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Space after a suggestion.** Picking a word adds a space; typing punctuation next takes that space's place (`ሰላም።`).
 - **No auto-correct.** What you type is never replaced on its own; corrections are only offered in the suggestion bar.
 - **One-handed mode** (left or right hand): the keys squeeze to one side; the side bar switches sides (‹ ›) or goes back to full width (⤢).
+- **😊 key** on the bottom row opens the emoji panel. Emoticons and stickers you download (Settings → Emoji & emoticons → Add from a link) are in its **⭐** tab, right after 🕘 Recent; the panel opens on ⭐ right after you add some. A link to a web page is refused with a hint to copy the picture's own link instead.
 - **Voice typing** 🎤 in the top bar hands over to the phone's voice typing keyboard.
 - **Incognito mode** stops learning and typing history in every app (🕶 on the space bar while on).
 - Key preview bubbles, haptic and sound feedback (configurable), and an optional number row.

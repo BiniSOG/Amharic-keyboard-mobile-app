@@ -21,6 +21,14 @@ class LayoutsTest {
         }
     }
 
+    @Test fun letterPagesHaveAnEmojiKey() {
+        for (id in listOf(Layouts.PHONETIC, Layouts.FIDEL, Layouts.ENGLISH)) {
+            val bottom = Layouts.build(id).rows.last()
+            assertTrue(bottom.any { it.code == Code.EMOJI }, "$id has no emoji key")
+            assertEquals(10.0, Math.round(bottom.sumOf { it.width.toDouble() } * 1000) / 1000.0, "$id bottom row width")
+        }
+    }
+
     @Test fun fidelGridHasEveryConsonantRow() {
         val l = Layouts.build(Layouts.FIDEL)
         val rows = l.rows.flatten().filter { it.fidelRow >= 0 }.map { it.fidelRow }.toSet()

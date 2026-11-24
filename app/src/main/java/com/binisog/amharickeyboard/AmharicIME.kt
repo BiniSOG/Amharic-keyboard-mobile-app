@@ -400,6 +400,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             Code.PAGE -> setPage(key.output)
             Code.ALPHA -> setPage(if (isPassword) Layouts.ENGLISH else alphaLayout)
             Code.LANGUAGE -> cycleLayout()
+            Code.EMOJI -> openEmojiPanel()
         }
     }
 
@@ -1164,12 +1165,22 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val recent = recentEmoji()
         val customTexts = CustomEmoticons.texts(this)
         val stickers = CustomEmoticons.stickers(this)
+        // ⭐ (what the user downloaded) comes right after Recent so it is easy to find.
         val tabs = buildList {
             add(EmojiPanelView.Tab(EmojiPanelView.RECENT, "🕘", recent))
+            add(EmojiPanelView.Tab(EmojiPanelView.MY_PACKS, "⭐", customTexts, stickers))
             EmojiData.CATEGORIES.forEach { add(EmojiPanelView.Tab(it.id, it.icon, it.items)) }
-            if (customTexts.isNotEmpty() || stickers.isNotEmpty()) add(EmojiPanelView.Tab(EmojiPanelView.MY_PACKS, "⭐", customTexts, stickers))
         }
-        root.emojiPanel.show(tabs, select ?: if (recent.isEmpty()) EmojiData.SMILEYS.id else EmojiPanelView.RECENT)
+        val prefs = Settings.prefs(this)
+        val newPack = prefs.getBoolean(Settings.KEY_NEW_EMOTICONS, false)
+        if (newPack) prefs.edit().putBoolean(Settings.KEY_NEW_EMOTICONS, false).apply()
+        val first = when {
+            select != null -> select
+            newPack -> EmojiPanelView.MY_PACKS // just added: show it
+            recent.isNotEmpty() -> EmojiPanelView.RECENT
+            else -> EmojiData.SMILEYS.id
+        }
+        root.emojiPanel.show(tabs, first)
         root.showPanel(InputRootView.Panel.EMOJI)
     }
 
@@ -1208,6 +1219,11 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         CustomEmoticons.removeSticker(file)
         Toast.makeText(this, R.string.sticker_removed, Toast.LENGTH_SHORT).show()
         openEmojiPanel(EmojiPanelView.MY_PACKS)
+    }
+
+    override fun onAddEmoticons() {
+        onEmojiClose()
+        startActivity(Intent(this, SettingsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
     override fun onEmojiDelete() = handleDelete(repeat = 0)

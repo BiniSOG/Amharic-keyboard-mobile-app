@@ -313,6 +313,7 @@ class SettingsActivity : AppCompatActivity() {
                 activity?.runOnUiThread {
                     if (!isAdded) return@runOnUiThread
                     result.onSuccess { (kind, n) ->
+                        Settings.prefs(app).edit().putBoolean(Settings.KEY_NEW_EMOTICONS, true).apply()
                         toast(if (kind == CustomEmoticons.Added.STICKER) getString(R.string.emoticons_added_sticker) else getString(R.string.emoticons_added_text, n))
                     }.onFailure { e -> toast(getString(R.string.emoticons_failed, e.message ?: e.javaClass.simpleName)) }
                 }
