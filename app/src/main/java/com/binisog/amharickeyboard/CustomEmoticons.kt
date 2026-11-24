@@ -3,6 +3,7 @@ package com.binisog.amharickeyboard
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.binisog.amharickeyboard.core.GifLinks
 import java.io.File
 import java.io.IOException
 
@@ -14,7 +15,8 @@ import java.io.IOException
  */
 object CustomEmoticons {
     private const val MAX_TEXT_BYTES = 256 * 1024
-    private const val MAX_IMAGE_BYTES = 4 * 1024 * 1024
+    private const val MAX_IMAGE_BYTES = 8 * 1024 * 1024
+    private const val MAX_PAGE_BYTES = 3 * 1024 * 1024
     private const val MAX_TEXT_ITEMS = 500
     private const val MAX_STICKERS = 200
 
@@ -34,7 +36,13 @@ object CustomEmoticons {
 
     /** Downloads [link] and adds what it contains. Call off the main thread. Returns what was added and how many. */
     fun importFromUrl(ctx: Context, link: String): Pair<Added, Int> {
-        val res = Downloads.fetch(link, MAX_IMAGE_BYTES)
+        // GIPHY links (page or media) go straight to the GIF file.
+        var res = Downloads.fetch(GifLinks.giphyDirect(link) ?: link, maxOf(MAX_IMAGE_BYTES, MAX_PAGE_BYTES))
+        if (imageExtension(res.bytes) == null && looksLikeWebPage(res)) {
+            // A web page (Tenor, a GIF site, …): take the picture it declares for sharing.
+            val html = String(res.bytes, 0, minOf(res.bytes.size, MAX_PAGE_BYTES), Charsets.UTF_8)
+            GifLinks.pageImage(html, link)?.let { res = Downloads.fetch(it, MAX_IMAGE_BYTES) }
+        }
         val ext = imageExtension(res.bytes)
         if (ext != null) return Added.STICKER to addSticker(ctx, res.bytes, ext)
         if (res.contentType.startsWith("image/")) throw IOException("Unsupported picture format")
@@ -85,6 +93,8 @@ object CustomEmoticons {
         b.size > 12 && String(b, 0, 4, Charsets.US_ASCII) == "RIFF" && String(b, 8, 4, Charsets.US_ASCII) == "WEBP" -> "webp"
         else -> null
     }
+
+    fun isAnimated(file: File) = file.extension.equals("gif", true) || file.extension.equals("webp", true)
 
     /** Small thumbnail for the emoji panel. */
     fun thumbnail(file: File, sizePx: Int): Bitmap? = runCatching {

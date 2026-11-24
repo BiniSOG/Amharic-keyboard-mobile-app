@@ -1,7 +1,10 @@
 package com.binisog.amharickeyboard.keyboard
 
 import android.content.Context
+import android.graphics.ImageDecoder
+import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -91,6 +94,20 @@ class EmojiPanelView(context: Context) : LinearLayout(context) {
         }
     }
 
+    /** GIFs (and animated WebP) play in the panel on Android 9+; returns false to fall back to a still picture. */
+    private fun showAnimated(view: ImageView, f: File, size: Int): Boolean {
+        if (Build.VERSION.SDK_INT < 28 || !com.binisog.amharickeyboard.CustomEmoticons.isAnimated(f)) return false
+        return runCatching {
+            val d = ImageDecoder.decodeDrawable(ImageDecoder.createSource(f)) { decoder, info, _ ->
+                val scale = size.toFloat() / maxOf(info.size.width, info.size.height)
+                if (scale < 1f) decoder.setTargetSize(maxOf(1, (info.size.width * scale).toInt()), maxOf(1, (info.size.height * scale).toInt()))
+            }
+            view.setImageDrawable(d)
+            (d as? AnimatedImageDrawable)?.start()
+            true
+        }.getOrDefault(false)
+    }
+
     private fun renderGrid() {
         grid.removeAllViews()
         gridScroll.scrollTo(0, 0)
@@ -113,7 +130,7 @@ class EmojiPanelView(context: Context) : LinearLayout(context) {
             for (f in chunk) {
                 row.addView(ImageView(context).apply {
                     scaleType = ImageView.ScaleType.FIT_CENTER
-                    setImageBitmap(com.binisog.amharickeyboard.CustomEmoticons.thumbnail(f, size))
+                    if (!showAnimated(this, f, size)) setImageBitmap(com.binisog.amharickeyboard.CustomEmoticons.thumbnail(f, size))
                     val p = (4 * density).toInt()
                     setPadding(p, p, p, p)
                     setOnClickListener { listener?.onSticker(f) }
