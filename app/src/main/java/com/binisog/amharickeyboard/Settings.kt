@@ -55,7 +55,7 @@ class Settings private constructor(p: SharedPreferences) {
 
         private const val KEY_LAST_LAYOUT = "last_layout"
         const val KEY_BG_STAMP = "bg_stamp"
-        /** Set when emoticons were downloaded; the emoji panel then opens on ⭐. */
+        /** Set when emoticons were downloaded; the emoji panel then opens on GIF. */
         const val KEY_NEW_EMOTICONS = "new_emoticons"
 
         @Volatile private var migrated = false

@@ -1165,10 +1165,10 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val recent = recentEmoji()
         val customTexts = CustomEmoticons.texts(this)
         val stickers = CustomEmoticons.stickers(this)
-        // ⭐ (what the user downloaded) comes right after Recent so it is easy to find.
+        // GIF (what the user downloaded) comes right after Recent so it is easy to find.
         val tabs = buildList {
             add(EmojiPanelView.Tab(EmojiPanelView.RECENT, "🕘", recent))
-            add(EmojiPanelView.Tab(EmojiPanelView.MY_PACKS, "⭐", customTexts, stickers))
+            add(EmojiPanelView.Tab(EmojiPanelView.MY_PACKS, "GIF", customTexts, stickers))
             EmojiData.CATEGORIES.forEach { add(EmojiPanelView.Tab(it.id, it.icon, it.items)) }
         }
         val prefs = Settings.prefs(this)

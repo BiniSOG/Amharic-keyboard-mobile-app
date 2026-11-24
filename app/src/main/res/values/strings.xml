@@ -108,14 +108,14 @@
 
     <string name="cat_emoticons">Emoji &amp; emoticons</string>
     <string name="pref_emoticons_add">Add emoticons from a link</string>
-    <string name="pref_emoticons_add_summary">A picture or GIF (PNG, JPEG, GIF, WebP) becomes a sticker. GIPHY and Tenor links work directly. A text file adds one emoticon per line. Find them under ⭐ (after 🕘) in the emoji panel: tap the 😊 key.</string>
+    <string name="pref_emoticons_add_summary">A picture or GIF (PNG, JPEG, GIF, WebP) becomes a sticker. GIPHY and Tenor links work directly. A text file adds one emoticon per line. Find them under GIF (after 🕘) in the emoji panel: tap the 😊 key.</string>
     <string name="pref_emoticons_url_hint">https://example.com/sticker.png</string>
     <string name="pref_emoticons_clear">Remove downloaded emoticons</string>
     <string name="emoticons_loading">Downloading…</string>
-    <string name="emoticons_added_sticker">Sticker added. Find it under ⭐ in the emoji panel</string>
-    <string name="emoticons_added_text">%1$d emoticons added under ⭐ in the emoji panel</string>
+    <string name="emoticons_added_sticker">Sticker added. Find it under GIF in the emoji panel</string>
+    <string name="emoticons_added_text">%1$d emoticons added under GIF in the emoji panel</string>
     <string name="emoticons_failed">Could not add that link: %1$s</string>
-    <string name="emoticons_empty">⭐ Your emoticons and stickers appear here.\n\nTap here, then use \"Add emoticons from a link\" with a link to a picture (PNG, JPEG, GIF, WebP) or a text file of emoticons.</string>
+    <string name="emoticons_empty">Your emoticons and stickers appear here.\n\nTap here, then use \"Add emoticons from a link\" with a link to a picture (PNG, JPEG, GIF, WebP) or a text file of emoticons.</string>
     <string name="emoticons_cleared">Downloaded emoticons removed</string>
     <string name="sticker_not_supported">This box doesn’t accept pictures or GIFs (try a chat app such as WhatsApp, Telegram or Messages)</string>
     <string name="sticker_removed">Sticker removed</string>

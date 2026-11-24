@@ -30,7 +30,7 @@ class EmojiPanelView(context: Context) : LinearLayout(context) {
         fun onEmojiDelete()
         fun onEmojiSpace()
         fun onEmojiClose()
-        /** The empty ⭐ tab was tapped: open the settings page where links are added. */
+        /** The empty GIF tab was tapped: open the settings page where links are added. */
         fun onAddEmoticons() {}
     }
 
@@ -79,7 +79,10 @@ class EmojiPanelView(context: Context) : LinearLayout(context) {
         for (t in tabs) {
             tabsRow.addView(TextView(context).apply {
                 text = t.icon
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+                // word labels such as "GIF" are drawn smaller and bold, emoji icons as they are
+                val word = t.icon.all { it.isLetter() }
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, if (word) 14f else 18f)
+                if (word) typeface = android.graphics.Typeface.DEFAULT_BOLD
                 gravity = Gravity.CENTER
                 val p = (12 * density).toInt()
                 setPadding(p, 0, p, 0)

@@ -28,7 +28,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Space after a suggestion.** Picking a word adds a space; typing punctuation next takes that space's place (`ሰላም።`).
 - **No auto-correct.** What you type is never replaced on its own; corrections are only offered in the suggestion bar.
 - **One-handed mode** (left or right hand): the keys squeeze to one side; the side bar switches sides (‹ ›) or goes back to full width (⤢).
-- **😊 key** on the bottom row opens the emoji panel. Emoticons and stickers you download (Settings → Emoji & emoticons → Add from a link) are in its **⭐** tab, right after 🕘 Recent; the panel opens on ⭐ right after you add some. **GIFs** play animated there (Android 9+) and are sent as GIFs to apps that accept them. GIPHY and Tenor page links work directly; for other web pages the keyboard takes the page's preview picture.
+- **😊 key** on the bottom row opens the emoji panel. Emoticons and stickers you download (Settings → Emoji & emoticons → Add from a link) are in its **GIF** tab, right after 🕘 Recent; the panel opens on GIF right after you add some. **GIFs** play animated there (Android 9+) and are sent as GIFs to apps that accept them. GIPHY and Tenor page links work directly; for other web pages the keyboard takes the page's preview picture.
 - **Voice typing** 🎤 in the top bar hands over to the phone's voice typing keyboard.
 - **Incognito mode** stops learning and typing history in every app (🕶 on the space bar while on).
 - Key preview bubbles, haptic and sound feedback (configurable), and an optional number row.
@@ -66,7 +66,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Emoticons from the internet.** In Settings, choose *Add emoticons from a link*:
   - a picture (PNG, JPEG, GIF, WebP) becomes a **sticker**, sent as an image to apps that accept them (WhatsApp, Telegram, Messages and others);
   - a text file adds one emoticon per line.
-  - They appear under ⭐ in the panel. Long-press a sticker to remove it.
+  - They appear under GIF in the panel. Long-press a sticker to remove it.
 
 **Look and feel**
 - **Themes:** light, dark, follow-system, Ethiopian (green/gold/red), Midnight blue, Ocean, Rose, Purple, High contrast, and **Custom**, where you pick the background, key, letter and accent colours.
