@@ -227,6 +227,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             keyHeightDp = settings.keyHeightDp
             showPreview = settings.preview
             spaceSwipeEnabled = settings.spaceCursor
+            oneHanded = when (settings.oneHanded) { "left" -> -1; "right" -> 1; else -> 0 }
             keyAlpha = settings.keyOpacity * 255 / 100
         }
         strip?.theme = theme
@@ -291,7 +292,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             inputKind == InputKind.TEXT && (!noSuggest || settings.suggestEverywhere)
         val incognito = (info.imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0
         // Before the first unlock nothing learned could be saved, so do not learn at all.
-        learningAllowed = settings.learn && !incognito && !isPassword && !noSuggest && inputKind == InputKind.TEXT &&
+        learningAllowed = settings.learn && !incognito && !settings.incognito && !isPassword && !noSuggest && inputKind == InputKind.TEXT &&
             DirectBoot.isUnlocked(this)
     }
 
@@ -302,7 +303,9 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val l = currentLayout()
         kv.setLayout(l)
         kv.shiftState = if (l.shiftable) shift else ShiftState.OFF
-        kv.spaceLabel = if (page == alphaLayout || page == Layouts.ENGLISH) l.spaceLabel else ""
+        kv.spaceLabel = if (page == alphaLayout || page == Layouts.ENGLISH) {
+            if (settings.incognito) "🕶 ${l.spaceLabel}".trim() else l.spaceLabel
+        } else ""
         kv.enterLabel = enterLabel()
     }
 
@@ -404,6 +407,40 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
 
     override fun onLanguageLongPress() = openQuickSettings(QUICK_MAIN)
 
+    override fun onDeleteSwipe(words: Int) {
+        lastPick = null
+        repeat(words) { deleteWordBefore() }
+    }
+
+    override fun onOneHandedAction(action: Int) {
+        val next = if (action == KeyboardView.ONE_HANDED_SWITCH) {
+            if (settings.oneHanded == "left") "right" else "left"
+        } else "off"
+        Settings.prefs(this).edit().putString("one_handed", next).apply()
+        reloadSettings()
+    }
+
+    /** Hands over to the system's voice typing keyboard (e.g. Google voice typing). */
+    private fun startVoiceTyping() {
+        val imm = getSystemService(InputMethodManager::class.java)
+        val target = imm?.enabledInputMethodList.orEmpty().asSequence()
+            .filter { it.packageName != packageName }
+            .flatMap { imi -> imm!!.getEnabledInputMethodSubtypeList(imi, true).asSequence().map { imi to it } }
+            .firstOrNull { (_, sub) -> sub.mode == "voice" }
+        if (target == null) {
+            Toast.makeText(this, R.string.voice_unavailable, Toast.LENGTH_LONG).show()
+            return
+        }
+        commitComposing(learn = true)
+        val (imi, sub) = target
+        if (Build.VERSION.SDK_INT >= 28) {
+            switchInputMethod(imi.id, sub)
+        } else {
+            val token = window?.window?.attributes?.token ?: return
+            @Suppress("DEPRECATION") imm!!.setInputMethodAndSubtype(token, imi.id, sub)
+        }
+    }
+
     override fun onSpaceLongPress() {
         (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showInputMethodPicker()
     }
@@ -483,8 +520,10 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
                     val before = ic.getTextBeforeCursor(1, 0)?.toString()
                     if (before == " ") ic.deleteSurroundingText(1, 0)
                 }
+                val corrected = if (inputKind == InputKind.TEXT) autoCorrect(ic) else null
                 commitComposing(learn = true)
                 if (inputKind == InputKind.RAW) sendKeyChar(c) else ic.commitText(c.toString(), 1)
+                corrected?.let { lastPick = it.copy(suffix = c.toString()) }
                 if (Ethiopic.isSentenceEnd(c)) recordSentence()
                 justAutoSpaced = false
                 spaceFollowsWord = false
@@ -536,10 +575,12 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val now = SystemClock.uptimeMillis()
         showingClipboard = false
         if (!composer.isEmpty) {
+            val corrected = autoCorrect(ic)
             commitComposing(learn = true)
             ic.commitText(" ", 1)
             lastSpaceTime = now
             spaceFollowsWord = true
+            corrected?.let { lastPick = it.copy(suffix = " ") }
         } else if (settings.doubleSpacePeriod && spaceFollowsWord && now - lastSpaceTime < 600 &&
             ic.getTextBeforeCursor(1, 0)?.toString() == " "
         ) {
@@ -942,6 +983,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         Item("📜", ItemKind.ACTION, ACTION_HISTORY),
         Item("⇄", ItemKind.ACTION, ACTION_TRANSLATE),
         Item(if (isAmharic) "ሀ ⇄ A" else "A ⇄ ሀ", ItemKind.ACTION, ACTION_LANGUAGE),
+        Item("🎤", ItemKind.ACTION, ACTION_VOICE),
         Item("⚙", ItemKind.ACTION, ACTION_SETTINGS),
         Item("⌄", ItemKind.ACTION, ACTION_HIDE),
     )
@@ -1006,7 +1048,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
                 learnWord(item.value)
                 prevWord = item.value
                 // only corrections are undone; a completion of the typed word is simply backspaced
-                if (typed.isNotEmpty() && !item.value.startsWith(typed, ignoreCase = true)) lastPick = Pick(item.value, typed, autoSpace)
+                if (typed.isNotEmpty() && !item.value.startsWith(typed, ignoreCase = true)) lastPick = Pick(item.value, typed, if (autoSpace) " " else "")
             }
         }
         justAutoSpaced = autoSpace
@@ -1030,14 +1072,40 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     /** A suggestion that replaced what was typed; backspace right after it brings the typed word back. */
-    private data class Pick(val picked: String, val typed: String, val spaced: Boolean)
+    private data class Pick(val picked: String, val typed: String, val suffix: String)
     private var lastPick: Pick? = null
+
+    /** Words whose auto-correction the user undid; they are left alone from now on. */
+    private val rejectedCorrections = HashSet<String>()
+
+    /**
+     * Space or punctuation ends a word that is not in the dictionary: replace it with the best
+     * correction (the highlighted suggestion), if there is a confident one. Returns what was
+     * replaced, so backspace can undo it.
+     */
+    private fun autoCorrect(ic: InputConnection): Pick? {
+        if (!settings.autoCorrect || !suggestionsAllowed || composer.isEmpty) return null
+        val typed = composer.text
+        if (typed.length < 3 || typed.any { it.isDigit() } || typed in rejectedCorrections) return null
+        val e = engine ?: return null
+        val r = e.suggest(prevWord, typed, composer.hasOpenSyllable, MAX_STRIP)
+        if (r.typedIsWord) return null
+        val best = r.suggestions.firstOrNull() ?: return null
+        if (best.kind != SuggestionEngine.Kind.CORRECTION || best.word.equals(typed, ignoreCase = true)) return null
+        val word = if (typed[0].isUpperCase() && best.word[0].isLowerCase()) best.word.replaceFirstChar { it.uppercaseChar() } else best.word
+        ic.commitText(word, 1) // replaces the composing region
+        composer.reset()
+        vowelRowBase = -1
+        learnWord(word)
+        prevWord = word
+        return Pick(word, typed, "")
+    }
 
     /** Backspace right after picking a correction: put back what the user had typed. */
     private fun undoPick(ic: InputConnection): Boolean {
         val pick = lastPick ?: return false
         lastPick = null
-        val tail = pick.picked + if (pick.spaced) " " else ""
+        val tail = pick.picked + pick.suffix
         val before = ic.getTextBeforeCursor(tail.length, 0)?.toString() ?: return false
         if (before != tail || !canCompose()) return false
         ic.beginBatchEdit()
@@ -1047,6 +1115,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         lastEditTime = SystemClock.uptimeMillis()
         composer.setWord(pick.typed)
         vowelRowBase = -1
+        rejectedCorrections.add(pick.typed) // the user wants this word as typed
         prevWord = readPrevWord()
         updateSuggestions()
         return true
@@ -1081,6 +1150,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
                 Toast.makeText(this, R.string.translation_copied, Toast.LENGTH_SHORT).show()
             }
             ACTION_SETTINGS -> openQuickSettings(QUICK_MAIN)
+            ACTION_VOICE -> startVoiceTyping()
         }
     }
 
@@ -1203,6 +1273,9 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             .getOrNull(resources.getStringArray(R.array.theme_values).indexOf(settings.theme)) ?: settings.theme
         val heightName = resources.getStringArray(R.array.key_height_entries)
             .getOrNull(resources.getStringArray(R.array.key_height_values).indexOf(settings.keyHeightDp.toString())) ?: "${settings.keyHeightDp}"
+        val oneHandedName = getString(when (settings.oneHanded) {
+            "left" -> R.string.one_handed_left; "right" -> R.string.one_handed_right; else -> R.string.one_handed_off
+        })
         val layoutName = when (alphaLayout) {
             Layouts.FIDEL -> "ፊደል"
             Layouts.ENGLISH -> "English"
@@ -1219,6 +1292,10 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             QuickSettingsView.Tile("suggestions", "💡", getString(R.string.qs_suggestions), state(settings.suggestions), settings.suggestions),
             QuickSettingsView.Tile("translate", "⇄", getString(R.string.qs_translate), state(settings.translate), settings.translate),
             QuickSettingsView.Tile("emoji_suggestions", "😊", getString(R.string.qs_emoji), state(settings.emojiSuggestions), settings.emojiSuggestions),
+            QuickSettingsView.Tile("auto_correct", "✓", getString(R.string.qs_auto_correct), state(settings.autoCorrect), settings.autoCorrect),
+            QuickSettingsView.Tile("one_handed", "🤚", getString(R.string.qs_one_handed), oneHandedName, settings.oneHanded != "off"),
+            QuickSettingsView.Tile("incognito", "🕶", getString(R.string.qs_incognito), state(settings.incognito), settings.incognito),
+            QuickSettingsView.Tile("voice", "🎤", getString(R.string.qs_voice)),
             QuickSettingsView.Tile("auto_space", "␣", getString(R.string.qs_auto_space), state(settings.autoSpace), settings.autoSpace),
             QuickSettingsView.Tile("double_space", "።", getString(R.string.qs_double_space), state(settings.doubleSpacePeriod), settings.doubleSpacePeriod),
             QuickSettingsView.Tile("learn", "🧠", getString(R.string.qs_learn), state(settings.learn), settings.learn),
@@ -1264,6 +1341,13 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             id == "translate" -> toggle("translate", settings.translate)
             id == "emoji_suggestions" -> toggle("emoji_suggestions", settings.emojiSuggestions)
             id == "auto_space" -> toggle("auto_space", settings.autoSpace)
+            id == "auto_correct" -> toggle("auto_correct", settings.autoCorrect)
+            id == "incognito" -> toggle("incognito", settings.incognito)
+            id == "one_handed" -> {
+                val next = when (settings.oneHanded) { "off" -> "right"; "right" -> "left"; else -> "off" }
+                prefs.edit().putString("one_handed", next).apply()
+            }
+            id == "voice" -> { closeQuickSettings(); startVoiceTyping(); return }
             id == "double_space" -> toggle("double_space", settings.doubleSpacePeriod)
             id == "learn" -> toggle("learn", settings.learn)
             id == "background" || id == "all_settings" || id == "about" -> {
@@ -1316,6 +1400,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         private const val ACTION_LANGUAGE = "language"
         private const val ACTION_SETTINGS = "settings"
         private const val ACTION_HIDE = "hide"
+        private const val ACTION_VOICE = "voice"
         private const val QUICK_MAIN = "main"
         private const val QUICK_THEMES = "themes"
         private const val QUICK_BACK = "back"

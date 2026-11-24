@@ -8,6 +8,7 @@ import android.view.inputmethod.InputConnection
 import android.widget.EditText
 import com.binisog.amharickeyboard.core.layout.Code
 import com.binisog.amharickeyboard.core.layout.Key
+import com.binisog.amharickeyboard.engine.LanguageModels
 import com.binisog.amharickeyboard.keyboard.SuggestionStripView.Item
 import com.binisog.amharickeyboard.keyboard.SuggestionStripView.ItemKind
 import org.junit.Assert.assertEquals
@@ -20,7 +21,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
-/** Picking a suggestion adds a space after it; backspace right after a correction undoes it. */
+/** Space after suggestions, auto-correct with undo, and swipe-delete of whole words. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class SuggestionSpaceTest {
@@ -76,5 +77,38 @@ class SuggestionSpaceTest {
         assertEquals("ሰላም ", field.text.toString())
         ime.onKey(Key("⌫", code = Code.DELETE))
         assertEquals(typed, field.text.toString())
+    }
+
+    private fun waitForDictionary() {
+        val deadline = System.currentTimeMillis() + 20_000
+        while (LanguageModels.amharic == null && System.currentTimeMillis() < deadline) {
+            Thread.sleep(50)
+            shadowOf(Looper.getMainLooper()).idle()
+        }
+        assertTrue("dictionaries did not load", LanguageModels.amharic != null)
+    }
+
+    @Test
+    fun spaceAutoCorrectsAndBackspaceUndoes() {
+        val (ime, field) = start()
+        waitForDictionary()
+        type(ime, "selm")                 // ሰልም is not a word; ሰላም is
+        ime.onKey(Key("␣", code = Code.SPACE))
+        assertEquals("ሰላም ", field.text.toString())
+
+        ime.onKey(Key("⌫", code = Code.DELETE))
+        assertEquals("ሰልም", field.text.toString())
+
+        ime.onKey(Key("␣", code = Code.SPACE)) // the user wants it as typed: no second correction
+        assertEquals("ሰልም ", field.text.toString())
+    }
+
+    @Test
+    fun swipeLeftOnDeleteRemovesWholeWords() {
+        val (ime, field) = start()
+        field.setText("ሰላም ቤተሰብ ሰላም")
+        field.setSelection(field.text.length)
+        ime.onDeleteSwipe(2)
+        assertEquals("ሰላም ", field.text.toString())
     }
 }

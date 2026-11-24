@@ -15,6 +15,12 @@ class Settings private constructor(p: SharedPreferences) {
     val doubleSpacePeriod = p.getBoolean("double_space", true)
     val autoSpace = p.getBoolean("auto_space", true)
     val autoCap = p.getBoolean("auto_cap", true)
+    /** Replace a misspelt word with the best correction when space or punctuation is typed. */
+    val autoCorrect = p.getBoolean("auto_correct", true)
+    /** Don't learn words or record history in any app until turned off again. */
+    val incognito = p.getBoolean("incognito", false)
+    /** One-handed mode: "off", "left" or "right". */
+    val oneHanded: String = p.getString("one_handed", "off") ?: "off"
     val spaceCursor = p.getBoolean("space_cursor", true)
     val suggestions = p.getBoolean("suggestions", true)
     val nextWord = p.getBoolean("next_word", true)

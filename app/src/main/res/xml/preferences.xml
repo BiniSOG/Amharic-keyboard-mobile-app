@@ -22,6 +22,8 @@
             app:summary="@string/pref_double_space_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="auto_space" app:title="@string/pref_auto_space"
             app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="auto_correct" app:title="@string/pref_auto_correct"
+            app:summary="@string/pref_auto_correct_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="auto_cap" app:title="@string/pref_auto_cap"
             app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="space_cursor" app:title="@string/pref_space_cursor"
@@ -46,6 +48,8 @@
         <Preference app:key="history_clear" app:title="@string/pref_history_clear" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="learn" app:title="@string/pref_learn"
             app:summary="@string/pref_learn_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat app:key="incognito" app:title="@string/pref_incognito"
+            app:summary="@string/pref_incognito_summary" app:defaultValue="false" app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/cat_appearance" app:iconSpaceReserved="false">
@@ -55,6 +59,9 @@
         <ListPreference app:key="key_height" app:title="@string/pref_key_height"
             app:entries="@array/key_height_entries" app:entryValues="@array/key_height_values"
             app:defaultValue="54" app:useSimpleSummaryProvider="true" app:iconSpaceReserved="false" />
+        <ListPreference app:key="one_handed" app:title="@string/pref_one_handed"
+            app:entries="@array/one_handed_entries" app:entryValues="@array/one_handed_values"
+            app:defaultValue="off" app:useSimpleSummaryProvider="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="haptic" app:title="@string/pref_haptic"
             app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="sound" app:title="@string/pref_sound"

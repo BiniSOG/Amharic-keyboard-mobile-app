@@ -21,7 +21,9 @@ import kotlin.math.max
  *  - tap (fires on release, with roll-over when a second finger lands),
  *  - key preview bubbles and long-press popups (slide to choose, release to commit),
  *  - auto-repeating delete that accelerates to whole words,
- *  - space-bar swipe to move the cursor, long-press space for the keyboard picker.
+ *  - space-bar swipe to move the cursor, long-press space for the keyboard picker,
+ *  - swipe left from delete to remove whole words,
+ *  - one-handed mode (keys squeezed to one side, with a side bar to switch or leave).
  */
 class KeyboardView(context: Context) : View(context) {
 
@@ -34,6 +36,10 @@ class KeyboardView(context: Context) : View(context) {
         fun onSpaceLongPress()
         /** Long-press on the language (አም / En) key: open quick settings. */
         fun onLanguageLongPress() {}
+        /** Swiped left from delete: remove [words] whole words before the cursor. */
+        fun onDeleteSwipe(words: Int) {}
+        /** One-handed side bar: [ONE_HANDED_SWITCH] or [ONE_HANDED_EXIT]. */
+        fun onOneHandedAction(action: Int) {}
     }
 
     enum class ShiftState { OFF, ON, LOCKED }
@@ -47,6 +53,11 @@ class KeyboardView(context: Context) : View(context) {
         set(v) { field = v; requestLayout() }
     var showPreview = true
     var spaceSwipeEnabled = true
+    /** 0 = full width, -1 = keys on the left, 1 = keys on the right. */
+    var oneHanded = 0
+        set(v) { if (field != v) { field = v; if (width > 0) placeKeys(width); invalidate() } }
+    /** The empty side next to one-handed keys: top half switches sides, bottom half leaves. */
+    private val sideBar = RectF()
     var shiftState = ShiftState.OFF
         set(v) { field = v; invalidate() }
     var enterLabel = "↵"
@@ -86,6 +97,8 @@ class KeyboardView(context: Context) : View(context) {
     private var repeatCount = 0
     private var cursorMoving = false
     private var cursorAnchorX = 0f
+    private var deleteSwipeWords = 0
+    private var sideAction = 0
 
     fun setLayout(l: KeyboardLayout) {
         val sameHeight = layout?.rows?.size == l.rows.size
@@ -108,14 +121,18 @@ class KeyboardView(context: Context) : View(context) {
         placeKeys(w)
     }
 
-    private fun placeKeys(w: Int) {
+    private fun placeKeys(fullW: Int) {
         val l = layout ?: return
         val rowH = keyHeightDp * density
+        val w = if (oneHanded == 0) fullW else (fullW * ONE_HANDED_WIDTH).toInt()
+        val offset = if (oneHanded > 0) (fullW - w).toFloat() else 0f
+        if (oneHanded == 0) sideBar.setEmpty()
+        else sideBar.set(if (oneHanded > 0) 0f else w.toFloat(), vPad, if (oneHanded > 0) offset else fullW.toFloat(), vPad + l.rows.size * rowH)
         val unit = (w - gap) / l.columns
         val out = ArrayList<Placed>()
         l.rows.forEachIndexed { r, row ->
             val rowW = row.sumOf { it.width.toDouble() }.toFloat() * unit
-            var x = (w - rowW) / 2f
+            var x = offset + (w - rowW) / 2f
             val top = vPad + r * rowH
             for (k in row) {
                 val kw = k.width * unit
@@ -130,6 +147,7 @@ class KeyboardView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         if (!transparentBackground) canvas.drawColor(theme.background)
+        if (!sideBar.isEmpty) drawSideBar(canvas)
         val alpha = if (transparentBackground) keyAlpha else 255
         val pressed = downKey
         for (p in placed) {
@@ -183,6 +201,20 @@ class KeyboardView(context: Context) : View(context) {
         }
     }
 
+    private fun drawSideBar(canvas: Canvas) {
+        val cx = sideBar.centerX()
+        val third = sideBar.height() / 3
+        labelPaint.color = theme.hint
+        labelPaint.typeface = Typeface.DEFAULT_BOLD
+        labelPaint.textSize = minOf(sideBar.width() * 0.5f, 28 * density)
+        val fm = labelPaint.fontMetrics
+        val dy = -(fm.ascent + fm.descent) / 2
+        canvas.drawText(if (oneHanded > 0) "‹" else "›", cx, sideBar.top + third + dy, labelPaint)
+        labelPaint.textSize = minOf(sideBar.width() * 0.4f, 22 * density)
+        val fm2 = labelPaint.fontMetrics
+        canvas.drawText("⤢", cx, sideBar.top + 2 * third - (fm2.ascent + fm2.descent) / 2, labelPaint)
+    }
+
     // ------------------------------------------------------------------ touch
 
     private fun keyAt(x: Float, y: Float): Placed? {
@@ -232,10 +264,15 @@ class KeyboardView(context: Context) : View(context) {
 
     private fun startPress(e: MotionEvent, index: Int) {
         val x = e.getX(index); val y = e.getY(index)
+        if (!sideBar.isEmpty && sideBar.contains(x, y)) {
+            sideAction = if (y < sideBar.centerY()) ONE_HANDED_SWITCH else ONE_HANDED_EXIT
+            activePointer = e.getPointerId(index)
+            return
+        }
         val p = keyAt(x, y) ?: return
         activePointer = e.getPointerId(index)
         downKey = p; downX = x; downY = y
-        longPressed = false; repeatCount = 0; cursorMoving = false; cursorAnchorX = x
+        longPressed = false; repeatCount = 0; cursorMoving = false; cursorAnchorX = x; deleteSwipeWords = 0
         listener?.onKeyDown(p.key)
         if (showPreview && !p.key.isFunction) overlay?.showPreview(p.key.label, toOverlay(p.rect))
         uiHandler.removeCallbacksAndMessages(null)
@@ -271,7 +308,19 @@ class KeyboardView(context: Context) : View(context) {
             }
             return
         }
-        if (p.key.code == Code.DELETE) return
+        if (p.key.code == Code.DELETE) {
+            // Swipe left from delete: one more word for every key width travelled.
+            val dist = downX - x
+            val step = p.rect.width().coerceAtLeast(24 * density)
+            val words = if (dist > step * 0.8f) 1 + ((dist - step * 0.8f) / step).toInt() else 0
+            if (words != deleteSwipeWords) {
+                if (deleteSwipeWords == 0) uiHandler.removeCallbacks(repeatRunnable)
+                deleteSwipeWords = words
+                if (words > 0) overlay?.showPreview("⌫ $words", toOverlay(p.rect)) else overlay?.hideAll()
+                invalidate()
+            }
+            return
+        }
         // Slide off a key onto another: follow the finger (feels better than cancelling).
         if (!p.rect.contains(x, y)) {
             val q = keyAt(x, y)
@@ -301,6 +350,13 @@ class KeyboardView(context: Context) : View(context) {
 
     private fun release(fire: Boolean) {
         uiHandler.removeCallbacksAndMessages(null)
+        if (sideAction != 0) {
+            val a = sideAction
+            sideAction = 0
+            activePointer = -1
+            if (fire) listener?.onOneHandedAction(a)
+            return
+        }
         val p = downKey
         val ov = overlay
         if (fire && p != null) {
@@ -308,6 +364,7 @@ class KeyboardView(context: Context) : View(context) {
                 longPressed && ov != null && ov.isPopupShowing -> ov.selectedPopupKey()?.let { listener?.onKey(it) }
                 longPressed -> Unit
                 cursorMoving -> Unit
+                p.key.code == Code.DELETE && deleteSwipeWords > 0 -> listener?.onDeleteSwipe(deleteSwipeWords)
                 p.key.code == Code.DELETE -> Unit // already fired on press
                 else -> listener?.onKey(p.key)
             }
@@ -317,6 +374,7 @@ class KeyboardView(context: Context) : View(context) {
         activePointer = -1
         longPressed = false
         cursorMoving = false
+        deleteSwipeWords = 0
         invalidate()
     }
 
@@ -346,5 +404,12 @@ class KeyboardView(context: Context) : View(context) {
     }
 
     /** Height in px this view will take with the current layout (used for the emoji page). */
+    companion object {
+        const val ONE_HANDED_SWITCH = 1
+        const val ONE_HANDED_EXIT = 2
+        /** Share of the width the keys keep in one-handed mode. */
+        const val ONE_HANDED_WIDTH = 0.82f
+    }
+
     fun preferredHeight(): Int = max(1, ((layout?.rows?.size ?: 4) * keyHeightDp * density + 2 * vPad).toInt())
 }

@@ -72,6 +72,29 @@
     <string name="qs_auto_space">Auto space</string>
     <string name="qs_double_space">Double-space ።</string>
     <string name="qs_learn">Learn words</string>
+    <string name="qs_auto_correct">Auto-correct</string>
+    <string name="qs_incognito">Incognito</string>
+    <string name="qs_one_handed">One-handed</string>
+    <string name="qs_voice">Voice typing</string>
+    <string name="pref_auto_correct">Auto-correct</string>
+    <string name="pref_auto_correct_summary">Fix a misspelt word when you type space or punctuation. Backspace right after undoes it.</string>
+    <string name="pref_incognito">Incognito mode</string>
+    <string name="pref_incognito_summary">Don\'t learn words or keep typing history in any app while this is on.</string>
+    <string name="pref_one_handed">One-handed mode</string>
+    <string name="voice_unavailable">No voice typing keyboard is enabled. Turn one on (e.g. Google voice typing) in the system keyboard settings.</string>
+    <string name="one_handed_off">Off</string>
+    <string name="one_handed_left">Left hand</string>
+    <string name="one_handed_right">Right hand</string>
+    <string-array name="one_handed_entries">
+        <item>@string/one_handed_off</item>
+        <item>@string/one_handed_left</item>
+        <item>@string/one_handed_right</item>
+    </string-array>
+    <string-array name="one_handed_values">
+        <item>off</item>
+        <item>left</item>
+        <item>right</item>
+    </string-array>
     <string name="qs_background">Background picture</string>
     <string name="qs_all_settings">All settings</string>
 
