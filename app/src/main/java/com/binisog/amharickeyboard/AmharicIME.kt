@@ -104,6 +104,13 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
 
     override fun onCreate() {
         super.onCreate()
+        Settings.prefs(this).let { p ->
+            // "Space after suggestion" may have been switched off by an accidental tap on its
+            // quick-settings tile; turn it back on once (it can still be switched off again).
+            if (!p.getBoolean(KEY_AUTO_SPACE_RESET, false)) {
+                p.edit().putBoolean("auto_space", true).putBoolean(KEY_AUTO_SPACE_RESET, true).apply()
+            }
+        }
         settings = Settings.load(this)
         alphaLayout = Settings.lastLayout(this).takeIf { it in settings.layouts } ?: settings.layouts.first()
         page = alphaLayout
@@ -376,6 +383,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onKey(key: Key) {
+        editSerial++
         syncComposing()
         textTranslation = null // typing goes on: drop a pending translation offer
         if (key.code != Code.DELETE) lastPick = null
@@ -998,6 +1006,7 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     }
 
     override fun onStripItem(item: Item) {
+        editSerial++
         syncComposing()
         val ic = currentInputConnection ?: return
         when (item.kind) {
@@ -1068,7 +1077,30 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     private fun commitWithSpace(ic: InputConnection, text: String, space: Boolean) {
         if (!space) { ic.commitText(text, 1); return }
         val after = ic.getTextAfterCursor(1, 0)
-        if (!after.isNullOrEmpty() && after[0] == ' ') ic.commitText(text, 2) else ic.commitText("$text ", 1)
+        if (!after.isNullOrEmpty() && after[0] == ' ') { ic.commitText(text, 2); return }
+        ic.commitText("$text ", 1)
+        ensureSpaceAfter(text)
+    }
+
+    /** Counts key presses and strip taps, so a delayed check knows whether the user moved on. */
+    private var editSerial = 0
+
+    /**
+     * Some apps drop the trailing space of a commit. Shortly after, check that the space is
+     * really there and add it if the word is still the last thing before the cursor.
+     */
+    private fun ensureSpaceAfter(word: String) {
+        val serial = editSerial
+        mainHandler.postDelayed({
+            if (serial != editSerial || !composer.isEmpty) return@postDelayed
+            val ic = currentInputConnection ?: return@postDelayed
+            val before = ic.getTextBeforeCursor(word.length + 1, 0)?.toString() ?: return@postDelayed
+            val after = ic.getTextAfterCursor(1, 0)
+            if (before.endsWith(word) && (after.isNullOrEmpty() || after[0] != ' ')) {
+                lastEditTime = SystemClock.uptimeMillis()
+                ic.commitText(" ", 1)
+            }
+        }, SPACE_CHECK_DELAY_MS)
     }
 
     /** A suggestion that replaced what was typed; backspace right after it brings the typed word back. */
@@ -1401,6 +1433,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         private const val ACTION_SETTINGS = "settings"
         private const val ACTION_HIDE = "hide"
         private const val ACTION_VOICE = "voice"
+        private const val KEY_AUTO_SPACE_RESET = "auto_space_reset_v2"
+        private const val SPACE_CHECK_DELAY_MS = 120L
         private const val QUICK_MAIN = "main"
         private const val QUICK_THEMES = "themes"
         private const val QUICK_BACK = "back"
