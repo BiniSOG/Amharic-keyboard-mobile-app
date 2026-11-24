@@ -22,8 +22,6 @@
             app:summary="@string/pref_double_space_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="auto_space" app:title="@string/pref_auto_space"
             app:defaultValue="true" app:iconSpaceReserved="false" />
-        <SwitchPreferenceCompat app:key="auto_correct" app:title="@string/pref_auto_correct"
-            app:summary="@string/pref_auto_correct_summary" app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="auto_cap" app:title="@string/pref_auto_cap"
             app:defaultValue="true" app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat app:key="space_cursor" app:title="@string/pref_space_cursor"

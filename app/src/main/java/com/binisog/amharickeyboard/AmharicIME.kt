@@ -528,10 +528,8 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
                     val before = ic.getTextBeforeCursor(1, 0)?.toString()
                     if (before == " ") ic.deleteSurroundingText(1, 0)
                 }
-                val corrected = if (inputKind == InputKind.TEXT) autoCorrect(ic) else null
                 commitComposing(learn = true)
                 if (inputKind == InputKind.RAW) sendKeyChar(c) else ic.commitText(c.toString(), 1)
-                corrected?.let { lastPick = it.copy(suffix = c.toString()) }
                 if (Ethiopic.isSentenceEnd(c)) recordSentence()
                 justAutoSpaced = false
                 spaceFollowsWord = false
@@ -583,12 +581,10 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         val now = SystemClock.uptimeMillis()
         showingClipboard = false
         if (!composer.isEmpty) {
-            val corrected = autoCorrect(ic)
             commitComposing(learn = true)
             ic.commitText(" ", 1)
             lastSpaceTime = now
             spaceFollowsWord = true
-            corrected?.let { lastPick = it.copy(suffix = " ") }
         } else if (settings.doubleSpacePeriod && spaceFollowsWord && now - lastSpaceTime < 600 &&
             ic.getTextBeforeCursor(1, 0)?.toString() == " "
         ) {
@@ -1107,32 +1103,6 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
     private data class Pick(val picked: String, val typed: String, val suffix: String)
     private var lastPick: Pick? = null
 
-    /** Words whose auto-correction the user undid; they are left alone from now on. */
-    private val rejectedCorrections = HashSet<String>()
-
-    /**
-     * Space or punctuation ends a word that is not in the dictionary: replace it with the best
-     * correction (the highlighted suggestion), if there is a confident one. Returns what was
-     * replaced, so backspace can undo it.
-     */
-    private fun autoCorrect(ic: InputConnection): Pick? {
-        if (!settings.autoCorrect || !suggestionsAllowed || composer.isEmpty) return null
-        val typed = composer.text
-        if (typed.length < 3 || typed.any { it.isDigit() } || typed in rejectedCorrections) return null
-        val e = engine ?: return null
-        val r = e.suggest(prevWord, typed, composer.hasOpenSyllable, MAX_STRIP)
-        if (r.typedIsWord) return null
-        val best = r.suggestions.firstOrNull() ?: return null
-        if (best.kind != SuggestionEngine.Kind.CORRECTION || best.word.equals(typed, ignoreCase = true)) return null
-        val word = if (typed[0].isUpperCase() && best.word[0].isLowerCase()) best.word.replaceFirstChar { it.uppercaseChar() } else best.word
-        ic.commitText(word, 1) // replaces the composing region
-        composer.reset()
-        vowelRowBase = -1
-        learnWord(word)
-        prevWord = word
-        return Pick(word, typed, "")
-    }
-
     /** Backspace right after picking a correction: put back what the user had typed. */
     private fun undoPick(ic: InputConnection): Boolean {
         val pick = lastPick ?: return false
@@ -1147,7 +1117,6 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
         lastEditTime = SystemClock.uptimeMillis()
         composer.setWord(pick.typed)
         vowelRowBase = -1
-        rejectedCorrections.add(pick.typed) // the user wants this word as typed
         prevWord = readPrevWord()
         updateSuggestions()
         return true
@@ -1324,7 +1293,6 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             QuickSettingsView.Tile("suggestions", "💡", getString(R.string.qs_suggestions), state(settings.suggestions), settings.suggestions),
             QuickSettingsView.Tile("translate", "⇄", getString(R.string.qs_translate), state(settings.translate), settings.translate),
             QuickSettingsView.Tile("emoji_suggestions", "😊", getString(R.string.qs_emoji), state(settings.emojiSuggestions), settings.emojiSuggestions),
-            QuickSettingsView.Tile("auto_correct", "✓", getString(R.string.qs_auto_correct), state(settings.autoCorrect), settings.autoCorrect),
             QuickSettingsView.Tile("one_handed", "🤚", getString(R.string.qs_one_handed), oneHandedName, settings.oneHanded != "off"),
             QuickSettingsView.Tile("incognito", "🕶", getString(R.string.qs_incognito), state(settings.incognito), settings.incognito),
             QuickSettingsView.Tile("voice", "🎤", getString(R.string.qs_voice)),
@@ -1373,7 +1341,6 @@ class AmharicIME : InputMethodService(), KeyboardView.Listener, SuggestionStripV
             id == "translate" -> toggle("translate", settings.translate)
             id == "emoji_suggestions" -> toggle("emoji_suggestions", settings.emojiSuggestions)
             id == "auto_space" -> toggle("auto_space", settings.autoSpace)
-            id == "auto_correct" -> toggle("auto_correct", settings.autoCorrect)
             id == "incognito" -> toggle("incognito", settings.incognito)
             id == "one_handed" -> {
                 val next = when (settings.oneHanded) { "off" -> "right"; "right" -> "left"; else -> "off" }

@@ -26,7 +26,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Space-bar swipe** moves the cursor, and long-pressing space opens the keyboard picker.
 - Delete auto-repeats when held and speeds up to deleting whole words. **Swipe left from ⌫** to delete whole words (one more word per key width). Multi-finger roll-over typing works too.
 - **Space after a suggestion.** Picking a word adds a space; typing punctuation next takes that space's place (`ሰላም።`).
-- **Auto-correct.** Space or punctuation after a word that is not in the dictionary replaces it with a confident correction (`selm` → ሰላም). Backspace right after undoes it, and that word is then left as typed.
+- **No auto-correct.** What you type is never replaced on its own; corrections are only offered in the suggestion bar.
 - **One-handed mode** (left or right hand): the keys squeeze to one side; the side bar switches sides (‹ ›) or goes back to full width (⤢).
 - **Voice typing** 🎤 in the top bar hands over to the phone's voice typing keyboard.
 - **Incognito mode** stops learning and typing history in every app (🕶 on the space bar while on).
@@ -72,7 +72,7 @@ completion, next-word prediction, on-device learning and caching.
 - **Background picture:** choose one from your gallery or download it from a web link. You can darken the picture and set how see-through the keys are.
 - The 🌐 key shows the current language: **አም** for Amharic, **En** for English.
 - Key height is adjustable.
-- **Quick settings inside the keyboard.** Tap ⚙ in the top bar, or long-press the **አም/En** key, to open a panel in place of the keys. It has a theme picker with live preview, key height, layout, sound, vibration, key popup, number row, suggestions, translation, emoji, auto-correct, one-handed mode, incognito, voice typing, auto-space, double-space ።, learning, background picture, and a link to all settings.
+- **Quick settings inside the keyboard.** Tap ⚙ in the top bar, or long-press the **አም/En** key, to open a panel in place of the keys. It has a theme picker with live preview, key height, layout, sound, vibration, key popup, number row, suggestions, translation, emoji, one-handed mode, incognito, voice typing, auto-space, double-space ።, learning, background picture, and a link to all settings.
 
 ## Phonetic scheme (SERA-style)
 

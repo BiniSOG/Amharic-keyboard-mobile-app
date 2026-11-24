@@ -23,7 +23,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.time.Duration
 
-/** Space after suggestions, auto-correct with undo, and swipe-delete of whole words. */
+/** Space after suggestions, no auto-correct, and swipe-delete of whole words. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class SuggestionSpaceTest {
@@ -98,17 +98,11 @@ class SuggestionSpaceTest {
     }
 
     @Test
-    fun spaceAutoCorrectsAndBackspaceUndoes() {
+    fun spaceKeepsTheWordAsTyped() {
         val (ime, field) = start()
         waitForDictionary()
-        type(ime, "selm")                 // ሰልም is not a word; ሰላም is
+        type(ime, "selm")                 // ሰልም is not a word, but it must not be replaced
         ime.onKey(Key("␣", code = Code.SPACE))
-        assertEquals("ሰላም ", field.text.toString())
-
-        ime.onKey(Key("⌫", code = Code.DELETE))
-        assertEquals("ሰልም", field.text.toString())
-
-        ime.onKey(Key("␣", code = Code.SPACE)) // the user wants it as typed: no second correction
         assertEquals("ሰልም ", field.text.toString())
     }
 
